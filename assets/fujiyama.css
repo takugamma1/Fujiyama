@@ -1,0 +1,109 @@
+/* ==========================================================================
+   FUJIYAMA — design system extracted from "Group 6" mockup (1170px artboard)
+   Sections share one continuous chalkboard texture so no section boundaries
+   are ever visible. Artboard overlays use container-query units:
+   1cqw = 1/100 of the 1170px design width (1px design ≈ 0.08547cqw).
+   ========================================================================== */
+
+:root {
+  --f-cream: #e8e1d2;
+  --f-cream-dim: #c9c0ae;
+  --f-body: #a89d8a;
+  --f-gold: #c7a171;
+  --f-gold-dim: #a98a5f;
+  --f-red: #70271f;
+  --f-beige: #c5a780;
+  --f-ink: #1c1814;
+  --f-black: #070707;
+  --f-serif: 'Playfair Display', 'Georgia', serif;
+  --f-sans: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* one continuous textured backdrop across all Fujiyama sections */
+.f-section {
+  background: #232220 url('fujiyama-texture.jpg') repeat;
+  background-size: 400px 400px;
+  color: var(--f-cream);
+  font-family: var(--f-sans);
+  margin: 0;
+}
+
+.f-section *,
+.f-section *::before,
+.f-section *::after { box-sizing: border-box; }
+
+.f-section img { display: block; max-width: 100%; }
+
+.f-section a { color: inherit; text-decoration: none; }
+
+/* scaled artboard: position children in design px via cqw custom props */
+.f-board {
+  position: relative;
+  container-type: inline-size;
+  width: 100%;
+}
+
+.f-abs { position: absolute; margin: 0; }
+
+/* numbered section labels e.g. [2] ЗА НАС */
+.f-label {
+  font-family: var(--f-sans);
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--f-cream-dim);
+}
+.f-label .f-label-num { color: var(--f-gold); margin-right: 0.9em; }
+
+/* serif display headings */
+.f-display {
+  font-family: var(--f-serif);
+  font-weight: 500;
+  color: var(--f-cream);
+  line-height: 1.06;
+  margin: 0;
+}
+
+/* gold filled button (reservation submit) */
+.f-btn-gold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--f-gold);
+  color: var(--f-ink);
+  font-family: var(--f-sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  border: 0;
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+.f-btn-gold:hover { background: #d4b285; }
+.f-btn-gold:active { transform: translateY(1px); }
+
+/* card link arrow */
+.f-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(232, 225, 210, 0.55);
+  border-radius: 50%;
+  color: var(--f-cream);
+  transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+}
+.f-arrow svg { width: 38%; height: auto; }
+
+/* focus visibility on dark bg */
+.f-section :focus-visible {
+  outline: 2px solid var(--f-gold);
+  outline-offset: 3px;
+}
+
+/* skip rendering Horizon's default section spacing inside our pages */
+.shopify-section:has(> .f-section) { margin: 0; padding: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .f-section * { transition: none !important; animation: none !important; }
+}

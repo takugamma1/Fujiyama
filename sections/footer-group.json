@@ -1,0 +1,19 @@
+{
+  "type": "footer",
+  "name": "Footer",
+  "sections": {
+    "fujiyama_footer": {
+      "type": "fujiyama-footer",
+      "settings": {
+        "address": "<p>Пазарджик, България<br>ул. Цар Иван Шишман 15<br>+359 88 123 4567<br>info@sushichef.bg</p>",
+        "hours_label": "Работно време",
+        "hours": "<p>Понеделник – Неделя<br>12:00 – 23:00</p>",
+        "social_label": "Последвай ни",
+        "instagram": "https://www.instagram.com/",
+        "facebook": "https://www.facebook.com/",
+        "show_copyright": true
+      }
+    }
+  },
+  "order": ["fujiyama_footer"]
+}

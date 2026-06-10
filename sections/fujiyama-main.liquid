@@ -1,0 +1,275 @@
+{%- comment -%}
+  FUJIYAMA main story — chef presentation + "discover your taste" card row.
+  Desktop: one continuous inpainted artboard (design y797-2083, 1170x1286)
+  with live text/links positioned in container-query units (1cqw = 11.7px).
+  Mobile: restacked flow using individual asset crops.
+{%- endcomment -%}
+
+{%- assign card_geo = '3.418,17.009|22.137,16.838|40.684,17.265|59.744,17.094|78.462,17.436' | split: '|' -%}
+
+<section class="f-section f-main">
+  <span class="f-anchor" id="za-nas"></span>
+
+  {%- comment -%} ============ DESKTOP ARTBOARD ============ {%- endcomment -%}
+  <div class="f-board f-main-board">
+    {%- if section.settings.art != blank -%}
+      {{ section.settings.art | image_url: width: 2340 | image_tag: alt: '', class: 'f-main-art', loading: 'lazy' }}
+    {%- else -%}
+      <img class="f-main-art" src="{{ 'fujiyama-main-art.webp' | asset_url }}" alt="" width="1170" height="1286" loading="lazy">
+    {%- endif -%}
+
+    <p class="f-abs f-label f-chef-label"><span class="f-label-num">[2]</span>{{ section.settings.chef_label | escape }}</p>
+    <h2 class="f-abs f-display f-chef-name">{{ section.settings.chef_name | remove: '<p>' | remove: '</p>' }}</h2>
+    <p class="f-abs f-chef-role">{{ section.settings.chef_role | escape }}</p>
+    <div class="f-abs f-chef-bio">{{ section.settings.chef_bio }}</div>
+    <div class="f-abs f-chef-quote">{{ section.settings.chef_quote }}</div>
+
+    <span class="f-anchor f-abs f-anchor-kolekcii" id="kolekcii"></span>
+    <p class="f-abs f-label f-coll-label"><span class="f-label-num">[3]</span>{{ section.settings.coll_label | escape }}</p>
+    <h2 class="f-abs f-display f-coll-title">{{ section.settings.coll_title | escape }}</h2>
+    <p class="f-abs f-coll-sub">{{ section.settings.coll_sub | escape }}</p>
+
+    {%- for block in section.blocks limit: 5 -%}
+      {%- assign geo = card_geo[forloop.index0] | split: ',' -%}
+      <a class="f-abs f-card" href="{{ block.settings.url | default: '/collections/all' }}"
+         style="left: {{ geo[0] }}cqw; width: {{ geo[1] }}cqw;" {{ block.shopify_attributes }}>
+        <span class="f-card-title">{{ block.settings.title | escape }}</span>
+        <span class="f-card-desc">{{ block.settings.desc | escape }}</span>
+        <span class="f-arrow f-card-arrow" aria-hidden="true">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg>
+        </span>
+      </a>
+    {%- endfor -%}
+  </div>
+
+  {%- comment -%} ============ MOBILE FLOW ============ {%- endcomment -%}
+  <div class="f-main-mobile">
+    <div class="f-mob-chef">
+      <p class="f-label"><span class="f-label-num">[2]</span>{{ section.settings.chef_label | escape }}</p>
+      <h2 class="f-display f-mob-chef-name">{{ section.settings.chef_name | remove: '<p>' | remove: '</p>' }}</h2>
+      <p class="f-mob-chef-role">{{ section.settings.chef_role | escape }}</p>
+      <div class="f-mob-chef-bio">{{ section.settings.chef_bio }}</div>
+      <img class="f-mob-collage" src="{{ 'fujiyama-collage.webp' | asset_url }}" loading="lazy"
+        alt="Шеф готвачът приготвя суши" width="640" height="693">
+      <div class="f-mob-chef-quote">{{ section.settings.chef_quote }}</div>
+    </div>
+
+    <div class="f-mob-coll">
+      <p class="f-label"><span class="f-label-num">[3]</span>{{ section.settings.coll_label | escape }}</p>
+      <h2 class="f-display f-mob-coll-title">{{ section.settings.coll_title | escape }}</h2>
+      <p class="f-mob-coll-sub">{{ section.settings.coll_sub | escape }}</p>
+      <div class="f-mob-cards">
+        {%- for block in section.blocks limit: 5 -%}
+          <a class="f-mob-card" href="{{ block.settings.url | default: '/collections/all' }}"
+             style="background-image: url('{{ 'fujiyama-card-' | append: forloop.index | asset_url }}');">
+            <span class="f-card-title">{{ block.settings.title | escape }}</span>
+            <span class="f-card-desc">{{ block.settings.desc | escape }}</span>
+            <span class="f-arrow f-card-arrow" aria-hidden="true">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg>
+            </span>
+          </a>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% style %}
+  .f-anchor { display: block; scroll-margin-top: 70px; }
+  .f-main-board { aspect-ratio: 1170 / 1286; }
+  .f-main-art { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+  /* chef — design abs y → rel cqw ((y-797)/11.7) */
+  .f-chef-label { top: -2.5cqw; left: 3.42cqw; font-size: 1.03cqw; }
+  .f-chef-name {
+    top: 0.1cqw;
+    left: 3.3cqw;
+    font-size: 5.6cqw;
+    line-height: 1.12;
+    letter-spacing: 0.012em;
+    text-transform: uppercase;
+  }
+  .f-chef-role {
+    top: 13.3cqw;
+    left: 3.42cqw;
+    font-size: 1.4cqw;
+    letter-spacing: 0.42em;
+    text-transform: uppercase;
+    color: var(--f-cream-dim);
+  }
+  .f-chef-bio {
+    top: 17.5cqw;
+    left: 3.42cqw;
+    width: 33cqw;
+    font-size: 1.31cqw;
+    line-height: 1.72;
+    color: var(--f-body);
+  }
+  .f-chef-quote {
+    top: 37.1cqw;
+    left: 3.42cqw;
+    width: 27cqw;
+    padding-left: 1.4cqw;
+    border-left: 2px solid #8a5a3e;
+    font-size: 1.31cqw;
+    line-height: 1.7;
+    color: #b6ab97;
+  }
+  .f-chef-bio p, .f-chef-quote p { margin: 0 0 1em; }
+  .f-chef-bio p:last-child, .f-chef-quote p:last-child { margin-bottom: 0; }
+
+  /* collections heading */
+  .f-anchor-kolekcii { top: 56cqw; }
+  .f-coll-label { top: 60cqw; left: 0; width: 100%; text-align: center; font-size: 1.03cqw; }
+  .f-coll-title {
+    top: 62.2cqw;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 5.0cqw;
+    letter-spacing: 0.09em;
+    text-indent: 0.09em;
+    text-transform: uppercase;
+  }
+  .f-coll-sub {
+    top: 72.2cqw;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 1.11cqw;
+    letter-spacing: 0.3em;
+    text-indent: 0.3em;
+    text-transform: uppercase;
+    color: #a8a08c;
+  }
+
+  /* card hot-zones over the baked card art */
+  .f-card {
+    top: 78.03cqw;
+    height: 31.8cqw;
+    border-radius: 0.7cqw;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+  }
+  .f-card:hover {
+    transform: translateY(-0.34cqw);
+    box-shadow: 0 1.2cqw 2.6cqw rgba(0, 0, 0, 0.45);
+  }
+  .f-card-title {
+    position: absolute;
+    top: 76.3%;
+    left: 7%;
+    right: 4%;
+    font-size: 0.94cqw;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-transform: uppercase;
+    color: var(--f-cream);
+  }
+  .f-card-desc {
+    position: absolute;
+    top: 83.2%;
+    left: 7%;
+    right: 24%;
+    font-size: 0.96cqw;
+    line-height: 1.5;
+    color: rgba(232, 225, 210, 0.75);
+  }
+  .f-card-arrow {
+    position: absolute;
+    right: 6.5%;
+    bottom: 6%;
+    width: 19%;
+    aspect-ratio: 1;
+  }
+  .f-card:hover .f-card-arrow { background: var(--f-gold); border-color: var(--f-gold); color: var(--f-ink); }
+
+  .f-main-mobile { display: none; }
+
+  @media (max-width: 849px) {
+    .f-main-board { display: none; }
+    .f-main-mobile { display: block; padding: 56px 24px 8px; }
+    .f-main-mobile .f-label { font-size: 11px; margin: 0 0 14px; }
+    .f-mob-chef-name { font-size: 38px; text-transform: uppercase; }
+    .f-mob-chef-role {
+      font-size: 13px;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--f-cream-dim);
+      margin: 10px 0 22px;
+    }
+    .f-mob-chef-bio { font-size: 15px; line-height: 1.7; color: var(--f-body); }
+    .f-mob-collage { width: 100%; height: auto; margin: 26px 0; }
+    .f-mob-chef-quote {
+      border-left: 2px solid #8a5a3e;
+      padding-left: 16px;
+      font-size: 15px;
+      line-height: 1.7;
+      color: #b6ab97;
+    }
+    .f-mob-coll { padding-top: 56px; text-align: center; }
+    .f-mob-coll-title { font-size: 30px; letter-spacing: 0.08em; text-transform: uppercase; }
+    .f-mob-coll-sub {
+      font-size: 11px;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: #a8a08c;
+      margin: 12px 0 26px;
+    }
+    .f-mob-cards {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding: 4px 2px 18px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .f-mob-card {
+      position: relative;
+      flex: 0 0 62vw;
+      max-width: 270px;
+      aspect-ratio: 203 / 434;
+      background-size: cover;
+      background-position: center;
+      border-radius: 8px;
+      scroll-snap-align: center;
+      text-align: left;
+    }
+    .f-mob-card .f-card-title { position: absolute; top: 76.3%; left: 8%; right: 8%; font-size: 13px; }
+    .f-mob-card .f-card-desc { position: absolute; top: 83%; left: 8%; right: 26%; font-size: 11px; }
+    .f-mob-card .f-card-arrow { position: absolute; right: 7%; bottom: 5.5%; width: 36px; aspect-ratio: 1; }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Fujiyama история",
+  "settings": [
+    { "type": "image_picker", "id": "art", "label": "Фоново арт изображение (по подразбиране — вграденото)" },
+    { "type": "header", "content": "Шеф готвач" },
+    { "type": "text", "id": "chef_label", "label": "Етикет", "default": "За нас" },
+    { "type": "richtext", "id": "chef_name", "label": "Име", "default": "<p>Красимир<br>Дойчев</p>" },
+    { "type": "text", "id": "chef_role", "label": "Роля", "default": "Шеф готвач" },
+    { "type": "richtext", "id": "chef_bio", "label": "Биография", "default": "<p>Красимир Дойчев е шеф готвач с богат международен опит и страст към японската кухня. Професионалният му път преминава през водещи кулинарни академии и престижни ресторанти, където усъвършенства своето майсторство и развива уникален стил, съчетаващ традиции и иновации.</p>" },
+    { "type": "richtext", "id": "chef_quote", "label": "Цитат", "default": "<p>Във Fujiyama Красимир и екипът му създават не просто ястия, а истинско кулинарно преживяване – с внимание към детайла, най-висококачествени продукти и уважение към всеки гост.</p>" },
+    { "type": "header", "content": "Колекции" },
+    { "type": "text", "id": "coll_label", "label": "Етикет", "default": "Нашите колекции" },
+    { "type": "text", "id": "coll_title", "label": "Заглавие", "default": "Открий своя вкус" },
+    { "type": "text", "id": "coll_sub", "label": "Подзаглавие", "default": "Свежест, качество и изкуство във всяко ястие" }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Карта",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Заглавие", "default": "Суши" },
+        { "type": "text", "id": "desc", "label": "Описание", "default": "Класика и креативност" },
+        { "type": "url", "id": "url", "label": "Линк" }
+      ]
+    }
+  ],
+  "max_blocks": 5,
+  "presets": [{ "name": "Fujiyama история" }]
+}
+{% endschema %}

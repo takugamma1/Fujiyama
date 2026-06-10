@@ -1,0 +1,25 @@
+{
+  "type": "header",
+  "name": "Header",
+  "sections": {
+    "fujiyama_header": {
+      "type": "fujiyama-header",
+      "settings": {
+        "show_cart": true,
+        "link_1_label": "Начало",
+        "link_1_url": "/",
+        "link_2_label": "Меню",
+        "link_2_url": "/#kolekcii",
+        "link_3_label": "Резервации",
+        "link_3_url": "/#rezervacii",
+        "link_4_label": "За нас",
+        "link_4_url": "/#za-nas",
+        "link_5_label": "Галерия",
+        "link_5_url": "/collections/all",
+        "link_6_label": "Контакти",
+        "link_6_url": "/#kontakti"
+      }
+    }
+  },
+  "order": ["fujiyama_header"]
+}

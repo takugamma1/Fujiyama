@@ -1,0 +1,105 @@
+{
+  "sections": {
+    "fujiyama_hero": {
+      "type": "fujiyama-hero",
+      "settings": {
+        "title": "FUJIYAMA",
+        "art_alt": "Плато с нигири и маки суши пред планината Фуджи"
+      }
+    },
+    "fujiyama_main": {
+      "type": "fujiyama-main",
+      "blocks": {
+        "card_sushi": {
+          "type": "card",
+          "settings": {
+            "title": "Суши",
+            "desc": "Класика и креативност във всяко хапване",
+            "url": "/collections/all"
+          }
+        },
+        "card_poke": {
+          "type": "card",
+          "settings": {
+            "title": "Поке боул",
+            "desc": "Свежи съставки, баланс и енергия",
+            "url": "/collections/all"
+          }
+        },
+        "card_delivery": {
+          "type": "card",
+          "settings": {
+            "title": "Доставка за дома",
+            "desc": "Бързо, удобно и вкусно — до твоята врата",
+            "url": "/collections/all"
+          }
+        },
+        "card_menu": {
+          "type": "card",
+          "settings": {
+            "title": "Виж цялото меню",
+            "desc": "Разгледай всички ястия и открий нови любими",
+            "url": "/collections/all"
+          }
+        },
+        "card_special": {
+          "type": "card",
+          "settings": {
+            "title": "Специални предложения",
+            "desc": "Подбрани сетове и оферти за теб",
+            "url": "/collections/all"
+          }
+        }
+      },
+      "block_order": [
+        "card_sushi",
+        "card_poke",
+        "card_delivery",
+        "card_menu",
+        "card_special"
+      ],
+      "settings": {
+        "chef_label": "За нас",
+        "chef_name": "<p>Красимир<br>Дойчев</p>",
+        "chef_role": "Шеф готвач",
+        "chef_bio": "<p>Красимир Дойчев е шеф готвач с богат международен опит и страст към японската кухня. Професионалният му път преминава през водещи кулинарни академии и престижни ресторанти, където усъвършенства своето майсторство и развива уникален стил, съчетаващ традиции и иновации.</p>",
+        "chef_quote": "<p>Във Fujiyama Красимир и екипът му създават не просто ястия, а истинско кулинарно преживяване – с внимание към детайла, най-висококачествени продукти и уважение към всеки гост.</p>",
+        "coll_label": "Нашите колекции",
+        "coll_title": "Открий своя вкус",
+        "coll_sub": "Свежест, качество и изкуство във всяко ястие"
+      }
+    },
+    "fujiyama_reservation": {
+      "type": "fujiyama-reservation",
+      "settings": {
+        "label": "Резервации",
+        "title": "Резервирай маса",
+        "text": "<p>Ресторантът е отворен всеки ден. Неделя вечер е почивен ден.<br>Всички резервации се потвърждават по телефона или имейл.<br>Без предварително заплащане, без такса за резервация.</p>",
+        "cta_prefix": "Заявка за резервация:",
+        "phone": "+359 88 123 45 67",
+        "cta_suffix": "или чрез формата по-долу.",
+        "button": "Резервирай маса"
+      }
+    },
+    "fujiyama_map": {
+      "type": "fujiyama-map",
+      "settings": {
+        "city": "Пазарджик",
+        "country": "България",
+        "address": "<p>ул. Цар Иван Шишман 15<br>4400 Пазарджик, България</p>",
+        "phone": "+359 88 123 45 67",
+        "email": "rezervacii@fujiyama.bg",
+        "hours_label": "Работно време",
+        "hours": "<p>Понеделник – Събота<br>12:00 – 23:00</p>",
+        "closed_label": "Почивен ден",
+        "closed": "Неделя вечер"
+      }
+    }
+  },
+  "order": [
+    "fujiyama_hero",
+    "fujiyama_main",
+    "fujiyama_reservation",
+    "fujiyama_map"
+  ]
+}

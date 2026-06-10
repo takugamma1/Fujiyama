@@ -1,0 +1,158 @@
+{%- comment -%}
+  FUJIYAMA reservations — centered heading + inline booking form.
+  Submits through Shopify's contact form (reservation request lands in the
+  store inbox). Shopify requires an email field, so one compact email input
+  rides along with the three designed selects.
+{%- endcomment -%}
+
+<section class="f-section f-reserve">
+  <span class="f-anchor" id="rezervacii"></span>
+  <div class="f-reserve-inner">
+    <p class="f-label f-reserve-label"><span class="f-label-num">[4]</span>{{ section.settings.label | escape }}</p>
+    <h2 class="f-display f-reserve-title">{{ section.settings.title | escape }}</h2>
+    <div class="f-reserve-text">{{ section.settings.text }}</div>
+    <p class="f-reserve-cta">
+      {{ section.settings.cta_prefix | escape }}
+      <a href="tel:{{ section.settings.phone | remove: ' ' }}">{{ section.settings.phone | escape }}</a>
+      {{ section.settings.cta_suffix | escape }}
+    </p>
+
+    {%- form 'contact', class: 'f-reserve-form' -%}
+      {%- if form.posted_successfully? -%}
+        <p class="f-form-note f-form-ok">Благодарим! Получихме заявката ви — ще се свържем с вас за потвърждение.</p>
+      {%- elsif form.errors -%}
+        <p class="f-form-note f-form-err">Моля, въведете валиден имейл адрес и опитайте отново.</p>
+      {%- endif -%}
+
+      <div class="f-form-row">
+        <div class="f-field">
+          <svg class="f-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="8" r="3.4"/><path d="M5 19c1.2-3.2 3.8-4.8 7-4.8s5.8 1.6 7 4.8"/></svg>
+          <select name="contact[Брой гости]" aria-label="Брой гости">
+            <option value="" disabled selected>Брой гости</option>
+            {%- for i in (1..9) -%}
+              <option value="{{ i }}">{{ i }} {% if i == 1 %}гост{% else %}гости{% endif %}</option>
+            {%- endfor -%}
+            <option value="10+">10+ гости</option>
+          </select>
+          <svg class="f-field-caret" viewBox="0 0 12 8" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="m1.5 1.8 4.5 4.5 4.5-4.5"/></svg>
+        </div>
+
+        <div class="f-field">
+          <svg class="f-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="4" y="6" width="16" height="14" rx="1.6"/><path d="M4 10.5h16M8.6 3.8v4M15.4 3.8v4"/></svg>
+          <input type="date" name="contact[Дата]" aria-label="Дата" min="{{ 'now' | date: '%Y-%m-%d' }}" required>
+        </div>
+
+        <div class="f-field">
+          <svg class="f-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.4V12l3.2 2"/></svg>
+          <select name="contact[Час]" aria-label="Час">
+            <option value="" disabled selected>Час</option>
+            {%- assign hours = '12:00,12:30,13:00,13:30,14:00,14:30,15:00,15:30,16:00,16:30,17:00,17:30,18:00,18:30,19:00,19:30,20:00,20:30,21:00,21:30,22:00,22:30' | split: ',' -%}
+            {%- for h in hours -%}<option value="{{ h }}">{{ h }}</option>{%- endfor -%}
+          </select>
+          <svg class="f-field-caret" viewBox="0 0 12 8" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="m1.5 1.8 4.5 4.5 4.5-4.5"/></svg>
+        </div>
+
+        <div class="f-field">
+          <svg class="f-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3.4" y="5.4" width="17.2" height="13.2" rx="1.6"/><path d="m4.4 6.6 7.6 6 7.6-6"/></svg>
+          <input type="email" name="contact[email]" placeholder="Имейл" aria-label="Имейл" required>
+        </div>
+
+        <button type="submit" class="f-btn-gold f-reserve-submit">{{ section.settings.button | escape }}</button>
+      </div>
+    {%- endform -%}
+  </div>
+</section>
+
+{% style %}
+  .f-reserve { padding: 26px 0 16px; }
+  .f-reserve-inner { max-width: 1090px; margin: 0 auto; padding: 0 24px; text-align: center; }
+  .f-reserve-label { font-size: 12px; margin: 0 0 14px; }
+  .f-reserve-title {
+    font-size: clamp(34px, 4.6vw, 54px);
+    letter-spacing: 0.1em;
+    text-indent: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .f-reserve-text { font-size: 14px; line-height: 1.85; color: var(--f-body); }
+  .f-reserve-text p { margin: 0; }
+  .f-reserve-cta { font-size: 14px; color: var(--f-cream-dim); margin: 18px 0 28px; }
+  .f-reserve-cta a { color: var(--f-cream); border-bottom: 1px solid rgba(232,225,210,0.35); }
+  .f-reserve-cta a:hover { color: var(--f-gold); border-color: var(--f-gold); }
+
+  .f-form-row {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+  .f-field { position: relative; flex: 1 1 150px; max-width: 200px; }
+  .f-field-icon {
+    position: absolute;
+    left: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 15px;
+    height: 15px;
+    color: var(--f-cream-dim);
+    pointer-events: none;
+  }
+  .f-field-caret {
+    position: absolute;
+    right: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 11px;
+    height: 8px;
+    color: var(--f-cream-dim);
+    pointer-events: none;
+  }
+  .f-field select,
+  .f-field input {
+    width: 100%;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(232, 225, 210, 0.22);
+    border-radius: 3px;
+    color: var(--f-cream);
+    font-family: var(--f-sans);
+    font-size: 13px;
+    padding: 0 30px 0 38px;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  .f-field input[type="date"] { padding-right: 12px; }
+  .f-field input::placeholder { color: var(--f-cream-dim); }
+  .f-field select:focus, .f-field input:focus { border-color: var(--f-gold); outline: none; }
+  .f-field select option { background: #232220; color: var(--f-cream); }
+  .f-field input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.85); cursor: pointer; }
+  .f-reserve-submit { height: 48px; padding: 0 34px; flex: 0 0 auto; }
+
+  .f-form-note { font-size: 13px; margin: 0 0 18px; padding: 10px 16px; border: 1px solid; display: inline-block; }
+  .f-form-ok { color: #b5d0a5; border-color: rgba(181, 208, 165, 0.4); }
+  .f-form-err { color: #d9a09a; border-color: rgba(217, 160, 154, 0.4); }
+
+  @media (max-width: 849px) {
+    .f-reserve { padding: 48px 0 40px; }
+    .f-form-row { flex-direction: column; }
+    .f-field { max-width: none; flex-basis: auto; }
+    .f-reserve-submit { width: 100%; }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Fujiyama резервации",
+  "settings": [
+    { "type": "text", "id": "label", "label": "Етикет", "default": "Резервации" },
+    { "type": "text", "id": "title", "label": "Заглавие", "default": "Резервирай маса" },
+    { "type": "richtext", "id": "text", "label": "Текст", "default": "<p>Ресторантът е отворен всеки ден. Неделя вечер е почивен ден.<br>Всички резервации се потвърждават по телефона или имейл.<br>Без предварително заплащане, без такса за резервация.</p>" },
+    { "type": "text", "id": "cta_prefix", "label": "Текст преди телефона", "default": "Заявка за резервация:" },
+    { "type": "text", "id": "phone", "label": "Телефон", "default": "+359 88 123 45 67" },
+    { "type": "text", "id": "cta_suffix", "label": "Текст след телефона", "default": "или чрез формата по-долу." },
+    { "type": "text", "id": "button", "label": "Бутон", "default": "Резервирай маса" }
+  ],
+  "presets": [{ "name": "Fujiyama резервации" }]
+}
+{% endschema %}

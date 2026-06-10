@@ -1,0 +1,68 @@
+{%- comment -%}
+  FUJIYAMA hero — giant serif wordmark over Mt. Fuji artwork with sushi platter.
+  The artwork is a feathered crop of the original mockup; the wordmark is live
+  text scaled in container-query units (design width 1170px → 1cqw = 11.7px).
+{%- endcomment -%}
+
+<section class="f-section f-hero" id="nachalo">
+  <div class="f-board f-hero-board">
+
+    <h1 class="f-abs f-hero-title">{{ section.settings.title | escape }}</h1>
+
+    {%- if section.settings.art != blank -%}
+      {{ section.settings.art | image_url: width: 2340 | image_tag:
+        alt: section.settings.art_alt,
+        class: 'f-abs f-hero-art',
+        loading: 'eager',
+        fetchpriority: 'high'
+      }}
+    {%- else -%}
+      <img class="f-abs f-hero-art" src="{{ 'fujiyama-hero-art.webp' | asset_url }}"
+        alt="{{ section.settings.art_alt | escape }}" width="1170" height="542"
+        loading="eager" fetchpriority="high">
+    {%- endif -%}
+  </div>
+</section>
+
+{% style %}
+  .f-hero { overflow: hidden; }
+  .f-hero-board { aspect-ratio: 1170 / 741; }
+
+  /* design abs y56-797 → board rel: 1cqw = 11.7 design px */
+  .f-hero-title {
+    top: 0.6cqw;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-family: 'Italiana', var(--f-serif);
+    font-weight: 400;
+    font-size: 22cqw;
+    line-height: 1.05;
+    letter-spacing: 0.1em;
+    text-indent: 0.1em; /* recenter: letter-spacing adds a trailing gap */
+    transform: scaleX(0.88); /* mockup wordmark is ultra-condensed */
+    transform-origin: center top;
+    color: #ddd5c3;
+    white-space: nowrap;
+    z-index: 3;
+  }
+  .f-hero-art {
+    top: 17cqw; /* abs y255 − 56 = 199px */
+    left: 0;
+    width: 100%;
+    height: auto;
+    z-index: 2;
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Fujiyama хедър арт",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Заглавие", "default": "FUJIYAMA" },
+    { "type": "image_picker", "id": "art", "label": "Арт изображение (планина + плато)" },
+    { "type": "text", "id": "art_alt", "label": "Alt текст на изображението", "default": "Плато с нигири и маки суши пред планината Фуджи" }
+  ],
+  "presets": [{ "name": "Fujiyama хедър арт" }]
+}
+{% endschema %}
