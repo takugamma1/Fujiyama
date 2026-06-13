@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "fujiyama_collection": {
@@ -6,9 +15,13 @@
         "back_label": "Назад към колекции",
         "back_url": "/pages/menu",
         "title_prefix": "Колекция",
-        "show_promo": true
+        "show_promo": false,
+        "promo_kanji": "",
+        "promo_tagline": ""
       }
     }
   },
-  "order": ["fujiyama_collection"]
+  "order": [
+    "fujiyama_collection"
+  ]
 }
