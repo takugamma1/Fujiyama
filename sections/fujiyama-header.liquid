@@ -4,7 +4,7 @@
   shared chalkboard texture, so it melts into the hero with no visible edge.
 {%- endcomment -%}
 
-<header class="f-section f-header" id="f-header">
+<header class="f-section f-header{% if template contains 'menu' %} f-header--inverse{% endif %}" id="f-header">
   <div class="f-header-inner">
     <button class="f-burger" aria-label="Меню" aria-expanded="false" aria-controls="f-mobile-nav">
       <span></span><span></span><span></span>
@@ -68,6 +68,14 @@
         burger.classList.remove('is-open');
       }
     });
+
+    // Inverse pages (cream hero on top): header is a cream bar over the hero,
+    // then swaps to the dark texture once scrolled into the dark sections.
+    if (header.classList.contains('f-header--inverse')) {
+      var onScroll = function () { header.classList.toggle('is-stuck', window.scrollY > 90); };
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+    }
   })();
 </script>
 
@@ -76,7 +84,29 @@
     position: sticky;
     top: 0;
     z-index: 60;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
   }
+
+  /* Inverse mode: dark text on cream, blending into the menu hero's cream top */
+  .f-header--inverse.f-section { background: #f6f2ec; }
+  .f-header--inverse .f-nav a { color: #4a4336; }
+  .f-header--inverse .f-nav a:hover { color: #1f1c16; }
+  .f-header--inverse .f-cart { color: #4a4336; }
+  .f-header--inverse .f-cart:hover { color: #1f1c16; }
+  .f-header--inverse .f-emblem-img { filter: invert(1) brightness(0.16); }
+  .f-header--inverse .f-burger span { background: #3a352c; }
+  /* Once scrolled past the hero, revert to the dark charcoal bar */
+  .f-header--inverse.is-stuck.f-section {
+    background: #1f1e1c url('fujiyama-texture.jpg') repeat;
+    background-size: 400px 400px;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+  .f-header--inverse.is-stuck .f-nav a,
+  .f-header--inverse.is-stuck .f-cart { color: var(--f-cream-dim); }
+  .f-header--inverse.is-stuck .f-nav a:hover,
+  .f-header--inverse.is-stuck .f-cart:hover { color: var(--f-cream); }
+  .f-header--inverse.is-stuck .f-emblem-img { filter: none; }
+  .f-header--inverse.is-stuck .f-burger span { background: var(--f-cream); }
   .f-header-inner {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
@@ -180,7 +210,7 @@
     { "type": "text", "id": "link_1_label", "label": "Линк 1 — текст", "default": "Начало" },
     { "type": "text", "id": "link_1_url", "label": "Линк 1 — адрес", "default": "/" },
     { "type": "text", "id": "link_2_label", "label": "Линк 2 — текст", "default": "Меню" },
-    { "type": "text", "id": "link_2_url", "label": "Линк 2 — адрес", "default": "/#kolekcii" },
+    { "type": "text", "id": "link_2_url", "label": "Линк 2 — адрес", "default": "/pages/menu" },
     { "type": "text", "id": "link_3_label", "label": "Линк 3 — текст", "default": "Резервации" },
     { "type": "text", "id": "link_3_url", "label": "Линк 3 — адрес", "default": "/#rezervacii" },
     { "type": "header", "content": "Линкове вдясно" },

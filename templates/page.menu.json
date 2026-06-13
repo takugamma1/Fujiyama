@@ -1,0 +1,59 @@
+{
+  "sections": {
+    "menu_hero": {
+      "type": "fujiyama-menu-hero",
+      "settings": {
+        "brand": "FUJIYAMA",
+        "tagline": "BAR & DINNER",
+        "label": "",
+        "title": "Меню",
+        "subtitle": "Свежест, качество и изкуство във всяко ястие"
+      }
+    },
+    "menu_cards": {
+      "type": "fujiyama-collection-cards",
+      "settings": {
+        "eyebrow": "Нашето меню",
+        "heading": "Разгледай по категория",
+        "button_verb": "Виж",
+        "columns": 4
+      }
+    },
+    "offers": {
+      "type": "fujiyama-special-offers",
+      "blocks": {
+        "delivery": {
+          "type": "offer",
+          "settings": {
+            "image_side": "left",
+            "title": "Доставка до дома",
+            "body": "Бързо, удобно и вкусно – директно до твоята врата.",
+            "button_label": "Поръчай сега",
+            "fallback": "fujiyama-card-3.webp"
+          }
+        },
+        "offers": {
+          "type": "offer",
+          "settings": {
+            "image_side": "right",
+            "title": "Специални предложения",
+            "body": "Подбрани сетове и оферти, създадени специално за теб.",
+            "button_label": "Виж офертите",
+            "fallback": "fujiyama-card-5.webp"
+          }
+        }
+      },
+      "block_order": ["delivery", "offers"]
+    },
+    "reservation": {
+      "type": "fujiyama-reservation-bubble",
+      "settings": {
+        "eyebrow": "Резервации",
+        "title": "Резервирай маса",
+        "body": "Ресторантът е отворен всеки ден. Запази своята маса и се наслади на незабравимо преживяване.",
+        "button_label": "Резервирай маса"
+      }
+    }
+  },
+  "order": ["menu_hero", "menu_cards", "offers", "reservation"]
+}

@@ -1,0 +1,127 @@
+{%- comment -%}
+  FUJIYAMA special offers — wide promo tiles (e.g. Доставка до дома +
+  Специални предложения). Each block: image on one side, title/text/button on
+  the other. Add/remove/reorder blocks in the editor. Shared charcoal-grain bg.
+{%- endcomment -%}
+
+<section class="f-section f-so">
+  <span class="f-anchor" id="oferti"></span>
+  <div class="f-so-wrap">
+    {%- for block in section.blocks -%}
+      <div class="f-so-tile f-so-tile--{{ block.settings.image_side }}" {{ block.shopify_attributes }}>
+        <div class="f-so-media">
+          {%- if block.settings.image != blank -%}
+            {{ block.settings.image | image_url: width: 900 | image_tag: loading: 'lazy', class: 'f-so-img', widths: '400,640,900', sizes: '(max-width: 749px) 90vw, 28vw', alt: block.settings.title | escape }}
+          {%- else -%}
+            <img class="f-so-img" src="{{ block.settings.fallback | default: 'fujiyama-card-3.webp' | asset_url }}" alt="{{ block.settings.title | escape }}" loading="lazy" width="900" height="900">
+          {%- endif -%}
+        </div>
+        <div class="f-so-text">
+          <h3 class="f-display f-so-title">{{ block.settings.title | escape }}</h3>
+          {%- if block.settings.body != blank -%}<p class="f-so-body">{{ block.settings.body | escape }}</p>{%- endif -%}
+          {%- if block.settings.button_label != blank -%}
+            <a class="f-so-cta" href="{{ block.settings.button_link | default: '#' }}">
+              <span>{{ block.settings.button_label | escape }}</span>
+              <span class="f-arrow f-so-arrow" aria-hidden="true">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg>
+              </span>
+            </a>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% style %}
+  .f-so { padding: clamp(8px, 1.2vw, 16px) 4.7% clamp(30px, 4vw, 52px); }
+  .f-so-wrap {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(14px, 1.6vw, 22px);
+  }
+  .f-so-tile {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    align-items: stretch;
+    border: 1px solid rgba(232, 225, 210, 0.12);
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.02);
+    min-height: 200px;
+  }
+  .f-so-tile--right { grid-template-columns: 1.1fr 0.9fr; }
+  .f-so-tile--right .f-so-media { order: 2; }
+  .f-so-media { position: relative; overflow: hidden; }
+  .f-so-img { width: 100%; height: 100%; object-fit: cover; min-height: 200px; }
+  .f-so-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 12px;
+    padding: clamp(20px, 2.4vw, 38px);
+  }
+  .f-so-title {
+    font-size: clamp(18px, 1.8vw, 26px);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1.12;
+  }
+  .f-so-body { font-size: clamp(12px, 1vw, 14px); line-height: 1.6; color: var(--f-body); margin: 0; }
+  .f-so-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 6px;
+    font-family: var(--f-sans);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--f-gold);
+  }
+  .f-so-arrow { width: 34px; height: 34px; }
+  .f-so-cta:hover .f-so-arrow { background: var(--f-gold); border-color: var(--f-gold); color: var(--f-ink); }
+
+  @media (max-width: 849px) {
+    .f-so-wrap { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 540px) {
+    .f-so-tile, .f-so-tile--right { grid-template-columns: 1fr; }
+    .f-so-tile--right .f-so-media { order: 0; }
+    .f-so-img { min-height: 170px; max-height: 200px; }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Fujiyama специални оферти",
+  "max_blocks": 4,
+  "blocks": [
+    {
+      "type": "offer",
+      "name": "Оферта",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Изображение" },
+        { "type": "text", "id": "fallback", "label": "Резервно изображение (asset)", "default": "fujiyama-card-3.webp" },
+        { "type": "select", "id": "image_side", "label": "Страна на изображението", "options": [{ "value": "left", "label": "Ляво" }, { "value": "right", "label": "Дясно" }], "default": "left" },
+        { "type": "text", "id": "title", "label": "Заглавие", "default": "Доставка до дома" },
+        { "type": "text", "id": "body", "label": "Текст", "default": "Бързо, удобно и вкусно – директно до твоята врата." },
+        { "type": "text", "id": "button_label", "label": "Бутон", "default": "Поръчай сега" },
+        { "type": "url", "id": "button_link", "label": "Линк на бутона" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Fujiyama специални оферти",
+      "blocks": [
+        { "type": "offer", "settings": { "title": "Доставка до дома", "body": "Бързо, удобно и вкусно – директно до твоята врата.", "button_label": "Поръчай сега", "image_side": "left", "fallback": "fujiyama-card-3.webp" } },
+        { "type": "offer", "settings": { "title": "Специални предложения", "body": "Подбрани сетове и оферти, създадени специално за теб.", "button_label": "Виж офертите", "image_side": "right", "fallback": "fujiyama-card-5.webp" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

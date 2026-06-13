@@ -1,0 +1,103 @@
+{%- comment -%}
+  FUJIYAMA reservation bubble — a rounded banner with an image background
+  (uploadable), copy on the left and a gold CTA button on the right.
+  Sits on the shared charcoal-grain background.
+{%- endcomment -%}
+
+<section class="f-section f-rb">
+  <span class="f-anchor" id="rezervacii"></span>
+  <div class="f-rb-bubble">
+    <div class="f-rb-bg" aria-hidden="true">
+      {%- if section.settings.image != blank -%}
+        {{ section.settings.image | image_url: width: 2200 | image_tag: loading: 'lazy', class: 'f-rb-img', widths: '900,1400,2200', sizes: '100vw', alt: '' }}
+      {%- else -%}
+        <img class="f-rb-img" src="{{ 'fujiyama-hero-art.webp' | asset_url }}" alt="" loading="lazy" width="1170" height="542">
+      {%- endif -%}
+      <span class="f-rb-scrim"></span>
+    </div>
+
+    <div class="f-rb-content">
+      <div class="f-rb-text">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="f-label f-rb-eyebrow"><span class="f-label-num">[03]</span>{{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
+        <h2 class="f-display f-rb-title">{{ section.settings.title | escape }}</h2>
+        {%- if section.settings.body != blank -%}<p class="f-rb-body">{{ section.settings.body | escape }}</p>{%- endif -%}
+      </div>
+      <a class="f-btn-gold f-rb-btn" href="{{ section.settings.button_link | default: '#rezervacii' }}">
+        {{ section.settings.button_label | escape }}
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" width="15" height="15"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+{% style %}
+  .f-rb { padding: clamp(20px, 3vw, 44px) 4.7% clamp(40px, 6vw, 80px); }
+  .f-rb-bubble {
+    position: relative;
+    max-width: 1280px;
+    margin: 0 auto;
+    border-radius: clamp(18px, 2vw, 30px);
+    overflow: hidden;
+    isolation: isolate;
+    border: 1px solid rgba(199, 161, 113, 0.4);
+  }
+  .f-rb-bg { position: absolute; inset: 0; z-index: -1; }
+  .f-rb-img { width: 100%; height: 100%; object-fit: cover; }
+  .f-rb-scrim {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(90deg, rgba(10, 9, 8, 0.86) 0%, rgba(10, 9, 8, 0.62) 48%, rgba(10, 9, 8, 0.34) 100%),
+      rgba(10, 9, 8, 0.18);
+  }
+  .f-rb-content {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: clamp(20px, 4vw, 60px);
+    padding: clamp(30px, 4.5vw, 64px) clamp(26px, 4.5vw, 70px);
+  }
+  .f-rb-text { max-width: 60%; }
+  .f-rb-eyebrow { display: flex; font-size: clamp(9px, 1vw, 12px); margin: 0 0 12px; }
+  .f-rb-title {
+    font-size: clamp(26px, 4vw, 50px);
+    letter-spacing: 0.08em;
+    text-indent: 0.08em;
+    text-transform: uppercase;
+    line-height: 1.05;
+    margin: 0;
+  }
+  .f-rb-body { margin: 14px 0 0; font-size: clamp(12px, 1.05vw, 15px); line-height: 1.6; color: var(--f-cream-dim); }
+  .f-rb-btn {
+    flex: 0 0 auto;
+    gap: 10px;
+    height: 52px;
+    padding: 0 30px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 749px) {
+    .f-rb-content { flex-direction: column; align-items: flex-start; text-align: left; }
+    .f-rb-text { max-width: 100%; }
+    .f-rb-btn { width: 100%; }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Fujiyama банер маса",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Фоново изображение (качи свое)" },
+    { "type": "text", "id": "eyebrow", "label": "Етикет", "default": "Резервации" },
+    { "type": "text", "id": "title", "label": "Заглавие", "default": "Резервирай маса" },
+    { "type": "text", "id": "body", "label": "Текст", "default": "Ресторантът е отворен всеки ден. Запази своята маса и се наслади на незабравимо преживяване." },
+    { "type": "text", "id": "button_label", "label": "Бутон", "default": "Резервирай маса" },
+    { "type": "url", "id": "button_link", "label": "Линк на бутона" }
+  ],
+  "presets": [{ "name": "Fujiyama банер маса" }]
+}
+{% endschema %}

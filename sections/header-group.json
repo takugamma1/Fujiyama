@@ -18,7 +18,7 @@
         "link_1_label": "Начало",
         "link_1_url": "/",
         "link_2_label": "Меню",
-        "link_2_url": "/#kolekcii",
+        "link_2_url": "/pages/menu",
         "link_3_label": "Резервации",
         "link_3_url": "/#rezervacii",
         "link_4_label": "За нас",
