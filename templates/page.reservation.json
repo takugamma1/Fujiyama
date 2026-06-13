@@ -1,0 +1,25 @@
+{
+  "sections": {
+    "reservation": {
+      "type": "fujiyama-reservation-page",
+      "settings": {
+        "title": "Резервация на маса",
+        "tagline": "BAR & DINNER",
+        "subtitle": "Вашето специално преживяване започва тук. Запазете своята маса и се насладете на неповторим вкус и атмосфера.",
+        "form_heading": "Направете резервация",
+        "button": "Резервирай маса",
+        "note": "Ще се свържем с вас, за да потвърдим вашата резервация.",
+        "info_heading": "Информация",
+        "hours_label": "Работно време",
+        "hours": "<p>Понеделник – Събота<br>12:00 – 23:00</p><p>Неделя<br>12:00 – 22:00</p>",
+        "address_label": "Адрес",
+        "address": "<p>гр. Пазарджик<br>ул. Цар Иван Шишман 15<br>4400 Пазарджик, България</p>",
+        "phone_label": "Телефон",
+        "phone": "+359 88 123 45 67",
+        "email_label": "Имейл",
+        "email": "rezervacii@fujiyama.bg"
+      }
+    }
+  },
+  "order": ["reservation"]
+}

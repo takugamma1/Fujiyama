@@ -1,0 +1,238 @@
+{%- comment -%}
+  FUJIYAMA reservation page — torii ink hero (cream top → dark, feathered bottom
+  merges into the form section) with live РЕЗЕРВАЦИЯ НА МАСА title; then a two
+  column body: booking form (left) + info (right). On mobile everything stacks:
+  hero → form → info.
+{%- endcomment -%}
+
+<section class="f-section f-rh">
+  <div class="f-rh-board">
+    {%- if section.settings.hero_image != blank -%}
+      {{ section.settings.hero_image | image_url: width: 2000 | image_tag: alt: '', class: 'f-rh-art', loading: 'eager', fetchpriority: 'high' }}
+    {%- else -%}
+      <img class="f-rh-art" src="{{ 'fujiyama-reservation-hero.webp' | asset_url }}" alt="" width="1392" height="1092" loading="eager" fetchpriority="high">
+    {%- endif -%}
+    <div class="f-rh-top">
+      <h1 class="f-display f-rh-title">{{ section.settings.title | escape }}</h1>
+      {%- if section.settings.tagline != blank -%}
+        <p class="f-rh-tag"><span>{{ section.settings.tagline | escape }}</span></p>
+      {%- endif -%}
+      {%- if section.settings.subtitle != blank -%}
+        <p class="f-rh-sub">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+<section class="f-section f-rb2">
+  <span class="f-anchor" id="rezervacii"></span>
+  <div class="f-rb2-grid">
+
+    {%- comment -%} ===== form ===== {%- endcomment -%}
+    <div class="f-rb2-form-col">
+      <p class="f-rb2-h"><span class="f-rb2-h-rule"></span>{{ section.settings.form_heading | escape }}</p>
+      {%- form 'contact', class: 'f-rf' -%}
+        {%- if form.posted_successfully? -%}
+          <p class="f-form-note f-form-ok">Благодарим! Получихме заявката ви — ще се свържем с вас за потвърждение.</p>
+        {%- elsif form.errors -%}
+          <p class="f-form-note f-form-err">Моля, проверете полетата и опитайте отново.</p>
+        {%- endif -%}
+
+        <div class="f-rf-rows">
+          <label class="f-rf-field">
+            <span class="f-rf-icon">{% render 'fujiyama-icon', name: 'user' %}</span>
+            <span class="f-rf-body"><span class="f-rf-label">Име</span>
+              <input type="text" name="contact[Име]" placeholder="Вашето име" required></span>
+          </label>
+          <label class="f-rf-field">
+            <span class="f-rf-icon">{% render 'fujiyama-icon', name: 'calendar' %}</span>
+            <span class="f-rf-body"><span class="f-rf-label">Дата</span>
+              <input type="date" name="contact[Дата]" min="{{ 'now' | date: '%Y-%m-%d' }}" required></span>
+          </label>
+          <label class="f-rf-field f-rf-select">
+            <span class="f-rf-icon">{% render 'fujiyama-icon', name: 'clock' %}</span>
+            <span class="f-rf-body"><span class="f-rf-label">Час</span>
+              <select name="contact[Час]" required>
+                <option value="" disabled selected>Изберете час</option>
+                {%- assign hours = '12:00,12:30,13:00,13:30,14:00,14:30,15:00,15:30,16:00,16:30,17:00,17:30,18:00,18:30,19:00,19:30,20:00,20:30,21:00,21:30,22:00,22:30' | split: ',' -%}
+                {%- for hh in hours -%}<option value="{{ hh }}">{{ hh }}</option>{%- endfor -%}
+              </select></span>
+            <span class="f-rf-caret">{% render 'fujiyama-icon', name: 'caret' %}</span>
+          </label>
+          <label class="f-rf-field f-rf-select">
+            <span class="f-rf-icon">{% render 'fujiyama-icon', name: 'guests' %}</span>
+            <span class="f-rf-body"><span class="f-rf-label">Брой гости</span>
+              <select name="contact[Брой гости]" required>
+                <option value="" disabled selected>Изберете брой гости</option>
+                {%- for i in (1..9) -%}<option value="{{ i }}">{{ i }} {% if i == 1 %}гост{% else %}гости{% endif %}</option>{%- endfor -%}
+                <option value="10+">10+ гости</option>
+              </select></span>
+            <span class="f-rf-caret">{% render 'fujiyama-icon', name: 'caret' %}</span>
+          </label>
+          <label class="f-rf-field f-rf-wide">
+            <span class="f-rf-icon">{% render 'fujiyama-icon', name: 'phone' %}</span>
+            <span class="f-rf-body"><span class="f-rf-label">Телефон</span>
+              <input type="tel" name="contact[Телефон]" placeholder="{{ section.settings.phone | escape }}" required></span>
+          </label>
+          <label class="f-rf-field f-rf-wide">
+            <span class="f-rf-icon">{% render 'fujiyama-icon', name: 'mail' %}</span>
+            <span class="f-rf-body"><span class="f-rf-label">Имейл</span>
+              <input type="email" name="contact[email]" placeholder="Вашият имейл адрес" required></span>
+          </label>
+        </div>
+
+        <button type="submit" class="f-btn-gold f-rf-submit">
+          {{ section.settings.button | escape }}
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" width="15" height="15" aria-hidden="true"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg>
+        </button>
+        <p class="f-rf-note">{{ section.settings.note | escape }}</p>
+      {%- endform -%}
+    </div>
+
+    {%- comment -%} ===== info ===== {%- endcomment -%}
+    <aside class="f-rb2-info-col">
+      <p class="f-rb2-h"><span class="f-rb2-h-rule"></span>{{ section.settings.info_heading | escape }}</p>
+      <ul class="f-rb2-info" role="list">
+        <li class="f-rb2-info-row">
+          <span class="f-rb2-info-icon">{% render 'fujiyama-icon', name: 'clock' %}</span>
+          <div><p class="f-rb2-info-k">{{ section.settings.hours_label | escape }}</p>
+            <div class="f-rb2-info-v">{{ section.settings.hours }}</div></div>
+        </li>
+        <li class="f-rb2-info-row">
+          <span class="f-rb2-info-icon">{% render 'fujiyama-icon', name: 'pin' %}</span>
+          <div><p class="f-rb2-info-k">{{ section.settings.address_label | escape }}</p>
+            <div class="f-rb2-info-v">{{ section.settings.address }}</div></div>
+        </li>
+        <li class="f-rb2-info-row">
+          <span class="f-rb2-info-icon">{% render 'fujiyama-icon', name: 'phone' %}</span>
+          <div><p class="f-rb2-info-k">{{ section.settings.phone_label | escape }}</p>
+            <p class="f-rb2-info-v"><a href="tel:{{ section.settings.phone | remove: ' ' }}">{{ section.settings.phone | escape }}</a></p></div>
+        </li>
+        <li class="f-rb2-info-row">
+          <span class="f-rb2-info-icon">{% render 'fujiyama-icon', name: 'mail' %}</span>
+          <div><p class="f-rb2-info-k">{{ section.settings.email_label | escape }}</p>
+            <p class="f-rb2-info-v"><a href="mailto:{{ section.settings.email }}">{{ section.settings.email | escape }}</a></p></div>
+        </li>
+      </ul>
+    </aside>
+  </div>
+</section>
+
+{% style %}
+  .f-rh { overflow: hidden; padding: 0; }
+  .f-rh-board { position: relative; }
+  .f-rh-art { display: block; width: 100%; height: auto; }
+  .f-rh-top { position: absolute; top: 9%; left: 0; right: 0; text-align: center; padding: 0 6%; }
+  .f-rh-title {
+    margin: 0;
+    font-family: 'Italiana', var(--f-serif);
+    font-weight: 400;
+    color: #25241f;
+    font-size: clamp(34px, 6vw, 92px);
+    line-height: 1.04;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .f-rh-tag {
+    margin: clamp(8px, 1.4vw, 18px) 0 0;
+    display: flex; align-items: center; justify-content: center; gap: clamp(10px, 1.6vw, 20px);
+    color: var(--f-gold-dim);
+    font-size: clamp(9px, 1vw, 13px); font-weight: 500; letter-spacing: 0.42em; text-indent: 0.42em; text-transform: uppercase;
+  }
+  .f-rh-tag span { position: relative; padding: 0 clamp(12px,1.6vw,24px); }
+  .f-rh-tag span::before, .f-rh-tag span::after { content: ''; position: absolute; top: 50%; width: clamp(24px,3.4vw,52px); height: 1px; background: var(--f-gold-dim); }
+  .f-rh-tag span::before { right: 100%; }
+  .f-rh-tag span::after { left: 100%; }
+  .f-rh-sub {
+    margin: clamp(14px, 1.8vw, 26px) auto 0;
+    max-width: 32em;
+    font-size: clamp(12px, 1.1vw, 16px); line-height: 1.7; color: #4f4a40;
+  }
+
+  /* body */
+  .f-rb2 { padding: clamp(20px, 3vw, 44px) 4.7% clamp(48px, 6vw, 88px); }
+  .f-anchor { display: block; scroll-margin-top: 70px; }
+  .f-rb2-grid { max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: 1.55fr 1fr; gap: clamp(30px, 5vw, 84px); align-items: start; }
+  .f-rb2-h {
+    display: flex; align-items: center; gap: 16px;
+    font-size: clamp(15px, 1.5vw, 19px); font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--f-cream); margin: 0 0 clamp(22px, 2.4vw, 34px);
+    font-family: var(--f-sans);
+  }
+  .f-rb2-h-rule { width: 38px; height: 2px; background: var(--f-gold); flex: 0 0 auto; }
+
+  /* form fields */
+  .f-rf-rows { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .f-rf-field {
+    position: relative; display: flex; align-items: center; gap: 14px;
+    background: rgba(255,255,255,0.022); border: 1px solid rgba(232,225,210,0.14);
+    border-radius: 12px; padding: 14px 18px; cursor: text; transition: border-color .25s ease;
+  }
+  .f-rf-field:focus-within { border-color: var(--f-gold); }
+  .f-rf-wide { grid-column: 1 / -1; }
+  .f-rf-icon { flex: 0 0 auto; color: var(--f-gold); display: inline-flex; }
+  .f-rf-icon svg { width: 20px; height: 20px; }
+  .f-rf-body { display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1 1 auto; }
+  .f-rf-label { font-size: 10px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--f-gold); }
+  .f-rf-field input, .f-rf-field select {
+    width: 100%; background: none; border: 0; color: var(--f-cream); font-family: var(--f-sans); font-size: 14px; padding: 0;
+    appearance: none; -webkit-appearance: none;
+  }
+  .f-rf-field input::placeholder { color: rgba(232,225,210,0.4); }
+  .f-rf-field input:focus, .f-rf-field select:focus { outline: none; }
+  .f-rf-field select option { background: #1f1e1c; color: var(--f-cream); }
+  .f-rf-field input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.7) sepia(1) saturate(2) hue-rotate(2deg); cursor: pointer; }
+  .f-rf-select { cursor: pointer; }
+  .f-rf-caret { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: var(--f-cream-dim); pointer-events: none; }
+  .f-rf-caret svg { width: 12px; height: 8px; }
+  .f-rf-submit { width: 100%; height: 56px; margin-top: 18px; gap: 10px; border-radius: 6px; font-size: 13px; }
+  .f-rf-note { text-align: center; font-size: 12px; color: var(--f-body); margin: 16px 0 0; }
+  .f-form-note { font-size: 13px; margin: 0 0 16px; padding: 11px 16px; border: 1px solid; border-radius: 8px; }
+  .f-form-ok { color: #b5d0a5; border-color: rgba(181,208,165,.4); }
+  .f-form-err { color: #d9a09a; border-color: rgba(217,160,154,.4); }
+
+  /* info */
+  .f-rb2-info { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: clamp(22px,2.4vw,32px); }
+  .f-rb2-info-row { display: flex; gap: 16px; align-items: flex-start; }
+  .f-rb2-info-icon { flex: 0 0 auto; width: 40px; height: 40px; border: 1px solid rgba(199,161,113,.4); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: var(--f-gold); }
+  .f-rb2-info-icon svg { width: 18px; height: 18px; }
+  .f-rb2-info-k { font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--f-gold); margin: 4px 0 8px; }
+  .f-rb2-info-v { font-size: 14px; line-height: 1.7; color: #c5bca9; margin: 0; }
+  .f-rb2-info-v p { margin: 0; }
+  .f-rb2-info-v a:hover { color: var(--f-gold); }
+
+  @media (max-width: 749px) {
+    .f-rh-board { aspect-ratio: 4 / 5; }
+    .f-rh-art { height: 100%; object-fit: cover; object-position: 50% 42%; }
+    .f-rh-top { top: 8%; }
+    .f-rb2-grid { grid-template-columns: 1fr; gap: 44px; }   /* stack: form, then info */
+    .f-rf-rows { grid-template-columns: 1fr; }               /* one field per row */
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Fujiyama резервация",
+  "settings": [
+    { "type": "image_picker", "id": "hero_image", "label": "Арт изображение (тори) — по подразбиране вграденото" },
+    { "type": "text", "id": "title", "label": "Заглавие", "default": "Резервация на маса" },
+    { "type": "text", "id": "tagline", "label": "Слоган", "default": "BAR & DINNER" },
+    { "type": "textarea", "id": "subtitle", "label": "Подзаглавие", "default": "Вашето специално преживяване започва тук. Запазете своята маса и се насладете на неповторим вкус и атмосфера." },
+    { "type": "header", "content": "Форма" },
+    { "type": "text", "id": "form_heading", "label": "Заглавие на формата", "default": "Направете резервация" },
+    { "type": "text", "id": "button", "label": "Бутон", "default": "Резервирай маса" },
+    { "type": "text", "id": "note", "label": "Бележка под бутона", "default": "Ще се свържем с вас, за да потвърдим вашата резервация." },
+    { "type": "header", "content": "Информация" },
+    { "type": "text", "id": "info_heading", "label": "Заглавие", "default": "Информация" },
+    { "type": "text", "id": "hours_label", "label": "Етикет работно време", "default": "Работно време" },
+    { "type": "richtext", "id": "hours", "label": "Работно време", "default": "<p>Понеделник – Събота<br>12:00 – 23:00</p><p>Неделя<br>12:00 – 22:00</p>" },
+    { "type": "text", "id": "address_label", "label": "Етикет адрес", "default": "Адрес" },
+    { "type": "richtext", "id": "address", "label": "Адрес", "default": "<p>гр. Пазарджик<br>ул. Цар Иван Шишман 15<br>4400 Пазарджик, България</p>" },
+    { "type": "text", "id": "phone_label", "label": "Етикет телефон", "default": "Телефон" },
+    { "type": "text", "id": "phone", "label": "Телефон", "default": "+359 88 123 45 67" },
+    { "type": "text", "id": "email_label", "label": "Етикет имейл", "default": "Имейл" },
+    { "type": "text", "id": "email", "label": "Имейл", "default": "rezervacii@fujiyama.bg" }
+  ],
+  "presets": [{ "name": "Fujiyama резервация" }]
+}
+{% endschema %}

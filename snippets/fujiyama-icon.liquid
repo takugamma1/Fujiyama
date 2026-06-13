@@ -1,0 +1,19 @@
+{%- comment -%} Inline line icons for the reservation form/info. Param: name {%- endcomment -%}
+{%- case name -%}
+  {%- when 'user' -%}
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="8" r="3.4"/><path d="M5 19c1.2-3.4 3.8-5 7-5s5.8 1.6 7 5"/></svg>
+  {%- when 'calendar' -%}
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="4" y="6" width="16" height="14" rx="1.8"/><path d="M4 10.5h16M8.5 3.6v4M15.5 3.6v4"/></svg>
+  {%- when 'clock' -%}
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="8.4"/><path d="M12 7.4V12l3.2 2"/></svg>
+  {%- when 'guests' -%}
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="9" cy="8.5" r="3"/><path d="M3.5 19c1-3 3-4.4 5.5-4.4S13.5 16 14.5 19"/><path d="M16 6.2a3 3 0 0 1 0 5.6M21 19c-.5-2-1.6-3.2-3.2-3.8"/></svg>
+  {%- when 'phone' -%}
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 4.5h3.2l1.6 4-2 1.5a12.5 12.5 0 0 0 5.7 5.7l1.5-2 4 1.6V19a1.5 1.5 0 0 1-1.6 1.5C10 20 4 14 3.5 6.1A1.5 1.5 0 0 1 5 4.5z"/></svg>
+  {%- when 'mail' -%}
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3.4" y="5.4" width="17.2" height="13.2" rx="1.8"/><path d="m4.4 6.6 7.6 6 7.6-6"/></svg>
+  {%- when 'pin' -%}
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 21s-6.4-5.7-6.4-10.4a6.4 6.4 0 1 1 12.8 0C18.4 15.3 12 21 12 21z"/><circle cx="12" cy="10.4" r="2.3"/></svg>
+  {%- when 'caret' -%}
+    <svg viewBox="0 0 12 8" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m1.5 1.8 4.5 4.5 4.5-4.5"/></svg>
+{%- endcase -%}

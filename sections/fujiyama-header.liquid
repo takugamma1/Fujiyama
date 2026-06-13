@@ -4,7 +4,7 @@
   shared chalkboard texture, so it melts into the hero with no visible edge.
 {%- endcomment -%}
 
-<header class="f-section f-header{% if template contains 'menu' %} f-header--inverse{% endif %}" id="f-header">
+<header class="f-section f-header{% if template contains 'menu' or template contains 'reservation' %} f-header--inverse{% endif %}" id="f-header">
   <div class="f-header-inner">
     <button class="f-burger" aria-label="Меню" aria-expanded="false" aria-controls="f-mobile-nav">
       <span></span><span></span><span></span>
@@ -212,7 +212,7 @@
     { "type": "text", "id": "link_2_label", "label": "Линк 2 — текст", "default": "Меню" },
     { "type": "text", "id": "link_2_url", "label": "Линк 2 — адрес", "default": "/pages/menu" },
     { "type": "text", "id": "link_3_label", "label": "Линк 3 — текст", "default": "Резервации" },
-    { "type": "text", "id": "link_3_url", "label": "Линк 3 — адрес", "default": "/#rezervacii" },
+    { "type": "text", "id": "link_3_url", "label": "Линк 3 — адрес", "default": "/pages/reservation" },
     { "type": "header", "content": "Линкове вдясно" },
     { "type": "text", "id": "link_4_label", "label": "Линк 4 — текст", "default": "За нас" },
     { "type": "text", "id": "link_4_url", "label": "Линк 4 — адрес", "default": "/#za-nas" },

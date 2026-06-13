@@ -20,7 +20,7 @@
         "link_2_label": "Меню",
         "link_2_url": "/pages/menu",
         "link_3_label": "Резервации",
-        "link_3_url": "/#rezervacii",
+        "link_3_url": "/pages/reservation",
         "link_4_label": "За нас",
         "link_4_url": "/#za-nas",
         "link_5_label": "",
