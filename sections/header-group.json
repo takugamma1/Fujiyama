@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "type": "header",
   "name": "Header",
@@ -5,7 +14,7 @@
     "fujiyama_header": {
       "type": "fujiyama-header",
       "settings": {
-        "show_cart": true,
+        "show_cart": false,
         "link_1_label": "Начало",
         "link_1_url": "/",
         "link_2_label": "Меню",
@@ -21,5 +30,7 @@
       }
     }
   },
-  "order": ["fujiyama_header"]
+  "order": [
+    "fujiyama_header"
+  ]
 }
