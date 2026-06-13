@@ -1,13 +1,22 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "menu_hero": {
       "type": "fujiyama-menu-hero",
       "settings": {
-        "brand": "FUJIYAMA",
+        "brand": "МЕНЮ",
         "tagline": "BAR & DINNER",
         "label": "",
-        "title": "Меню",
-        "subtitle": "Свежест, качество и изкуство във всяко ястие"
+        "title": "",
+        "subtitle": ""
       }
     },
     "menu_cards": {
@@ -15,6 +24,7 @@
       "settings": {
         "eyebrow": "Нашето меню",
         "heading": "Разгледай по категория",
+        "collections": [],
         "button_verb": "Виж",
         "columns": 4
       }
@@ -25,25 +35,31 @@
         "delivery": {
           "type": "offer",
           "settings": {
+            "fallback": "fujiyama-card-3.webp",
             "image_side": "left",
             "title": "Доставка до дома",
             "body": "Бързо, удобно и вкусно – директно до твоята врата.",
             "button_label": "Поръчай сега",
-            "fallback": "fujiyama-card-3.webp"
+            "button_link": ""
           }
         },
         "offers": {
           "type": "offer",
           "settings": {
+            "fallback": "fujiyama-card-5.webp",
             "image_side": "right",
             "title": "Специални предложения",
             "body": "Подбрани сетове и оферти, създадени специално за теб.",
             "button_label": "Виж офертите",
-            "fallback": "fujiyama-card-5.webp"
+            "button_link": ""
           }
         }
       },
-      "block_order": ["delivery", "offers"]
+      "block_order": [
+        "delivery",
+        "offers"
+      ],
+      "settings": {}
     },
     "reservation": {
       "type": "fujiyama-reservation-bubble",
@@ -51,9 +67,15 @@
         "eyebrow": "Резервации",
         "title": "Резервирай маса",
         "body": "Ресторантът е отворен всеки ден. Запази своята маса и се наслади на незабравимо преживяване.",
-        "button_label": "Резервирай маса"
+        "button_label": "Резервирай маса",
+        "button_link": ""
       }
     }
   },
-  "order": ["menu_hero", "menu_cards", "offers", "reservation"]
+  "order": [
+    "menu_hero",
+    "menu_cards",
+    "offers",
+    "reservation"
+  ]
 }
