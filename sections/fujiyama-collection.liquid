@@ -1,0 +1,351 @@
+{%- comment -%}
+  FUJIYAMA collection page — red promo rail (toggleable, drops below the grid
+  on mobile), a carousel of all-collection badges, and a product grid where the
+  gold "+" adds straight to the custom cart drawer. Replaces main-collection.
+{%- endcomment -%}
+
+{%- liquid
+  assign h = collection.handle
+  assign kanji = section.settings.promo_kanji
+  if kanji == blank
+    assign kanji = '和'
+    if h contains 'нигири'
+      assign kanji = '握'
+    elsif h contains 'сашими'
+      assign kanji = '刺'
+    elsif h contains 'маки' or h contains 'рол'
+      assign kanji = '巻'
+    elsif h contains 'поке'
+      assign kanji = '丼'
+    elsif h contains 'десерт'
+      assign kanji = '甘'
+    elsif h contains 'напитк' or h contains 'алкохол'
+      assign kanji = '飲'
+    elsif h contains 'суп'
+      assign kanji = '汁'
+    elsif h contains 'салат'
+      assign kanji = '菜'
+    elsif h contains 'бургер'
+      assign kanji = '丼'
+    elsif h contains 'сет'
+      assign kanji = '膳'
+    elsif h contains 'паста' or h contains 'ризото'
+      assign kanji = '麺'
+    elsif h contains 'риба'
+      assign kanji = '魚'
+    endif
+  endif
+
+  assign promo_img = section.settings.promo_image
+  if promo_img == blank
+    assign promo_img = collection.image
+  endif
+  if promo_img == blank
+    for p in collection.products limit: 6
+      if p.featured_image
+        assign promo_img = p.featured_image
+        break
+      endif
+    endfor
+  endif
+-%}
+
+<section class="f-section f-col">
+  <a class="f-col-back" href="{{ section.settings.back_url | default: '/pages/menu' }}">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" width="14" height="14" aria-hidden="true"><path d="M14 8H3M7 3.5 2.5 8 7 12.5"/></svg>
+    {{ section.settings.back_label | default: 'Назад към колекции' }}
+  </a>
+
+  <div class="f-col-layout{% unless section.settings.show_promo %} f-col-layout--nopromo{% endunless %}">
+    {%- if section.settings.show_promo -%}
+      <aside class="f-col-promo">
+        <span class="f-col-promo-kanji" aria-hidden="true">{{ kanji }}</span>
+        {%- if promo_img != blank -%}
+          <span class="f-col-promo-media">
+            {{ promo_img | image_url: width: 720 | image_tag: loading: 'lazy', widths: '320,520,720', sizes: '(max-width:900px) 90vw, 320px', alt: collection.title | escape }}
+          </span>
+        {%- endif -%}
+        <div class="f-col-promo-text">
+          <h2 class="f-display f-col-promo-title">{{ collection.title }}</h2>
+          {%- assign promo_sub = section.settings.promo_tagline -%}
+          {%- if promo_sub == blank and collection.description != blank -%}
+            {%- assign promo_sub = collection.description | strip_html | truncate: 70 -%}
+          {%- endif -%}
+          {%- if promo_sub != blank -%}<p class="f-col-promo-sub">{{ promo_sub }}</p>{%- endif -%}
+          <span class="f-col-promo-rule" aria-hidden="true"></span>
+        </div>
+      </aside>
+    {%- endif -%}
+
+    <div class="f-col-main">
+      <header class="f-col-head">
+        <h1 class="f-display f-col-title">{{ section.settings.title_prefix | default: 'Колекция' }} {{ collection.title }}</h1>
+        {%- if collection.description != blank -%}
+          <div class="f-col-desc">{{ collection.description }}</div>
+        {%- endif -%}
+      </header>
+
+      {%- comment -%} all collections as small badge pills (carousel) {%- endcomment -%}
+      <nav class="f-col-badges" aria-label="Колекции">
+        <div class="f-col-badges-track">
+          <a class="f-col-badge" href="{{ section.settings.back_url | default: '/pages/menu' }}">Всички</a>
+          {%- for c in collections -%}
+            {%- if c.handle == 'frontpage' -%}{%- continue -%}{%- endif -%}
+            <a class="f-col-badge{% if c.id == collection.id %} is-active{% endif %}" href="{{ c.url }}"
+               {% if c.id == collection.id %}aria-current="page"{% endif %}>{{ c.title }}</a>
+          {%- endfor -%}
+        </div>
+      </nav>
+
+      {%- paginate collection.products by 24 -%}
+        <ul class="f-col-grid" role="list">
+          {%- for product in collection.products -%}
+            {%- assign variant = product.selected_or_first_available_variant -%}
+            <li class="f-pc">
+              <a class="f-pc-media" href="{{ product.url }}" tabindex="-1" aria-hidden="true">
+                {%- if product.featured_image -%}
+                  {{ product.featured_image | image_url: width: 600 | image_tag: class: 'f-pc-img', loading: 'lazy', widths: '260,400,600', sizes: '(max-width:749px) 44vw, 240px', alt: product.title | escape }}
+                {%- else -%}
+                  <span class="f-pc-ph" aria-hidden="true">{{ kanji }}</span>
+                {%- endif -%}
+              </a>
+              <div class="f-pc-body">
+                <a class="f-pc-title" href="{{ product.url }}">{{ product.title }}</a>
+                {%- if product.description != blank -%}
+                  <p class="f-pc-desc">{{ product.description | strip_html | truncate: 72 }}</p>
+                {%- endif -%}
+                <div class="f-pc-foot">
+                  <span class="f-pc-price">
+                    {%- if product.price_varies -%}от {% endif -%}
+                    {{ product.price | money }}
+                  </span>
+                  <button type="button" class="f-pc-add"
+                    data-add-variant="{{ variant.id }}"
+                    data-title="{{ product.title | escape }}"
+                    aria-label="Добави {{ product.title | escape }} в количката"
+                    {% unless variant.available %}disabled aria-disabled="true"{% endunless %}>
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M8 2.5v11M2.5 8h11"/></svg>
+                  </button>
+                </div>
+              </div>
+            </li>
+          {%- else -%}
+            <li class="f-col-empty">В тази колекция още няма продукти.</li>
+          {%- endfor -%}
+        </ul>
+
+        {%- if paginate.pages > 1 -%}
+          <nav class="f-col-pager" aria-label="Страници">
+            {%- if paginate.previous -%}<a href="{{ paginate.previous.url }}" class="f-col-pager-link">←</a>{%- endif -%}
+            {%- for part in paginate.parts -%}
+              {%- if part.is_link -%}
+                <a href="{{ part.url }}" class="f-col-pager-link">{{ part.title }}</a>
+              {%- else -%}
+                <span class="f-col-pager-link is-active">{{ part.title }}</span>
+              {%- endif -%}
+            {%- endfor -%}
+            {%- if paginate.next -%}<a href="{{ paginate.next.url }}" class="f-col-pager-link">→</a>{%- endif -%}
+          </nav>
+        {%- endif -%}
+      {%- endpaginate -%}
+    </div>
+  </div>
+</section>
+
+{% style %}
+  .f-col { padding: clamp(20px, 3vw, 40px) 4.7% clamp(48px, 6vw, 84px); }
+  .f-col-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--f-cream-dim);
+    margin-bottom: clamp(18px, 2.4vw, 30px);
+    transition: color 0.25s ease, gap 0.25s ease;
+  }
+  .f-col-back:hover { color: var(--f-gold); gap: 13px; }
+
+  .f-col-layout { display: grid; grid-template-columns: minmax(280px, 340px) 1fr; gap: clamp(24px, 3vw, 52px); align-items: start; }
+  .f-col-layout--nopromo { grid-template-columns: 1fr; }
+  .f-col-main { min-width: 0; }  /* prevent the product grid from blowing out the 1fr track */
+
+  /* ---- red promo rail ---- */
+  .f-col-promo {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    background: linear-gradient(170deg, #7a2a22 0%, #5e211b 60%, #4a1a16 100%);
+    padding: clamp(26px, 2vw, 40px) clamp(22px, 1.8vw, 34px) clamp(30px, 3vw, 44px);
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  }
+  .f-col-promo-kanji {
+    position: absolute;
+    top: 8px;
+    left: 22px;
+    font-family: 'Noto Serif JP', var(--f-serif);
+    font-size: 120px;
+    line-height: 0.9;
+    color: rgba(0, 0, 0, 0.16);
+    pointer-events: none;
+  }
+  .f-col-promo-media {
+    position: relative;
+    z-index: 1;
+    display: block;
+    margin: 18px 0 auto;
+    border-radius: 10px;
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4);
+  }
+  .f-col-promo-media img { width: 100%; height: 100%; object-fit: cover; }
+  .f-col-promo-text { position: relative; z-index: 1; margin-top: 26px; }
+  .f-col-promo-title {
+    font-size: clamp(28px, 2.4vw, 40px);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #f6efe2;
+    margin: 0;
+  }
+  .f-col-promo-sub { margin: 12px 0 0; font-size: 14px; line-height: 1.55; color: rgba(246, 239, 226, 0.78); }
+  .f-col-promo-rule { display: block; width: 54px; height: 1px; background: rgba(246, 239, 226, 0.4); margin-top: 22px; }
+
+  /* ---- main column ---- */
+  .f-col-title { font-size: clamp(28px, 3.4vw, 46px); letter-spacing: 0.05em; text-transform: uppercase; margin: 0; }
+  .f-col-desc { margin: 14px 0 0; max-width: 60ch; font-size: 14px; line-height: 1.7; color: var(--f-body); }
+  .f-col-desc p { margin: 0 0 0.6em; }
+
+  /* ---- badge carousel ---- */
+  .f-col-badges { margin: clamp(22px, 2.4vw, 34px) 0 clamp(20px, 2vw, 30px); border-bottom: 1px solid rgba(232, 225, 210, 0.1); }
+  .f-col-badges-track {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 16px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(199,161,113,0.5) transparent;
+    -webkit-overflow-scrolling: touch;
+  }
+  .f-col-badges-track::-webkit-scrollbar { height: 4px; }
+  .f-col-badges-track::-webkit-scrollbar-thumb { background: rgba(199,161,113,0.5); border-radius: 4px; }
+  .f-col-badge {
+    flex: 0 0 auto;
+    padding: 9px 18px;
+    border-radius: 999px;
+    border: 1px solid rgba(232, 225, 210, 0.16);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--f-cream-dim);
+    white-space: nowrap;
+    transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  }
+  .f-col-badge:hover { color: var(--f-cream); border-color: rgba(199, 161, 113, 0.55); }
+  .f-col-badge.is-active { background: var(--f-gold); border-color: var(--f-gold); color: var(--f-ink); }
+
+  /* ---- product grid ---- */
+  .f-col-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(214px, 1fr));
+    gap: clamp(12px, 1.2vw, 18px);
+  }
+  .f-pc {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(232, 225, 210, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.022);
+    transition: border-color 0.3s ease, transform 0.3s ease;
+  }
+  .f-pc:hover { border-color: rgba(199, 161, 113, 0.4); transform: translateY(-3px); }
+  .f-pc-media { display: block; aspect-ratio: 1 / 1; overflow: hidden; background: #14130f; }
+  .f-pc-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+  .f-pc:hover .f-pc-img { transform: scale(1.05); }
+  .f-pc-ph { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; font-family: 'Noto Serif JP', var(--f-serif); font-size: 2.2rem; color: rgba(199, 161, 113, 0.45); }
+  .f-pc-body { display: flex; flex-direction: column; gap: 8px; padding: 16px 16px 18px; flex: 1 1 auto; }
+  .f-pc-title { font-family: var(--f-sans); font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--f-cream); line-height: 1.3; }
+  .f-pc-title:hover { color: var(--f-gold); }
+  .f-pc-desc { margin: 0; font-size: 12px; line-height: 1.5; color: rgba(232, 225, 210, 0.62); }
+  .f-pc-foot { margin-top: auto; padding-top: 6px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .f-pc-price { font-family: var(--f-serif); font-size: 17px; color: var(--f-cream); white-space: nowrap; }
+  .f-pc-add {
+    flex: 0 0 auto;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid rgba(199, 161, 113, 0.6);
+    background: transparent;
+    color: var(--f-gold);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.25s ease, color 0.25s ease, transform 0.2s ease;
+  }
+  .f-pc-add svg { width: 15px; height: 15px; }
+  .f-pc-add:hover { background: var(--f-gold); color: var(--f-ink); }
+  .f-pc-add:active { transform: scale(0.92); }
+  .f-pc-add[disabled] { opacity: 0.35; cursor: not-allowed; }
+  .f-pc-add.is-added { background: var(--f-gold); color: var(--f-ink); }
+
+  .f-col-empty { grid-column: 1 / -1; color: var(--f-body); padding: 40px 0; text-align: center; }
+
+  .f-col-pager { display: flex; gap: 8px; justify-content: center; margin-top: 36px; }
+  .f-col-pager-link {
+    min-width: 38px; height: 38px; padding: 0 10px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border: 1px solid rgba(232, 225, 210, 0.16); border-radius: 8px;
+    font-size: 13px; color: var(--f-cream-dim); transition: border-color .2s, color .2s;
+  }
+  .f-col-pager-link:hover { border-color: rgba(199,161,113,0.5); color: var(--f-cream); }
+  .f-col-pager-link.is-active { background: var(--f-gold); border-color: var(--f-gold); color: var(--f-ink); }
+
+  /* ---- responsive: promo drops BELOW the grid on mobile ---- */
+  @media (max-width: 900px) {
+    .f-col-layout, .f-col-layout--nopromo { grid-template-columns: 1fr; }
+    .f-col-promo { order: 2; margin-top: 8px; min-height: 0; }
+    .f-col-main { order: 1; }
+    .f-col-promo-media { max-width: 360px; }
+  }
+  @media (max-width: 749px) {
+    .f-col-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .f-pc-title { font-size: 12px; }
+  }
+{% endstyle %}
+
+<script>
+  (function () {
+    var active = document.querySelector('#shopify-section-{{ section.id }} .f-col-badge.is-active');
+    if (!active) return;
+    var track = active.closest('.f-col-badges-track');
+    if (track) track.scrollLeft = active.offsetLeft - track.clientWidth / 2 + active.clientWidth / 2;
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Fujiyama колекция",
+  "settings": [
+    { "type": "text", "id": "back_label", "label": "Текст за връщане", "default": "Назад към колекции" },
+    { "type": "text", "id": "back_url", "label": "Линк за връщане", "default": "/pages/menu" },
+    { "type": "text", "id": "title_prefix", "label": "Представка на заглавието", "default": "Колекция" },
+    { "type": "header", "content": "Промо панел (ляво)" },
+    { "type": "checkbox", "id": "show_promo", "label": "Показвай промо панела", "default": true },
+    { "type": "image_picker", "id": "promo_image", "label": "Промо изображение (по подразбиране — снимка от колекцията)" },
+    { "type": "text", "id": "promo_kanji", "label": "Канджи (празно = автоматично)" },
+    { "type": "text", "id": "promo_tagline", "label": "Промо подзаглавие (празно = описание на колекцията)" }
+  ],
+  "presets": [{ "name": "Fujiyama колекция" }]
+}
+{% endschema %}

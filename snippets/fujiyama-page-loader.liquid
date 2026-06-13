@@ -1,0 +1,106 @@
+{%- comment -%}
+  FUJIYAMA page transition — full-screen charcoal overlay with a cream 0→100%
+  counter. Shows on first paint and on internal link navigations, then fades.
+  Same grey (#1f1e1c) and white (#e8e1d2) as the rest of the theme.
+{%- endcomment -%}
+
+<div class="f-load" id="f-load" aria-hidden="true">
+  <div class="f-load-inner">
+    <span class="f-load-word">FUJIYAMA</span>
+    <span class="f-load-num"><span data-load-num>0</span><span class="f-load-pct">%</span></span>
+    <span class="f-load-bar"><span class="f-load-bar-fill" data-load-bar></span></span>
+  </div>
+</div>
+
+{% style %}
+  .f-load {
+    position: fixed; inset: 0; z-index: 2000;
+    background: #1f1e1c;
+    display: flex; align-items: center; justify-content: center;
+    transition: opacity .5s ease, visibility .5s ease;
+  }
+  .f-load.is-done { opacity: 0; visibility: hidden; }
+  .f-load.is-hidden { display: none; }
+  .f-load-inner { display: flex; flex-direction: column; align-items: center; gap: 22px; width: min(280px, 64vw); }
+  .f-load-word {
+    font-family: 'Italiana', 'Playfair Display', serif;
+    font-size: clamp(26px, 4vw, 40px);
+    letter-spacing: 0.34em; text-indent: 0.34em;
+    color: #e8e1d2;
+  }
+  .f-load-num { font-family: 'Inter', sans-serif; font-size: 13px; letter-spacing: .22em; color: #e8e1d2; font-variant-numeric: tabular-nums; }
+  .f-load-pct { color: #c7a171; margin-left: 2px; }
+  .f-load-bar { width: 100%; height: 1px; background: rgba(232,225,210,.18); overflow: hidden; }
+  .f-load-bar-fill { display: block; height: 100%; width: 0; background: #e8e1d2; transition: width .12s linear; }
+  @media (prefers-reduced-motion: reduce) {
+    .f-load { transition: opacity .2s ease; }
+    .f-load-bar-fill { transition: none; }
+  }
+{% endstyle %}
+
+<script>
+(function () {
+  var el = document.getElementById('f-load');
+  if (!el) return;
+  var numEl = el.querySelector('[data-load-num]');
+  var barEl = el.querySelector('[data-load-bar]');
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var raf, running = false;
+
+  function paint(p) { p = Math.max(0, Math.min(100, Math.round(p))); numEl.textContent = p; barEl.style.width = p + '%'; }
+
+  function runTo(target, done) {
+    cancelAnimationFrame(raf);
+    var cur = parseInt(numEl.textContent, 10) || 0;
+    if (reduce) { paint(target); if (done) done(); return; }
+    function step() {
+      cur += Math.max(0.6, (target - cur) * 0.10);
+      if (cur >= target - 0.5) { paint(target); if (done) done(); return; }
+      paint(cur); raf = requestAnimationFrame(step);
+    }
+    step();
+  }
+
+  // 1) initial load: animate toward 100 and reveal page
+  function reveal() {
+    runTo(100, function () {
+      el.classList.add('is-done');
+      setTimeout(function () { el.classList.add('is-hidden'); }, 520);
+    });
+  }
+  // creep to ~92 while assets load, finish on window load
+  el.classList.remove('is-done', 'is-hidden');
+  paint(0);
+  if (!reduce) runTo(92);
+  if (document.readyState === 'complete') { reveal(); }
+  else { window.addEventListener('load', reveal, { once: true }); }
+
+  // 2) navigations: show overlay + count up, then let the browser navigate
+  function show() {
+    el.classList.remove('is-done', 'is-hidden');
+    paint(0); running = true;
+    runTo(96);
+  }
+  document.addEventListener('click', function (e) {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    if (e.target.closest('[data-add-variant]')) return; // add-to-cart, not a navigation
+    var a = e.target.closest('a[href]');
+    if (!a) return;
+    if (a.classList.contains('f-cart')) return; // cart icon opens the drawer instead of navigating
+    if (a.target === '_blank' || a.hasAttribute('download') || a.dataset.noTransition !== undefined) return;
+    var href = a.getAttribute('href');
+    if (!href || href[0] === '#' || href.indexOf('mailto:') === 0 || href.indexOf('tel:') === 0 || href.indexOf('javascript:') === 0) return;
+    var url;
+    try { url = new URL(a.href, location.href); } catch (_) { return; }
+    if (url.origin !== location.origin) return;
+    if (url.pathname === location.pathname && url.search === location.search) return; // same page / hash
+    show();
+  }, true);
+
+  // back/forward cache: don't leave the overlay stuck
+  window.addEventListener('pageshow', function (e) {
+    if (e.persisted) { el.classList.add('is-done', 'is-hidden'); }
+  });
+  window.addEventListener('pagehide', function () { cancelAnimationFrame(raf); });
+})();
+</script>

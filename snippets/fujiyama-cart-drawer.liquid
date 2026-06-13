@@ -1,0 +1,258 @@
+{%- comment -%}
+  FUJIYAMA cart drawer — self-contained, charcoal/gold, slides in from the
+  right. Uses Shopify's Cart AJAX API directly (no Section Rendering coupling).
+  Add buttons anywhere on the page use [data-add-variant]; the header cart icon
+  (.f-cart) opens it. Live count bubble + subtotal.
+{%- endcomment -%}
+
+<div class="f-cartd" id="f-cartdrawer" hidden>
+  <div class="f-cart-scrim" data-cart-close></div>
+  <aside class="f-cart-panel" role="dialog" aria-modal="true" aria-label="Количка" aria-hidden="true">
+    <header class="f-cart-top">
+      <h2 class="f-cart-title">Количка <span class="f-cart-count-inline" data-cart-count>0</span></h2>
+      <button type="button" class="f-cart-x" data-cart-close aria-label="Затвори">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15"/></svg>
+      </button>
+    </header>
+
+    <div class="f-cart-body" data-cart-body>
+      <p class="f-cart-empty" data-cart-empty>Количката е празна.</p>
+      <ul class="f-cart-items" data-cart-items role="list"></ul>
+    </div>
+
+    <footer class="f-cart-foot" data-cart-foot hidden>
+      <div class="f-cart-sub">
+        <span>Междинна сума</span>
+        <span data-cart-subtotal></span>
+      </div>
+      <a class="f-btn-gold f-cart-checkout" href="/checkout">Към касата</a>
+      <a class="f-cart-viewcart" href="{{ routes.cart_url }}">Виж количката</a>
+    </footer>
+  </aside>
+</div>
+
+<template id="f-cart-item-tpl">
+  <li class="f-cart-item">
+    <a class="f-cart-item-img" data-href><img alt="" loading="lazy" width="72" height="72"></a>
+    <div class="f-cart-item-main">
+      <a class="f-cart-item-title" data-href data-title></a>
+      <span class="f-cart-item-variant" data-variant hidden></span>
+      <div class="f-cart-item-row">
+        <div class="f-cart-qty">
+          <button type="button" data-qty-dec aria-label="Намали">−</button>
+          <span data-qty></span>
+          <button type="button" data-qty-inc aria-label="Увеличи">+</button>
+        </div>
+        <span class="f-cart-item-price" data-line-price></span>
+      </div>
+      <button type="button" class="f-cart-item-remove" data-remove>Премахни</button>
+    </div>
+  </li>
+</template>
+
+<div class="f-toast" id="f-toast" role="status" aria-live="polite" hidden></div>
+
+{% style %}
+  .f-cartd[hidden] { display: none; }
+  #f-cartdrawer { position: fixed; inset: 0; z-index: 1000; }
+  .f-cart-scrim { position: absolute; inset: 0; background: rgba(0,0,0,0.55); opacity: 0; transition: opacity .35s ease; }
+  #f-cartdrawer.is-open .f-cart-scrim { opacity: 1; }
+  .f-cart-panel {
+    position: absolute; top: 0; right: 0; height: 100%;
+    width: min(420px, 92vw);
+    background: #1b1a18 url('fujiyama-texture.jpg') repeat; background-size: 400px 400px;
+    border-left: 1px solid rgba(199,161,113,0.3);
+    display: flex; flex-direction: column;
+    transform: translateX(100%); transition: transform .38s cubic-bezier(.4,0,.2,1);
+    box-shadow: -20px 0 50px rgba(0,0,0,.5);
+  }
+  #f-cartdrawer.is-open .f-cart-panel { transform: translateX(0); }
+  .f-cart-top { display: flex; align-items: center; justify-content: space-between; padding: 22px 24px; border-bottom: 1px solid rgba(232,225,210,.1); }
+  .f-cart-title { font-family: var(--f-serif); font-size: 18px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--f-cream); margin: 0; }
+  .f-cart-count-inline { color: var(--f-gold); font-family: var(--f-sans); font-size: 13px; }
+  .f-cart-x { background: none; border: 0; color: var(--f-cream-dim); cursor: pointer; padding: 4px; }
+  .f-cart-x:hover { color: var(--f-cream); }
+  .f-cart-body { flex: 1 1 auto; overflow-y: auto; padding: 8px 24px; }
+  .f-cart-empty { color: var(--f-body); text-align: center; padding: 60px 0; font-size: 14px; }
+  .f-cart-items { list-style: none; margin: 0; padding: 0; }
+  .f-cart-item { display: grid; grid-template-columns: 72px 1fr; gap: 14px; padding: 18px 0; border-bottom: 1px solid rgba(232,225,210,.08); }
+  .f-cart-item-img { display: block; border-radius: 8px; overflow: hidden; aspect-ratio: 1; background: #14130f; }
+  .f-cart-item-img img { width: 100%; height: 100%; object-fit: cover; }
+  .f-cart-item-title { font-size: 12.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--f-cream); line-height: 1.35; }
+  .f-cart-item-title:hover { color: var(--f-gold); }
+  .f-cart-item-variant { font-size: 11px; color: var(--f-body); margin-top: 2px; }
+  .f-cart-item-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 10px; }
+  .f-cart-qty { display: inline-flex; align-items: center; border: 1px solid rgba(232,225,210,.2); border-radius: 999px; }
+  .f-cart-qty button { width: 28px; height: 28px; background: none; border: 0; color: var(--f-cream); cursor: pointer; font-size: 15px; line-height: 1; }
+  .f-cart-qty button:hover { color: var(--f-gold); }
+  .f-cart-qty span { min-width: 22px; text-align: center; font-size: 13px; color: var(--f-cream); }
+  .f-cart-item-price { font-family: var(--f-serif); font-size: 15px; color: var(--f-cream); }
+  .f-cart-item-remove { background: none; border: 0; color: var(--f-body); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; padding: 8px 0 0; }
+  .f-cart-item-remove:hover { color: #d9a09a; }
+  .f-cart-foot { padding: 20px 24px calc(20px + env(safe-area-inset-bottom)); border-top: 1px solid rgba(232,225,210,.12); }
+  .f-cart-foot[hidden] { display: none; }
+  .f-cart-sub { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; }
+  .f-cart-sub span:first-child { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--f-cream-dim); }
+  .f-cart-sub span:last-child { font-family: var(--f-serif); font-size: 22px; color: var(--f-cream); }
+  .f-cart-checkout { width: 100%; height: 50px; border-radius: 4px; }
+  .f-cart-viewcart { display: block; text-align: center; margin-top: 12px; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--f-cream-dim); }
+  .f-cart-viewcart:hover { color: var(--f-gold); }
+
+  .f-toast {
+    position: fixed; left: 50%; bottom: 28px; transform: translate(-50%, 20px);
+    z-index: 1100; background: #14130f; border: 1px solid rgba(199,161,113,.5);
+    color: var(--f-cream); padding: 13px 22px; border-radius: 8px; font-size: 13px;
+    letter-spacing: .04em; opacity: 0; transition: opacity .3s ease, transform .3s ease;
+    box-shadow: 0 12px 30px rgba(0,0,0,.45); max-width: 90vw;
+  }
+  .f-toast[hidden] { display: none; }
+  .f-toast.is-show { opacity: 1; transform: translate(-50%, 0); }
+  .f-toast b { color: var(--f-gold); }
+  @media (prefers-reduced-motion: reduce) {
+    .f-cart-panel, .f-cart-scrim, .f-toast { transition: none; }
+  }
+{% endstyle %}
+
+<script>
+(function () {
+  var drawer = document.getElementById('f-cartdrawer');
+  if (!drawer) return;
+  var panel = drawer.querySelector('.f-cart-panel');
+  var itemsEl = drawer.querySelector('[data-cart-items]');
+  var emptyEl = drawer.querySelector('[data-cart-empty]');
+  var footEl = drawer.querySelector('[data-cart-foot]');
+  var subEl = drawer.querySelector('[data-cart-subtotal]');
+  var countEls = drawer.querySelectorAll('[data-cart-count]');
+  var tpl = document.getElementById('f-cart-item-tpl');
+  var toast = document.getElementById('f-toast');
+  var fmt;
+  var lastFocus = null;
+
+  function money(cents, currency) {
+    try {
+      if (!fmt) fmt = new Intl.NumberFormat('bg-BG', { style: 'currency', currency: currency || 'EUR' });
+      return fmt.format((cents || 0) / 100);
+    } catch (e) { return ((cents || 0) / 100).toFixed(2); }
+  }
+
+  function setCount(n) {
+    countEls.forEach(function (el) { el.textContent = n; });
+    // header bubble
+    var headerCart = document.querySelector('a.f-cart');
+    if (headerCart) {
+      var b = headerCart.querySelector('.f-cart-count');
+      if (n > 0) {
+        if (!b) { b = document.createElement('span'); b.className = 'f-cart-count'; headerCart.appendChild(b); }
+        b.textContent = n;
+      } else if (b) { b.remove(); }
+    }
+  }
+
+  function showToast(html) {
+    if (!toast) return;
+    toast.innerHTML = html;
+    toast.hidden = false;
+    requestAnimationFrame(function () { toast.classList.add('is-show'); });
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(function () {
+      toast.classList.remove('is-show');
+      setTimeout(function () { toast.hidden = true; }, 320);
+    }, 2600);
+  }
+
+  function render(cart) {
+    setCount(cart.item_count);
+    itemsEl.innerHTML = '';
+    if (!cart.items || !cart.items.length) {
+      emptyEl.hidden = false; footEl.hidden = true; return;
+    }
+    emptyEl.hidden = true; footEl.hidden = false;
+    cart.items.forEach(function (item) {
+      var node = tpl.content.cloneNode(true);
+      var img = node.querySelector('img');
+      if (item.image) { img.src = item.image.replace(/(\.[a-z]+)(\?|$)/i, '_160x$1$2'); img.alt = item.product_title; }
+      else { img.removeAttribute('src'); }
+      node.querySelectorAll('[data-href]').forEach(function (a) { a.setAttribute('href', item.url); });
+      node.querySelector('[data-title]').textContent = item.product_title;
+      var v = node.querySelector('[data-variant]');
+      if (item.variant_title && item.variant_title.indexOf('Default') === -1) { v.textContent = item.variant_title; v.hidden = false; }
+      node.querySelector('[data-qty]').textContent = item.quantity;
+      node.querySelector('[data-line-price]').textContent = money(item.final_line_price, cart.currency);
+      var key = item.key;
+      node.querySelector('[data-qty-dec]').addEventListener('click', function () { change(key, item.quantity - 1); });
+      node.querySelector('[data-qty-inc]').addEventListener('click', function () { change(key, item.quantity + 1); });
+      node.querySelector('[data-remove]').addEventListener('click', function () { change(key, 0); });
+      itemsEl.appendChild(node);
+    });
+    subEl.textContent = money(cart.items_subtotal_price, cart.currency);
+  }
+
+  function refresh() {
+    return fetch('/cart.js', { headers: { 'Accept': 'application/json' } })
+      .then(function (r) { return r.json(); })
+      .then(function (cart) { render(cart); return cart; });
+  }
+
+  function open() {
+    lastFocus = document.activeElement;
+    drawer.hidden = false;
+    requestAnimationFrame(function () { drawer.classList.add('is-open'); });
+    panel.setAttribute('aria-hidden', 'false');
+    document.documentElement.style.overflow = 'hidden';
+    var x = drawer.querySelector('.f-cart-x'); if (x) x.focus();
+  }
+  function close() {
+    drawer.classList.remove('is-open');
+    panel.setAttribute('aria-hidden', 'true');
+    document.documentElement.style.overflow = '';
+    setTimeout(function () { drawer.hidden = true; }, 380);
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+
+  function change(key, qty) {
+    qty = Math.max(0, qty);
+    fetch('/cart/change.js', {
+      method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ id: key, quantity: qty })
+    }).then(function (r) { return r.json(); }).then(render);
+  }
+
+  function add(variantId, title, btn) {
+    if (btn) btn.classList.add('is-added');
+    fetch('/cart/add.js', {
+      method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ items: [{ id: Number(variantId), quantity: 1 }] })
+    }).then(function (r) {
+      if (!r.ok) return r.json().then(function (e) { throw e; });
+      return r.json();
+    }).then(function () {
+      return refresh();
+    }).then(function () {
+      showToast('<b>✓</b> ' + (title || 'Добавено') + ' — добавено в количката');
+      open();
+      if (btn) setTimeout(function () { btn.classList.remove('is-added'); }, 900);
+    }).catch(function (err) {
+      showToast((err && err.description) ? err.description : 'Възникна грешка. Опитайте отново.');
+      if (btn) btn.classList.remove('is-added');
+    });
+  }
+
+  // delegated events
+  document.addEventListener('click', function (e) {
+    var addBtn = e.target.closest('[data-add-variant]');
+    if (addBtn) {
+      e.preventDefault();
+      if (addBtn.hasAttribute('disabled')) return;
+      add(addBtn.getAttribute('data-add-variant'), addBtn.getAttribute('data-title'), addBtn);
+      return;
+    }
+    var cartIcon = e.target.closest('a.f-cart');
+    if (cartIcon) { e.preventDefault(); refresh(); open(); return; }
+    if (e.target.closest('[data-cart-close]')) { close(); }
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && drawer.classList.contains('is-open')) close(); });
+
+  // keep header bubble correct on load
+  refresh();
+})();
+</script>
