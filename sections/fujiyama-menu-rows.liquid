@@ -1,0 +1,190 @@
+{%- comment -%}
+  FUJIYAMA menu rows — full-width category rows (icon + title + subcategory line
+  + photo bleeding from the right, fading into the dark + chevron), then a 3-up
+  row of compact secondary tiles. Block types: "row" and "tile".
+{%- endcomment -%}
+
+<section class="f-section f-mr">
+  <div class="f-mr-wrap">
+    <ul class="f-mr-rows" role="list">
+      {%- for block in section.blocks -%}
+        {%- if block.type != 'row' -%}{%- continue -%}{%- endif -%}
+        {%- liquid
+          assign url = block.settings.link | default: block.settings.collection.url | default: '#'
+          assign rtitle = block.settings.title | default: block.settings.collection.title
+          assign rimg = block.settings.image
+          if rimg == blank
+            assign rimg = block.settings.collection.image
+          endif
+          if rimg == blank and block.settings.collection != blank
+            for p in block.settings.collection.products limit: 6
+              if p.featured_image
+                assign rimg = p.featured_image
+                break
+              endif
+            endfor
+          endif
+        -%}
+        <li {{ block.shopify_attributes }}>
+          <a class="f-mr-row" href="{{ url }}">
+            <span class="f-mr-icon">{% render 'fujiyama-icon', name: block.settings.icon %}</span>
+            <span class="f-mr-text">
+              <span class="f-mr-title">{{ rtitle | escape }}</span>
+              {%- if block.settings.subtitle != blank -%}<span class="f-mr-sub">{{ block.settings.subtitle | escape }}</span>{%- endif -%}
+            </span>
+            {%- if rimg != blank -%}
+              <span class="f-mr-media">
+                {{ rimg | image_url: width: 900 | image_tag: loading: 'lazy', widths: '500,720,900', sizes: '(max-width:749px) 60vw, 460px', alt: rtitle | escape }}
+              </span>
+            {%- endif -%}
+            <span class="f-mr-chev" aria-hidden="true">{% render 'fujiyama-icon', name: 'chev-right' %}</span>
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+
+    {%- assign tile_count = 0 -%}
+    {%- for block in section.blocks -%}{%- if block.type == 'tile' -%}{%- assign tile_count = tile_count | plus: 1 -%}{%- endif -%}{%- endfor -%}
+    {%- if tile_count > 0 -%}
+      <div class="f-mr-tiles">
+        {%- for block in section.blocks -%}
+          {%- if block.type != 'tile' -%}{%- continue -%}{%- endif -%}
+          {%- assign turl = block.settings.link | default: block.settings.collection.url | default: '#' -%}
+          {%- assign ttitle = block.settings.title | default: block.settings.collection.title -%}
+          <a class="f-mr-tile" href="{{ turl }}" {{ block.shopify_attributes }}>
+            <span class="f-mr-tile-icon">{% render 'fujiyama-icon', name: block.settings.icon %}</span>
+            <span class="f-mr-tile-title">{{ ttitle | escape }}</span>
+          </a>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% style %}
+  .f-mr { padding: clamp(8px,1.4vw,20px) 4.7% clamp(40px,5vw,72px); }
+  .f-mr-wrap { max-width: 1080px; margin: 0 auto; }
+  .f-mr-rows { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: clamp(12px,1.4vw,18px); }
+
+  .f-mr-row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: clamp(120px, 13vw, 168px);
+    border-radius: 16px;
+    overflow: hidden;
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(232,225,210,0.1);
+    transition: border-color .3s ease, transform .3s ease;
+  }
+  .f-mr-row:hover { border-color: rgba(199,161,113,0.45); transform: translateY(-2px); }
+  .f-mr-icon { flex: 0 0 auto; margin: 0 clamp(20px,2.4vw,34px) 0 clamp(24px,3vw,42px); color: var(--f-cream-dim); z-index: 2; }
+  .f-mr-icon svg { width: clamp(30px,3.2vw,42px); height: clamp(30px,3.2vw,42px); }
+  .f-mr-row:hover .f-mr-icon { color: var(--f-gold); }
+  .f-mr-text { z-index: 2; display: flex; flex-direction: column; gap: 6px; max-width: 52%; }
+  .f-mr-title { font-family: var(--f-serif); font-weight: 500; font-size: clamp(22px,2.6vw,34px); color: var(--f-cream); line-height: 1.05; }
+  .f-mr-sub { font-size: clamp(11px,1.1vw,14px); letter-spacing: 0.04em; color: var(--f-cream-dim); }
+
+  .f-mr-media { position: absolute; top: 0; right: 0; bottom: 0; width: 58%; z-index: 1; }
+  .f-mr-media img {
+    width: 100%; height: 100%; object-fit: cover; object-position: center;
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 42%);
+    mask-image: linear-gradient(to right, transparent 0%, #000 42%);
+    transition: transform .5s ease;
+  }
+  .f-mr-row:hover .f-mr-media img { transform: scale(1.04); }
+  .f-mr-chev { position: absolute; right: clamp(18px,2vw,28px); top: 50%; transform: translateY(-50%); z-index: 3; color: var(--f-cream-dim); display: inline-flex; transition: color .3s ease, right .3s ease; }
+  .f-mr-chev svg { width: 11px; height: 17px; }
+  .f-mr-row:hover .f-mr-chev { color: var(--f-gold); right: clamp(14px,1.6vw,22px); }
+
+  /* compact tiles */
+  .f-mr-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(12px,1.4vw,18px); margin-top: clamp(12px,1.4vw,18px); }
+  .f-mr-tile {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+    min-height: clamp(96px,9vw,118px);
+    border-radius: 14px;
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(232,225,210,0.1);
+    transition: border-color .3s ease, transform .3s ease;
+  }
+  .f-mr-tile:hover { border-color: rgba(199,161,113,0.45); transform: translateY(-2px); }
+  .f-mr-tile-icon { color: var(--f-gold); display: inline-flex; }
+  .f-mr-tile-icon svg { width: 26px; height: 26px; }
+  .f-mr-tile-title { font-size: clamp(12px,1.2vw,15px); letter-spacing: 0.16em; text-transform: uppercase; color: var(--f-cream); }
+
+  @media (max-width: 749px) {
+    .f-mr-text { max-width: 50%; }
+    .f-mr-media { width: 52%; }
+    .f-mr-title { font-size: 20px; }
+    .f-mr-tiles { gap: 10px; }
+    .f-mr-tile-title { font-size: 10px; letter-spacing: 0.1em; }
+    .f-mr-tile { gap: 9px; }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Fujiyama меню редове",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "row",
+      "name": "Категория (ред)",
+      "settings": [
+        { "type": "select", "id": "icon", "label": "Икона", "default": "fish",
+          "options": [
+            { "value": "fish", "label": "Риба / Суши" },
+            { "value": "asian", "label": "Купа / Азиатска" },
+            { "value": "burger", "label": "Бургер" },
+            { "value": "pasta", "label": "Паста" },
+            { "value": "salad", "label": "Салата" },
+            { "value": "meat", "label": "Месо / Основни" },
+            { "value": "cake", "label": "Десерт" },
+            { "value": "cup", "label": "Напитки" },
+            { "value": "wine", "label": "Вино / Бар" }
+          ] },
+        { "type": "text", "id": "title", "label": "Заглавие (празно = от колекцията)" },
+        { "type": "text", "id": "subtitle", "label": "Подкатегории", "default": "Подкатегория · Подкатегория" },
+        { "type": "collection", "id": "collection", "label": "Колекция (за линк и снимка)" },
+        { "type": "image_picker", "id": "image", "label": "Снимка (по избор — замества снимката от колекцията)" },
+        { "type": "text", "id": "link", "label": "Линк (по избор — замества колекцията)" }
+      ]
+    },
+    {
+      "type": "tile",
+      "name": "Малка плочка",
+      "settings": [
+        { "type": "select", "id": "icon", "label": "Икона", "default": "cake",
+          "options": [
+            { "value": "cake", "label": "Десерт" },
+            { "value": "cup", "label": "Напитки" },
+            { "value": "wine", "label": "Вино / Бар" },
+            { "value": "fish", "label": "Риба / Суши" },
+            { "value": "asian", "label": "Купа / Азиатска" },
+            { "value": "salad", "label": "Салата" }
+          ] },
+        { "type": "text", "id": "title", "label": "Заглавие (празно = от колекцията)" },
+        { "type": "collection", "id": "collection", "label": "Колекция (за линк)" },
+        { "type": "text", "id": "link", "label": "Линк (по избор)" }
+      ]
+    }
+  ],
+  "max_blocks": 16,
+  "presets": [
+    {
+      "name": "Fujiyama меню редове",
+      "blocks": [
+        { "type": "row", "settings": { "icon": "fish", "title": "Суши", "subtitle": "Урамаки · Хосомаки · Сашими" } },
+        { "type": "row", "settings": { "icon": "asian", "title": "Азиатска", "subtitle": "Уок · Оден · Момо" } },
+        { "type": "row", "settings": { "icon": "burger", "title": "Бургери", "subtitle": "Класик · Крафт" } },
+        { "type": "row", "settings": { "icon": "pasta", "title": "Паста", "subtitle": "Прясна паста · Ризото" } },
+        { "type": "row", "settings": { "icon": "salad", "title": "Салати", "subtitle": "Сезонни · Боул" } },
+        { "type": "row", "settings": { "icon": "meat", "title": "Основни", "subtitle": "Риба · Стек" } },
+        { "type": "tile", "settings": { "icon": "cake", "title": "Десерти" } },
+        { "type": "tile", "settings": { "icon": "cup", "title": "Напитки" } },
+        { "type": "tile", "settings": { "icon": "wine", "title": "Вино & бар" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

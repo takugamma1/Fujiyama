@@ -1,12 +1,3 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
     "menu_hero": {
@@ -19,15 +10,21 @@
         "subtitle": ""
       }
     },
-    "menu_cards": {
-      "type": "fujiyama-collection-cards",
-      "settings": {
-        "eyebrow": "Нашето меню",
-        "heading": "Разгледай по категория",
-        "collections": [],
-        "button_verb": "Виж",
-        "columns": 4
-      }
+    "menu_rows": {
+      "type": "fujiyama-menu-rows",
+      "blocks": {
+        "r_sushi": { "type": "row", "settings": { "icon": "fish", "title": "Суши", "subtitle": "Урамаки · Хосомаки · Сашими", "collection": "урамаки" } },
+        "r_asian": { "type": "row", "settings": { "icon": "asian", "title": "Азиатска", "subtitle": "Уок · Оден · Момо", "collection": "азиатски-предложения" } },
+        "r_burger": { "type": "row", "settings": { "icon": "burger", "title": "Бургери", "subtitle": "Класик · Крафт", "collection": "бургери" } },
+        "r_pasta": { "type": "row", "settings": { "icon": "pasta", "title": "Паста", "subtitle": "Прясна паста · Ризото", "collection": "паста" } },
+        "r_salad": { "type": "row", "settings": { "icon": "salad", "title": "Салати", "subtitle": "Сезонни · Боул", "collection": "салати" } },
+        "r_main": { "type": "row", "settings": { "icon": "meat", "title": "Основни", "subtitle": "Риба · Стек", "collection": "основни" } },
+        "t_dessert": { "type": "tile", "settings": { "icon": "cake", "title": "Десерти", "collection": "десерти" } },
+        "t_drinks": { "type": "tile", "settings": { "icon": "cup", "title": "Напитки", "collection": "напитки" } },
+        "t_bar": { "type": "tile", "settings": { "icon": "wine", "title": "Вино & бар", "collection": "алкохолни-напитки" } }
+      },
+      "block_order": ["r_sushi", "r_asian", "r_burger", "r_pasta", "r_salad", "r_main", "t_dessert", "t_drinks", "t_bar"],
+      "settings": {}
     },
     "offers": {
       "type": "fujiyama-special-offers",
@@ -55,10 +52,7 @@
           }
         }
       },
-      "block_order": [
-        "delivery",
-        "offers"
-      ],
+      "block_order": ["delivery", "offers"],
       "settings": {}
     },
     "reservation": {
@@ -68,13 +62,13 @@
         "title": "Резервирай маса",
         "body": "Ресторантът е отворен всеки ден. Запази своята маса и се наслади на незабравимо преживяване.",
         "button_label": "Резервирай маса",
-        "button_link": ""
+        "button_link": "/pages/reservation"
       }
     }
   },
   "order": [
     "menu_hero",
-    "menu_cards",
+    "menu_rows",
     "offers",
     "reservation"
   ]
