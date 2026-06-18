@@ -15,7 +15,7 @@
       "type": "fujiyama-header",
       "settings": {
         "logo": "shopify://shop_images/ChatGPT_Image_Jun_5_2026_11_57_14_AM.png",
-        "show_cart": false,
+        "show_cart": true,
         "link_1_label": "Начало",
         "link_1_url": "/",
         "link_2_label": "Меню",

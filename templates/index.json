@@ -94,7 +94,6 @@
     "fujiyama_map": {
       "type": "fujiyama-map",
       "settings": {
-        "map_url": "",
         "city": "Пазарджик",
         "country": "България",
         "address": "<p>ул. Цар Иван Шишман 15<br>4400 Пазарджик, България</p>",
