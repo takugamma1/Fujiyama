@@ -23,7 +23,7 @@
         "link_3_label": "Резервации",
         "link_3_url": "/pages/reservation",
         "link_4_label": "За нас",
-        "link_4_url": "/#za-nas",
+        "link_4_url": "/pages/about",
         "link_5_label": "",
         "link_5_url": "/collections/all",
         "link_6_label": "Контакти",
