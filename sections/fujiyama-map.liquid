@@ -8,20 +8,17 @@
   <span class="f-anchor" id="kontakti"></span>
   <div class="f-map-inner">
     {%- liquid
-      if section.settings.map_url != blank
-        assign map_href = section.settings.map_url
+      if section.settings.map_embed_url != blank
+        assign map_src = section.settings.map_embed_url
       else
-        assign map_q = section.settings.address | strip_html | append: ' ' | append: section.settings.city | url_encode
-        assign map_href = 'https://www.google.com/maps/search/?api=1&query=' | append: map_q
+        assign map_q = section.settings.address | strip_html | append: ', ' | append: section.settings.city | url_encode
+        assign map_src = 'https://maps.google.com/maps?q=' | append: map_q | append: '&z=15&output=embed'
       endif
     -%}
-    <a class="f-map-link" href="{{ map_href }}" target="_blank" rel="noopener"
-       aria-label="Отвори локацията в Google Maps">
-      <img src="{{ 'fujiyama-map.webp' | asset_url }}" alt="Карта на Пазарджик с локацията на Fujiyama"
-           width="710" height="390" loading="lazy">
-      <img class="f-map-badge" src="{{ 'fujiyama-badge.png' | asset_url }}" alt="" aria-hidden="true"
-           width="73" height="73" loading="lazy">
-    </a>
+    <div class="f-map-embed">
+      <iframe src="{{ map_src }}" title="Карта — {{ section.settings.city | escape }}"
+              loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+    </div>
 
     <div class="f-map-card">
       <svg class="f-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
@@ -59,16 +56,24 @@
     display: flex;
     align-items: flex-start;
     gap: 0;
-    padding-bottom: 88px;
+    padding-bottom: 0;
   }
-  .f-map-link {
-    position: relative;
+  .f-map-embed {
     flex: 0 1 60.7%;
     margin-top: 7px;
-    transition: opacity 0.3s ease;
+    aspect-ratio: 71 / 39;
+    overflow: hidden;
+    border: 1px solid rgba(199, 161, 113, 0.18);
+    background: #1b1a18;
   }
-  .f-map-link:hover { opacity: 0.88; }
-  .f-map-link img:first-child { width: 100%; height: auto; }
+  .f-map-embed iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+    /* tint the real Google map to the dark theme (no API key needed) */
+    filter: invert(0.91) hue-rotate(180deg) brightness(0.92) contrast(0.9) saturate(0.55) sepia(0.18);
+  }
 
   .f-map-card {
     flex: 0 1 33%;
@@ -127,21 +132,10 @@
   .f-map-val:last-child { margin-bottom: 0; }
   .f-map-val p, .f-map-addr p { margin: 0; }
 
-  .f-map-link .f-map-badge {
-    position: absolute;
-    left: 52.6%;
-    bottom: -18px;
-    transform: translateX(-50%);
-    width: 73px;
-    height: auto;
-    opacity: 0.95;
-  }
-
   @media (max-width: 849px) {
     .f-map-inner { flex-direction: column; padding: 0 24px 56px; }
-    .f-map-link { flex-basis: auto; width: 100%; margin: 0 0 26px; }
+    .f-map-embed { flex-basis: auto; width: 100%; margin: 0 0 26px; aspect-ratio: 16 / 11; }
     .f-map-card { flex-basis: auto; width: 100%; margin: 0; }
-    .f-map-link .f-map-badge { position: static; transform: none; display: block; margin: 22px auto 0; width: 73px; }
   }
 {% endstyle %}
 
@@ -149,7 +143,7 @@
 {
   "name": "Fujiyama локация",
   "settings": [
-    { "type": "url", "id": "map_url", "label": "Google Maps линк" },
+    { "type": "text", "id": "map_embed_url", "label": "Google Maps embed URL (по избор)", "info": "Google Maps → Споделяне → Вграждане на карта → копирай адреса от src. Празно = автоматично от адреса по-долу." },
     { "type": "text", "id": "city", "label": "Град", "default": "Пазарджик" },
     { "type": "text", "id": "country", "label": "Държава", "default": "България" },
     { "type": "richtext", "id": "address", "label": "Адрес", "default": "<p>ул. Цар Иван Шишман 15<br>4400 Пазарджик, България</p>" },
