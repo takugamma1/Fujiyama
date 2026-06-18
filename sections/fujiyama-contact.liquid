@@ -1,0 +1,184 @@
+{%- comment -%}
+  FUJIYAMA Contact (Контакти) — ink hero, a message form (Shopify contact form)
+  beside the contact info, and an embedded dark Google map below. Mobile stacks.
+{%- endcomment -%}
+
+<section class="f-section f-ct-hero">
+  <div class="f-ct-board">
+    {%- if section.settings.hero_image != blank -%}
+      {{ section.settings.hero_image | image_url: width: 2000 | image_tag: alt: '', class: 'f-ct-art', loading: 'eager', fetchpriority: 'high' }}
+    {%- else -%}
+      <img class="f-ct-art" src="{{ 'fujiyama-contact-hero.webp' | asset_url }}" alt="" width="1881" height="836" loading="eager" fetchpriority="high">
+    {%- endif -%}
+    <div class="f-ct-top">
+      <h1 class="f-display f-ct-title">{{ section.settings.title | escape }}</h1>
+      {%- if section.settings.tagline != blank -%}<p class="f-ct-tag"><span>{{ section.settings.tagline | escape }}</span></p>{%- endif -%}
+      {%- if section.settings.subtitle != blank -%}<p class="f-ct-sub">{{ section.settings.subtitle }}</p>{%- endif -%}
+    </div>
+  </div>
+</section>
+
+<section class="f-section f-ct">
+  <div class="f-ct-grid">
+    <div class="f-ct-form-col">
+      <p class="f-ct-h"><span class="f-ct-h-rule"></span>{{ section.settings.form_heading | escape }}</p>
+      {%- form 'contact', class: 'f-cf' -%}
+        {%- if form.posted_successfully? -%}
+          <p class="f-form-note f-form-ok">Благодарим! Съобщението е изпратено — ще се свържем с вас скоро.</p>
+        {%- elsif form.errors -%}
+          <p class="f-form-note f-form-err">Моля, проверете полетата и опитайте отново.</p>
+        {%- endif -%}
+        <div class="f-cf-rows">
+          <label class="f-cf-field">
+            <span class="f-cf-icon">{% render 'fujiyama-icon', name: 'user' %}</span>
+            <span class="f-cf-body"><span class="f-cf-label">Име</span>
+              <input type="text" name="contact[Име]" placeholder="Вашето име" required></span>
+          </label>
+          <label class="f-cf-field">
+            <span class="f-cf-icon">{% render 'fujiyama-icon', name: 'mail' %}</span>
+            <span class="f-cf-body"><span class="f-cf-label">Имейл</span>
+              <input type="email" name="contact[email]" placeholder="Вашият имейл" required></span>
+          </label>
+          <label class="f-cf-field f-cf-wide">
+            <span class="f-cf-icon">{% render 'fujiyama-icon', name: 'phone' %}</span>
+            <span class="f-cf-body"><span class="f-cf-label">Телефон</span>
+              <input type="tel" name="contact[Телефон]" placeholder="{{ section.settings.phone | escape }}"></span>
+          </label>
+          <label class="f-cf-field f-cf-wide f-cf-area">
+            <span class="f-cf-body"><span class="f-cf-label">Съобщение</span>
+              <textarea name="contact[body]" rows="4" placeholder="Вашето съобщение" required></textarea></span>
+          </label>
+        </div>
+        <button type="submit" class="f-btn-gold f-cf-submit">
+          {{ section.settings.button | escape }}
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" width="15" height="15" aria-hidden="true"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg>
+        </button>
+        {%- if section.settings.note != blank -%}<p class="f-cf-note">{{ section.settings.note | escape }}</p>{%- endif -%}
+      {%- endform -%}
+    </div>
+
+    <aside class="f-ct-info-col">
+      <p class="f-ct-h"><span class="f-ct-h-rule"></span>{{ section.settings.info_heading | escape }}</p>
+      <ul class="f-ct-info" role="list">
+        <li class="f-ct-info-row">
+          <span class="f-ct-info-icon">{% render 'fujiyama-icon', name: 'pin' %}</span>
+          <div><p class="f-ct-info-k">{{ section.settings.address_label | escape }}</p>
+            <div class="f-ct-info-v">{{ section.settings.address }}</div></div>
+        </li>
+        <li class="f-ct-info-row">
+          <span class="f-ct-info-icon">{% render 'fujiyama-icon', name: 'phone' %}</span>
+          <div><p class="f-ct-info-k">{{ section.settings.phone_label | escape }}</p>
+            <p class="f-ct-info-v"><a href="tel:{{ section.settings.phone | remove: ' ' }}">{{ section.settings.phone | escape }}</a></p></div>
+        </li>
+        <li class="f-ct-info-row">
+          <span class="f-ct-info-icon">{% render 'fujiyama-icon', name: 'mail' %}</span>
+          <div><p class="f-ct-info-k">{{ section.settings.email_label | escape }}</p>
+            <p class="f-ct-info-v"><a href="mailto:{{ section.settings.email }}">{{ section.settings.email | escape }}</a></p></div>
+        </li>
+        <li class="f-ct-info-row">
+          <span class="f-ct-info-icon">{% render 'fujiyama-icon', name: 'clock' %}</span>
+          <div><p class="f-ct-info-k">{{ section.settings.hours_label | escape }}</p>
+            <div class="f-ct-info-v">{{ section.settings.hours }}</div></div>
+        </li>
+      </ul>
+    </aside>
+  </div>
+
+  {%- liquid
+    if section.settings.map_embed_url != blank
+      assign map_src = section.settings.map_embed_url
+    else
+      assign map_q = section.settings.address | strip_html | append: ', ' | append: section.settings.city | url_encode
+      assign map_src = 'https://maps.google.com/maps?q=' | append: map_q | append: '&z=15&output=embed'
+    endif
+  -%}
+  <div class="f-ct-map">
+    <iframe src="{{ map_src }}" title="Карта — {{ section.settings.city | escape }}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+  </div>
+</section>
+
+{% style %}
+  .f-ct-hero { overflow: hidden; padding: 0; }
+  .f-ct-board { position: relative; }
+  .f-ct-art { display: block; width: 100%; height: auto; }
+  .f-ct-top { position: absolute; top: 9%; left: 0; right: 0; text-align: center; padding: 0 6%; }
+  .f-ct-title { margin: 0; font-family: 'Italiana', var(--f-serif); font-weight: 400; color: #25241f; font-size: clamp(40px,7vw,104px); line-height: 1; letter-spacing: 0.08em; text-transform: uppercase; }
+  .f-ct-tag { margin: clamp(8px,1.4vw,18px) 0 0; display: flex; align-items: center; justify-content: center; gap: clamp(10px,1.6vw,20px); color: var(--f-gold-dim); font-size: clamp(9px,1vw,13px); font-weight: 500; letter-spacing: 0.4em; text-indent: 0.4em; text-transform: uppercase; }
+  .f-ct-tag span { position: relative; padding: 0 clamp(12px,1.6vw,24px); }
+  .f-ct-tag span::before, .f-ct-tag span::after { content: ''; position: absolute; top: 50%; width: clamp(24px,3.4vw,52px); height: 1px; background: var(--f-gold-dim); }
+  .f-ct-tag span::before { right: 100%; } .f-ct-tag span::after { left: 100%; }
+  .f-ct-sub { margin: clamp(12px,1.8vw,24px) auto 0; max-width: 32em; font-size: clamp(12px,1.1vw,16px); line-height: 1.7; color: #4f4a40; }
+
+  .f-ct { padding: clamp(20px,3vw,44px) 4.7% clamp(48px,6vw,80px); }
+  .f-ct-grid { max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: 1.5fr 1fr; gap: clamp(30px,5vw,76px); align-items: start; }
+  .f-ct-h { display: flex; align-items: center; gap: 16px; font-size: clamp(15px,1.5vw,19px); font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--f-cream); margin: 0 0 clamp(22px,2.4vw,32px); }
+  .f-ct-h-rule { width: 38px; height: 2px; background: var(--f-gold); flex: 0 0 auto; }
+
+  .f-cf-rows { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .f-cf-field { position: relative; display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.022); border: 1px solid rgba(232,225,210,0.14); border-radius: 12px; padding: 14px 18px; transition: border-color .25s ease; }
+  .f-cf-field:focus-within { border-color: var(--f-gold); }
+  .f-cf-wide { grid-column: 1 / -1; }
+  .f-cf-area { align-items: flex-start; }
+  .f-cf-icon { flex: 0 0 auto; color: var(--f-gold); display: inline-flex; }
+  .f-cf-icon svg { width: 20px; height: 20px; }
+  .f-cf-body { display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1 1 auto; }
+  .f-cf-label { font-size: 10px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--f-gold); }
+  .f-cf-field input, .f-cf-field textarea { width: 100%; background: none; border: 0; color: var(--f-cream); font-family: var(--f-sans); font-size: 14px; padding: 0; resize: vertical; }
+  .f-cf-field input::placeholder, .f-cf-field textarea::placeholder { color: rgba(232,225,210,0.4); }
+  .f-cf-field input:focus, .f-cf-field textarea:focus { outline: none; }
+  .f-cf-submit { width: 100%; height: 56px; margin-top: 18px; gap: 10px; border-radius: 6px; font-size: 13px; }
+  .f-cf-note { text-align: center; font-size: 12px; color: var(--f-body); margin: 16px 0 0; }
+  .f-form-note { font-size: 13px; margin: 0 0 16px; padding: 11px 16px; border: 1px solid; border-radius: 8px; }
+  .f-form-ok { color: #b5d0a5; border-color: rgba(181,208,165,.4); }
+  .f-form-err { color: #d9a09a; border-color: rgba(217,160,154,.4); }
+
+  .f-ct-info { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: clamp(22px,2.4vw,30px); }
+  .f-ct-info-row { display: flex; gap: 16px; align-items: flex-start; }
+  .f-ct-info-icon { flex: 0 0 auto; width: 40px; height: 40px; border: 1px solid rgba(199,161,113,.4); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: var(--f-gold); }
+  .f-ct-info-icon svg { width: 18px; height: 18px; }
+  .f-ct-info-k { font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--f-gold); margin: 4px 0 8px; }
+  .f-ct-info-v { font-size: 14px; line-height: 1.7; color: #c5bca9; margin: 0; }
+  .f-ct-info-v p { margin: 0; }
+  .f-ct-info-v a:hover { color: var(--f-gold); }
+
+  .f-ct-map { max-width: 1180px; margin: clamp(34px,4vw,56px) auto 0; aspect-ratio: 71 / 24; overflow: hidden; border: 1px solid rgba(199,161,113,0.18); background: #1b1a18; }
+  .f-ct-map iframe { width: 100%; height: 100%; border: 0; display: block; filter: invert(0.91) hue-rotate(180deg) brightness(0.92) contrast(0.9) saturate(0.55) sepia(0.18); }
+
+  @media (max-width: 749px) {
+    .f-ct-board { aspect-ratio: 4 / 5; }
+    .f-ct-art { height: 100%; object-fit: cover; object-position: 50% 42%; }
+    .f-ct-top { top: 8%; }
+    .f-ct-grid { grid-template-columns: 1fr; gap: 40px; }
+    .f-cf-rows { grid-template-columns: 1fr; }
+    .f-ct-map { aspect-ratio: 4 / 3; }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Fujiyama контакти",
+  "settings": [
+    { "type": "image_picker", "id": "hero_image", "label": "Арт изображение — по подразбиране вграденото" },
+    { "type": "text", "id": "title", "label": "Заглавие", "default": "Контакти" },
+    { "type": "text", "id": "tagline", "label": "Слоган", "default": "BAR & DINNER" },
+    { "type": "textarea", "id": "subtitle", "label": "Подзаглавие", "default": "Свържете се с нас за резервации, въпроси или предложения — ще се радваме да чуем от вас." },
+    { "type": "header", "content": "Форма" },
+    { "type": "text", "id": "form_heading", "label": "Заглавие", "default": "Изпрати съобщение" },
+    { "type": "text", "id": "button", "label": "Бутон", "default": "Изпрати съобщение" },
+    { "type": "text", "id": "note", "label": "Бележка под бутона", "default": "Отговаряме в рамките на работното време." },
+    { "type": "header", "content": "Информация" },
+    { "type": "text", "id": "info_heading", "label": "Заглавие", "default": "Информация" },
+    { "type": "text", "id": "city", "label": "Град (за картата)", "default": "Пазарджик" },
+    { "type": "text", "id": "address_label", "label": "Етикет адрес", "default": "Адрес" },
+    { "type": "richtext", "id": "address", "label": "Адрес", "default": "<p>гр. Пазарджик<br>ул. Цар Иван Шишман 15<br>4400 Пазарджик, България</p>" },
+    { "type": "text", "id": "phone_label", "label": "Етикет телефон", "default": "Телефон" },
+    { "type": "text", "id": "phone", "label": "Телефон", "default": "+359 88 123 45 67" },
+    { "type": "text", "id": "email_label", "label": "Етикет имейл", "default": "Имейл" },
+    { "type": "text", "id": "email", "label": "Имейл", "default": "info@fujiyama.bg" },
+    { "type": "text", "id": "hours_label", "label": "Етикет работно време", "default": "Работно време" },
+    { "type": "richtext", "id": "hours", "label": "Работно време", "default": "<p>Понеделник – Събота<br>12:00 – 23:00</p><p>Неделя<br>12:00 – 22:00</p>" },
+    { "type": "text", "id": "map_embed_url", "label": "Google Maps embed URL (по избор)", "info": "Празно = автоматично от адреса." }
+  ],
+  "presets": [{ "name": "Fujiyama контакти" }]
+}
+{% endschema %}

@@ -4,7 +4,7 @@
   shared chalkboard texture, so it melts into the hero with no visible edge.
 {%- endcomment -%}
 
-<header class="f-section f-header{% if template contains 'menu' or template contains 'reservation' or template contains 'faq' or template contains 'about' %} f-header--inverse{% endif %}" id="f-header">
+<header class="f-section f-header{% if template contains 'menu' or template contains 'reservation' or template contains 'faq' or template contains 'about' or template contains 'contact' %} f-header--inverse{% endif %}" id="f-header">
   <div class="f-header-inner">
     <button class="f-burger" aria-label="Меню" aria-expanded="false" aria-controls="f-mobile-nav">
       <span></span><span></span><span></span>
@@ -219,7 +219,7 @@
     { "type": "text", "id": "link_5_label", "label": "Линк 5 — текст", "default": "Галерия" },
     { "type": "text", "id": "link_5_url", "label": "Линк 5 — адрес", "default": "/collections/all" },
     { "type": "text", "id": "link_6_label", "label": "Линк 6 — текст", "default": "Контакти" },
-    { "type": "text", "id": "link_6_url", "label": "Линк 6 — адрес", "default": "/#kontakti" }
+    { "type": "text", "id": "link_6_url", "label": "Линк 6 — адрес", "default": "/pages/contact" }
   ]
 }
 {% endschema %}
