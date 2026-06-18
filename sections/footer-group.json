@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "type": "footer",
   "name": "Footer",
@@ -5,9 +14,10 @@
     "fujiyama_footer": {
       "type": "fujiyama-footer",
       "settings": {
-        "address": "<p>Пазарджик, България<br>ул. Цар Иван Шишман 15<br>+359 88 123 4567<br>info@sushichef.bg</p>",
+        "logo": "shopify://shop_images/ChatGPT_Image_Jun_18_2026_12_58_51_PM.png",
+        "address": "<p>Пазарджик, България<br/>ул. Цар Иван Шишман 15<br/>+359 88 123 4567<br/>info@sushichef.bg</p>",
         "hours_label": "Работно време",
-        "hours": "<p>Понеделник – Неделя<br>12:00 – 23:00</p>",
+        "hours": "<p>Понеделник – Неделя<br/>12:00 – 23:00</p>",
         "social_label": "Последвай ни",
         "instagram": "https://www.instagram.com/",
         "facebook": "https://www.facebook.com/",
@@ -15,5 +25,7 @@
       }
     }
   },
-  "order": ["fujiyama_footer"]
+  "order": [
+    "fujiyama_footer"
+  ]
 }
