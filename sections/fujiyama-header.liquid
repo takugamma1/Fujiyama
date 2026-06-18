@@ -20,7 +20,7 @@
       {%- if section.settings.logo != blank -%}
         {{ section.settings.logo | image_url: width: 120 | image_tag: alt: shop.name, class: 'f-emblem-img' }}
       {%- else -%}
-        <img src="{{ 'fujiyama-badge.png' | asset_url }}" alt="{{ shop.name }}" class="f-emblem-img" width="60" height="70">
+        <img src="{{ 'fujiyama-badge.png' | asset_url }}" alt="{{ shop.name }}" class="f-emblem-img" width="60" height="60">
       {%- endif -%}
     </a>
 
@@ -93,7 +93,7 @@
   .f-header--inverse .f-nav a:hover { color: #1f1c16; }
   .f-header--inverse .f-cart { color: #4a4336; }
   .f-header--inverse .f-cart:hover { color: #1f1c16; }
-  .f-header--inverse .f-emblem-img { filter: invert(1) brightness(0.16); }
+  /* the logo is a faithful cream seal; it blends on the cream bar (black art shows) and reads on dark */
   .f-header--inverse .f-burger span { background: #3a352c; }
   /* Once scrolled past the hero, revert to the dark charcoal bar */
   .f-header--inverse.is-stuck.f-section {
