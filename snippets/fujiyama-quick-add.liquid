@@ -1,0 +1,267 @@
+{%- comment -%}
+  FUJIYAMA quick-add popup — opens when a product card ([data-quick] inside a
+  .f-pc that carries a .f-pc-json script) is clicked, instead of going to the
+  product page. Shows the photo, description, variant pills, a quantity stepper
+  and an order-note field, then adds to cart (note saved as a line-item
+  property) and hands off to the cart drawer via window.FujiCart.
+{%- endcomment -%}
+
+<div class="f-qa" id="f-quickadd" hidden>
+  <div class="f-qa-scrim" data-qa-close></div>
+  <div class="f-qa-panel" role="dialog" aria-modal="true" aria-labelledby="f-qa-title">
+    <button type="button" class="f-qa-x" data-qa-close aria-label="Затвори">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15"/></svg>
+    </button>
+    <div class="f-qa-media">
+      <img data-qa-img alt="" width="360" height="360">
+      <span class="f-qa-media-ph" data-qa-ph hidden aria-hidden="true">膳</span>
+    </div>
+    <div class="f-qa-content">
+      <h2 class="f-display f-qa-title" id="f-qa-title" data-qa-title></h2>
+      <div class="f-qa-price" data-qa-price></div>
+      <div class="f-qa-desc" data-qa-desc></div>
+      <div class="f-qa-opts" data-qa-opts></div>
+      <div class="f-qa-row">
+        <span class="f-qa-row-label">Количество</span>
+        <div class="f-qa-qty">
+          <button type="button" data-qa-dec aria-label="Намали">−</button>
+          <span data-qa-qval>1</span>
+          <button type="button" data-qa-inc aria-label="Увеличи">+</button>
+        </div>
+      </div>
+      <div class="f-qa-note-wrap">
+        <label class="f-qa-note-label" for="f-qa-note">Бележка към поръчката <span>(по желание)</span></label>
+        <textarea id="f-qa-note" class="f-qa-note" data-qa-note rows="2" placeholder="напр. без лук, без люто, алергии, повече соев сос…"></textarea>
+      </div>
+      <button type="button" class="f-btn-gold f-qa-add" data-qa-add>Добави в количката</button>
+      <p class="f-qa-unavail" data-qa-unavail hidden>Този продукт не е наличен в момента.</p>
+    </div>
+  </div>
+</div>
+
+{% style %}
+  .f-qa[hidden] { display: none; }
+  #f-quickadd { position: fixed; inset: 0; z-index: 1050; }
+  .f-qa-scrim { position: absolute; inset: 0; background: rgba(0,0,0,.6); opacity: 0; transition: opacity .3s ease; }
+  #f-quickadd.is-open .f-qa-scrim { opacity: 1; }
+  .f-qa-panel {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -46%);
+    width: min(760px, 94vw); max-height: 92vh; overflow: hidden;
+    display: grid; grid-template-columns: 300px 1fr;
+    background: #1b1a18 url('fujiyama-texture.jpg') repeat; background-size: 400px 400px;
+    border: 1px solid rgba(199,161,113,.3); border-radius: 16px;
+    box-shadow: 0 30px 70px rgba(0,0,0,.55);
+    opacity: 0; transition: transform .35s cubic-bezier(.4,0,.2,1), opacity .3s ease;
+  }
+  #f-quickadd.is-open .f-qa-panel { transform: translate(-50%, -50%); opacity: 1; }
+  .f-qa-x {
+    position: absolute; top: 12px; right: 12px; z-index: 3; width: 38px; height: 38px; border-radius: 50%;
+    border: 1px solid rgba(232,225,210,.2); background: rgba(20,19,15,.6); color: var(--f-cream-dim);
+    cursor: pointer; display: inline-flex; align-items: center; justify-content: center; backdrop-filter: blur(4px);
+  }
+  .f-qa-x:hover { color: var(--f-cream); border-color: rgba(199,161,113,.6); }
+  .f-qa-media { position: relative; background: #14130f; aspect-ratio: 1; overflow: hidden; }
+  .f-qa-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .f-qa-media-ph { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Noto Serif JP', var(--f-serif); font-size: 3rem; color: rgba(199,161,113,.4); }
+  .f-qa-content { padding: clamp(22px,2.6vw,34px); overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
+  .f-qa-title { margin: 0; font-size: clamp(20px,2.4vw,28px); letter-spacing: .03em; text-transform: uppercase; color: var(--f-cream); line-height: 1.15; }
+  .f-qa-price { font-family: var(--f-serif); font-size: 22px; color: var(--f-gold); }
+  .f-qa-desc { font-size: 13px; line-height: 1.65; color: var(--f-body); max-height: 168px; overflow-y: auto; }
+  .f-qa-desc[hidden] { display: none; }
+  .f-qa-desc p { margin: 0 0 .6em; }
+  .f-qa-opts { display: flex; flex-direction: column; gap: 12px; }
+  .f-qa-opts:empty { display: none; }
+  .f-qa-opt-name { display: block; font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--f-cream-dim); margin-bottom: 8px; }
+  .f-qa-opt-vals { display: flex; flex-wrap: wrap; gap: 8px; }
+  .f-qa-pill {
+    padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(232,225,210,.18);
+    background: none; color: var(--f-cream-dim); font-family: var(--f-sans); font-size: 12px;
+    letter-spacing: .04em; cursor: pointer; transition: color .2s, border-color .2s, background .2s;
+  }
+  .f-qa-pill:hover { border-color: rgba(199,161,113,.6); color: var(--f-cream); }
+  .f-qa-pill.is-active { background: var(--f-gold); border-color: var(--f-gold); color: var(--f-ink); }
+  .f-qa-pill.is-soldout { opacity: .4; text-decoration: line-through; cursor: not-allowed; }
+  .f-qa-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .f-qa-row-label, .f-qa-note-label { font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--f-cream-dim); }
+  .f-qa-note-label span { opacity: .55; letter-spacing: .04em; text-transform: none; }
+  .f-qa-qty { display: inline-flex; align-items: center; border: 1px solid rgba(232,225,210,.2); border-radius: 999px; }
+  .f-qa-qty button { width: 34px; height: 34px; background: none; border: 0; color: var(--f-cream); cursor: pointer; font-size: 17px; line-height: 1; }
+  .f-qa-qty button:hover { color: var(--f-gold); }
+  .f-qa-qty span { min-width: 28px; text-align: center; font-size: 14px; color: var(--f-cream); }
+  .f-qa-note-wrap { display: flex; flex-direction: column; gap: 7px; }
+  .f-qa-note {
+    width: 100%; background: rgba(20,19,15,.5); border: 1px solid rgba(232,225,210,.16); border-radius: 10px;
+    padding: 10px 12px; color: var(--f-cream); font-family: var(--f-sans); font-size: 13px; line-height: 1.5;
+    resize: vertical; min-height: 48px;
+  }
+  .f-qa-note:focus { outline: none; border-color: rgba(199,161,113,.6); }
+  .f-qa-note::placeholder { color: rgba(232,225,210,.35); }
+  .f-qa-add { width: 100%; height: 50px; border-radius: 6px; margin-top: 2px; }
+  .f-qa-add[disabled] { opacity: .4; cursor: not-allowed; }
+  .f-qa-unavail { margin: 0; font-size: 12px; color: #d9a09a; text-align: center; }
+  .f-qa-unavail[hidden] { display: none; }
+
+  @media (max-width: 680px) {
+    .f-qa-panel { grid-template-columns: 1fr; max-height: 90vh; overflow-y: auto; }
+    .f-qa-media { aspect-ratio: 16 / 10; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .f-qa-panel, .f-qa-scrim { transition: none; }
+  }
+{% endstyle %}
+
+<script>
+(function () {
+  var modal = document.getElementById('f-quickadd');
+  if (!modal) return;
+  var imgEl = modal.querySelector('[data-qa-img]');
+  var phEl = modal.querySelector('[data-qa-ph]');
+  var titleEl = modal.querySelector('[data-qa-title]');
+  var priceEl = modal.querySelector('[data-qa-price]');
+  var descEl = modal.querySelector('[data-qa-desc]');
+  var optsEl = modal.querySelector('[data-qa-opts]');
+  var qvalEl = modal.querySelector('[data-qa-qval]');
+  var noteEl = modal.querySelector('[data-qa-note]');
+  var addBtn = modal.querySelector('[data-qa-add]');
+  var unavailEl = modal.querySelector('[data-qa-unavail]');
+  var state = { data: null, qty: 1, selected: [], variant: null };
+  var lastFocus = null;
+
+  function isDefault(d) {
+    return d.variants.length === 1 &&
+      (d.options.length === 0 || (d.options.length === 1 && (d.options[0].values || []).length === 1));
+  }
+  function matchVariant() {
+    var d = state.data;
+    if (isDefault(d)) return d.variants[0];
+    for (var i = 0; i < d.variants.length; i++) {
+      var v = d.variants[i], ok = true;
+      for (var j = 0; j < (v.options || []).length; j++) {
+        if (v.options[j] !== state.selected[j]) { ok = false; break; }
+      }
+      if (ok) return v;
+    }
+    return null;
+  }
+  function updateVariant() {
+    var v = matchVariant();
+    state.variant = v;
+    if (v) {
+      priceEl.textContent = v.price_formatted;
+      if (v.image) { imgEl.src = v.image; imgEl.hidden = false; phEl.hidden = true; }
+    }
+    var avail = !!(v && v.available);
+    addBtn.disabled = !avail;
+    unavailEl.hidden = avail;
+  }
+  function renderOpts() {
+    optsEl.innerHTML = '';
+    var d = state.data;
+    if (isDefault(d)) return;
+    d.options.forEach(function (opt, oi) {
+      var group = document.createElement('div');
+      group.className = 'f-qa-opt';
+      var name = document.createElement('span');
+      name.className = 'f-qa-opt-name';
+      name.textContent = opt.name;
+      group.appendChild(name);
+      var vals = document.createElement('div');
+      vals.className = 'f-qa-opt-vals';
+      (opt.values || []).forEach(function (val) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'f-qa-pill';
+        b.textContent = val;
+        if (val === state.selected[oi]) b.classList.add('is-active');
+        b.addEventListener('click', function () {
+          state.selected[oi] = val;
+          vals.querySelectorAll('.f-qa-pill').forEach(function (x) { x.classList.remove('is-active'); });
+          b.classList.add('is-active');
+          updateVariant();
+        });
+        vals.appendChild(b);
+      });
+      group.appendChild(vals);
+      optsEl.appendChild(group);
+    });
+  }
+  function openWith(data) {
+    state.data = data; state.qty = 1; qvalEl.textContent = '1'; noteEl.value = '';
+    var first = null;
+    for (var i = 0; i < data.variants.length; i++) { if (data.variants[i].available) { first = data.variants[i]; break; } }
+    if (!first) first = data.variants[0];
+    state.selected = (first && first.options) ? first.options.slice() : [];
+    titleEl.textContent = data.title;
+    if (data.description) { descEl.innerHTML = data.description; descEl.hidden = false; }
+    else { descEl.innerHTML = ''; descEl.hidden = true; }
+    if (data.featured_image) { imgEl.src = data.featured_image; imgEl.hidden = false; phEl.hidden = true; }
+    else { imgEl.removeAttribute('src'); imgEl.hidden = true; phEl.hidden = false; }
+    renderOpts();
+    updateVariant();
+    if (!state.variant) priceEl.textContent = (data.price_varies ? 'от ' : '') + data.price_formatted;
+    open();
+  }
+  function open() {
+    lastFocus = document.activeElement;
+    modal.hidden = false;
+    requestAnimationFrame(function () { modal.classList.add('is-open'); });
+    document.documentElement.style.overflow = 'hidden';
+    var x = modal.querySelector('.f-qa-x'); if (x) x.focus();
+  }
+  function close() {
+    modal.classList.remove('is-open');
+    document.documentElement.style.overflow = '';
+    setTimeout(function () { modal.hidden = true; }, 340);
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  function add() {
+    var v = state.variant;
+    if (!v || !v.available) return;
+    addBtn.disabled = true;
+    var item = { id: Number(v.id), quantity: state.qty };
+    var note = (noteEl.value || '').trim();
+    if (note) item.properties = { 'Бележка': note };
+    fetch('/cart/add.js', {
+      method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ items: [item] })
+    }).then(function (r) {
+      if (!r.ok) return r.json().then(function (e) { throw e; });
+      return r.json();
+    }).then(function () {
+      var title = state.data.title;
+      close();
+      if (window.FujiCart) {
+        window.FujiCart.refresh().then(function () {
+          window.FujiCart.showToast('<b>✓</b> ' + title + ' — добавено в количката');
+          window.FujiCart.open();
+        });
+      }
+    }).catch(function (err) {
+      addBtn.disabled = false;
+      var msg = (err && err.description) ? err.description : 'Възникна грешка. Опитайте отново.';
+      if (window.FujiCart) window.FujiCart.showToast(msg);
+    });
+  }
+
+  document.addEventListener('click', function (e) {
+    var trig = e.target.closest('[data-quick]');
+    if (trig) {
+      if (trig.hasAttribute('disabled')) return;
+      var card = trig.closest('.f-pc');
+      if (!card) return;
+      var json = card.querySelector('.f-pc-json');
+      if (!json) return;
+      e.preventDefault();
+      try { openWith(JSON.parse(json.textContent)); } catch (err) {}
+      return;
+    }
+    if (e.target.closest('[data-qa-close]')) { close(); return; }
+    if (e.target.closest('[data-qa-add]')) { add(); return; }
+    if (e.target.closest('[data-qa-inc]')) { state.qty++; qvalEl.textContent = state.qty; return; }
+    if (e.target.closest('[data-qa-dec]')) { if (state.qty > 1) { state.qty--; qvalEl.textContent = state.qty; } return; }
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && modal.classList.contains('is-open')) close();
+  });
+})();
+</script>

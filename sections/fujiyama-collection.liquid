@@ -90,25 +90,45 @@
   {%- paginate collection.products by 24 -%}
     <ul class="f-col-grid" role="list">
       {%- for product in collection.products -%}
-        {%- assign variant = product.selected_or_first_available_variant -%}
         <li class="f-pc">
-          <a class="f-pc-media" href="{{ product.url }}" tabindex="-1" aria-hidden="true">
+          <button type="button" class="f-pc-media" data-quick tabindex="-1" aria-hidden="true">
             {%- if product.featured_image -%}
               {{ product.featured_image | image_url: width: 600 | image_tag: class: 'f-pc-img', loading: 'lazy', widths: '260,400,600', sizes: '(max-width:749px) 44vw, 240px', alt: product.title | escape }}
             {%- else -%}
               <span class="f-pc-ph" aria-hidden="true">膳</span>
             {%- endif -%}
-          </a>
+          </button>
           <div class="f-pc-body">
-            <a class="f-pc-title" href="{{ product.url }}">{{ product.title }}</a>
+            <button type="button" class="f-pc-title" data-quick>{{ product.title | escape }}</button>
             {%- if product.description != blank -%}<p class="f-pc-desc">{{ product.description | strip_html | truncate: 72 }}</p>{%- endif -%}
             <div class="f-pc-foot">
               <span class="f-pc-price">{%- if product.price_varies -%}от {% endif -%}{{ product.price | money }}</span>
-              <button type="button" class="f-pc-add" data-add-variant="{{ variant.id }}" data-title="{{ product.title | escape }}" aria-label="Добави {{ product.title | escape }} в количката"{% unless variant.available %} disabled aria-disabled="true"{% endunless %}>
+              <button type="button" class="f-pc-add" data-quick data-title="{{ product.title | escape }}" aria-label="Добави {{ product.title | escape }} в количката"{% unless product.available %} disabled aria-disabled="true"{% endunless %}>
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M8 2.5v11M2.5 8h11"/></svg>
               </button>
             </div>
           </div>
+          <script type="application/json" class="f-pc-json">
+            {
+              "id": {{ product.id }},
+              "title": {{ product.title | json }},
+              "description": {{ product.description | json }},
+              "available": {{ product.available }},
+              "price_varies": {{ product.price_varies }},
+              "price_formatted": {{ product.price | money | json }},
+              "featured_image": {% if product.featured_image %}{{ product.featured_image | image_url: width: 720 | json }}{% else %}null{% endif %},
+              "options": [
+                {%- for opt in product.options_with_values -%}
+                { "name": {{ opt.name | json }}, "values": {{ opt.values | json }} }{%- unless forloop.last -%},{%- endunless -%}
+                {%- endfor -%}
+              ],
+              "variants": [
+                {%- for v in product.variants -%}
+                { "id": {{ v.id }}, "title": {{ v.title | json }}, "options": {{ v.options | json }}, "available": {{ v.available }}, "price_formatted": {{ v.price | money | json }}, "image": {% if v.image %}{{ v.image | image_url: width: 720 | json }}{% else %}null{% endif %} }{%- unless forloop.last -%},{%- endunless -%}
+                {%- endfor -%}
+              ]
+            }
+          </script>
         </li>
       {%- else -%}
         <li class="f-col-empty">В тази колекция още няма продукти.</li>
@@ -127,6 +147,8 @@
     {%- endif -%}
   {%- endpaginate -%}
 </section>
+
+{% render 'fujiyama-quick-add' %}
 
 {% style %}
   .f-cg { padding: clamp(18px,2.6vw,36px) 4.7% clamp(48px,6vw,84px); }
@@ -188,12 +210,12 @@
   .f-col-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(214px, 1fr)); gap: clamp(12px,1.2vw,18px); }
   .f-pc { display: flex; flex-direction: column; border: 1px solid rgba(232,225,210,.1); border-radius: 12px; overflow: hidden; background: rgba(255,255,255,.022); transition: border-color .3s, transform .3s; }
   .f-pc:hover { border-color: rgba(199,161,113,.4); transform: translateY(-3px); }
-  .f-pc-media { display: block; aspect-ratio: 1; overflow: hidden; background: #14130f; }
+  .f-pc-media { display: block; width: 100%; aspect-ratio: 1; overflow: hidden; background: #14130f; border: 0; padding: 0; cursor: pointer; }
   .f-pc-img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
   .f-pc:hover .f-pc-img { transform: scale(1.05); }
   .f-pc-ph { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; font-family: 'Noto Serif JP', var(--f-serif); font-size: 2.2rem; color: rgba(199,161,113,.45); }
   .f-pc-body { display: flex; flex-direction: column; gap: 8px; padding: 16px 16px 18px; flex: 1 1 auto; }
-  .f-pc-title { font-family: var(--f-sans); font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--f-cream); line-height: 1.3; }
+  .f-pc-title { display: block; width: 100%; text-align: left; background: none; border: 0; padding: 0; cursor: pointer; font-family: var(--f-sans); font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--f-cream); line-height: 1.3; transition: color .2s; }
   .f-pc-title:hover { color: var(--f-gold); }
   .f-pc-desc { margin: 0; font-size: 12px; line-height: 1.5; color: rgba(232,225,210,.62); }
   .f-pc-foot { margin-top: auto; padding-top: 6px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }

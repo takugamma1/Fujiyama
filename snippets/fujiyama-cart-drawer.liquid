@@ -37,6 +37,7 @@
     <div class="f-cart-item-main">
       <a class="f-cart-item-title" data-href data-title></a>
       <span class="f-cart-item-variant" data-variant hidden></span>
+      <span class="f-cart-item-note" data-note hidden></span>
       <div class="f-cart-item-row">
         <div class="f-cart-qty">
           <button type="button" data-qty-dec aria-label="Намали">−</button>
@@ -81,6 +82,8 @@
   .f-cart-item-title { font-size: 12.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--f-cream); line-height: 1.35; }
   .f-cart-item-title:hover { color: var(--f-gold); }
   .f-cart-item-variant { font-size: 11px; color: var(--f-body); margin-top: 2px; }
+  .f-cart-item-note { display: block; font-size: 11px; font-style: italic; color: var(--f-gold); margin-top: 3px; line-height: 1.35; }
+  .f-cart-item-note[hidden] { display: none; }
   .f-cart-item-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 10px; }
   .f-cart-qty { display: inline-flex; align-items: center; border: 1px solid rgba(232,225,210,.2); border-radius: 999px; }
   .f-cart-qty button { width: 28px; height: 28px; background: none; border: 0; color: var(--f-cream); cursor: pointer; font-size: 15px; line-height: 1; }
@@ -176,6 +179,14 @@
       node.querySelector('[data-title]').textContent = item.product_title;
       var v = node.querySelector('[data-variant]');
       if (item.variant_title && item.variant_title.indexOf('Default') === -1) { v.textContent = item.variant_title; v.hidden = false; }
+      var noteEl = node.querySelector('[data-note]');
+      if (item.properties) {
+        var parts = [];
+        Object.keys(item.properties).forEach(function (k) {
+          if (k.charAt(0) !== '_' && item.properties[k]) parts.push(item.properties[k]);
+        });
+        if (parts.length) { noteEl.textContent = '“' + parts.join(' · ') + '”'; noteEl.hidden = false; }
+      }
       node.querySelector('[data-qty]').textContent = item.quantity;
       node.querySelector('[data-line-price]').textContent = money(item.final_line_price, cart.currency);
       var key = item.key;
@@ -251,6 +262,9 @@
     if (e.target.closest('[data-cart-close]')) { close(); }
   });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && drawer.classList.contains('is-open')) close(); });
+
+  // Public API so other UI (e.g. the quick-add popup) can reuse the drawer.
+  window.FujiCart = { refresh: refresh, open: open, close: close, showToast: showToast, money: money };
 
   // keep header bubble correct on load
   refresh();
