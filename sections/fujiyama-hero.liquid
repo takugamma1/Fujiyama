@@ -7,7 +7,7 @@
 <section class="f-section f-hero" id="nachalo">
   <div class="f-board f-hero-board">
 
-    <h1 class="f-abs f-hero-title">{{ section.settings.title | escape }}</h1>
+    <h1 class="f-abs f-hero-title"><span class="f-hero-word">{{ section.settings.title | escape }}</span></h1>
 
     {%- if section.settings.art != blank -%}
       {{ section.settings.art | image_url: width: 2340 | image_tag:
@@ -45,18 +45,22 @@
     top: 1cqw;
     left: 0;
     width: 100%;
-    text-align: center;
+    display: flex;
+    justify-content: center;   /* true centering, immune to the letter-spacing quirk */
+    white-space: nowrap;
+    z-index: 3;
+  }
+  .f-hero-word {
+    display: inline-block;
     font-family: 'Italiana', var(--f-serif);
     font-weight: 400;
     font-size: 22cqw;
     line-height: 1.05;
     letter-spacing: 0.1em;
-    text-indent: 0.1em; /* recenter: letter-spacing adds a trailing gap */
-    transform: scaleX(0.88); /* mockup wordmark is ultra-condensed */
-    transform-origin: center top;
+    margin-right: -0.1em;      /* cancel the trailing letter-spacing so it sits dead-centre */
+    transform: scaleX(0.88);   /* mockup wordmark is ultra-condensed */
+    transform-origin: center;
     color: #ddd5c3;
-    white-space: nowrap;
-    z-index: 3;
   }
 {% endstyle %}
 
