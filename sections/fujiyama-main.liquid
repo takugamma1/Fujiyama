@@ -73,7 +73,13 @@
 {% style %}
   .f-anchor { display: block; scroll-margin-top: 70px; }
   .f-main-board { aspect-ratio: 1170 / 1286; }
-  .f-main-art { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .f-main-art {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    /* feather the artboard's lighter top edge into the section bg so it meets
+       the hero's feathered bottom at the same colour — seamless merge */
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 10%);
+            mask-image: linear-gradient(to bottom, transparent 0, #000 10%);
+  }
 
   /* chef — design abs y → rel cqw ((y-797)/11.7) */
   .f-chef-label { top: -2.5cqw; left: 3.42cqw; font-size: 1.03cqw; }
