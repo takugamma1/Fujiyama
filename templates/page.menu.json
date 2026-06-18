@@ -114,38 +114,6 @@
       ],
       "settings": {}
     },
-    "offers": {
-      "type": "fujiyama-special-offers",
-      "blocks": {
-        "delivery": {
-          "type": "offer",
-          "settings": {
-            "fallback": "fujiyama-card-3.webp",
-            "image_side": "left",
-            "title": "Доставка до дома",
-            "body": "Бързо, удобно и вкусно – директно до твоята врата.",
-            "button_label": "Поръчай сега",
-            "button_link": "/pages/menu"
-          }
-        },
-        "offers": {
-          "type": "offer",
-          "settings": {
-            "fallback": "fujiyama-card-5.webp",
-            "image_side": "right",
-            "title": "Специални предложения",
-            "body": "Подбрани сетове и оферти, създадени специално за теб.",
-            "button_label": "Виж офертите",
-            "button_link": "/collections/предложение-за-деня"
-          }
-        }
-      },
-      "block_order": [
-        "delivery",
-        "offers"
-      ],
-      "settings": {}
-    },
     "reservation": {
       "type": "fujiyama-reservation-bubble",
       "settings": {
@@ -160,7 +128,6 @@
   "order": [
     "menu_hero",
     "menu_rows",
-    "offers",
     "reservation"
   ]
 }
