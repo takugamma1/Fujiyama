@@ -163,30 +163,30 @@
   /* content sits in a dark glass "bubble" pinned to the card bottom */
   .f-card-bubble {
     position: absolute;
-    left: 0.8cqw;
-    right: 0.8cqw;
-    bottom: 0.8cqw;
-    padding: 1cqw 1.1cqw;
+    left: 0.6cqw;
+    right: 0.6cqw;
+    bottom: 0.6cqw;
+    padding: 1.5cqw 1.5cqw;
     display: flex;
     flex-direction: column;
-    gap: 0.5cqw;
-    background: rgba(15, 12, 9, 0.8);
+    gap: 0.7cqw;
+    background: rgba(15, 12, 9, 0.82);
     -webkit-backdrop-filter: blur(5px);
     backdrop-filter: blur(5px);
     border: 1px solid rgba(232, 225, 210, 0.14);
-    border-radius: 0.55cqw;
+    border-radius: 0.65cqw;
   }
   .f-card-title {
-    font-size: 0.98cqw;
+    font-size: 1.22cqw;
     font-weight: 600;
     letter-spacing: 0.07em;
     text-transform: uppercase;
     color: var(--f-cream);
     line-height: 1.2;
   }
-  .f-card-foot { display: flex; align-items: center; justify-content: space-between; gap: 0.8cqw; }
-  .f-card-desc { flex: 1 1 auto; font-size: 0.82cqw; line-height: 1.4; color: rgba(232, 225, 210, 0.72); }
-  .f-card-arrow { flex: 0 0 auto; width: 2.4cqw; height: 2.4cqw; aspect-ratio: 1; }
+  .f-card-foot { display: flex; align-items: center; justify-content: space-between; gap: 0.9cqw; }
+  .f-card-desc { flex: 1 1 auto; font-size: 0.98cqw; line-height: 1.42; color: rgba(232, 225, 210, 0.74); }
+  .f-card-arrow { flex: 0 0 auto; width: 3cqw; height: 3cqw; aspect-ratio: 1; }
   .f-card:hover .f-card-arrow { background: var(--f-gold); border-color: var(--f-gold); color: var(--f-ink); }
 
   .f-main-mobile { display: none; }
@@ -240,10 +240,10 @@
       scroll-snap-align: center;
       text-align: left;
     }
-    .f-mob-card .f-card-bubble { left: 10px; right: 10px; bottom: 10px; padding: 13px 14px; gap: 7px; border-radius: 12px; }
-    .f-mob-card .f-card-title { font-size: 13px; }
-    .f-mob-card .f-card-desc { font-size: 11px; }
-    .f-mob-card .f-card-arrow { width: 34px; height: 34px; }
+    .f-mob-card .f-card-bubble { left: 9px; right: 9px; bottom: 9px; padding: 17px 17px; gap: 9px; border-radius: 14px; }
+    .f-mob-card .f-card-title { font-size: 15px; }
+    .f-mob-card .f-card-desc { font-size: 12.5px; }
+    .f-mob-card .f-card-arrow { width: 42px; height: 42px; }
   }
 {% endstyle %}
 
