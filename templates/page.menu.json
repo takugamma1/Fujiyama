@@ -22,17 +22,96 @@
     "menu_rows": {
       "type": "fujiyama-menu-rows",
       "blocks": {
-        "r_sushi": { "type": "row", "settings": { "icon": "fish", "title": "Суши", "subtitle": "Урамаки · Хосомаки · Сашими", "collection": "урамаки" } },
-        "r_asian": { "type": "row", "settings": { "icon": "asian", "title": "Азиатска", "subtitle": "Уок · Оден · Момо", "collection": "азиатски-предложения" } },
-        "r_burger": { "type": "row", "settings": { "icon": "burger", "title": "Бургери", "subtitle": "Класик · Крафт", "collection": "бургери" } },
-        "r_pasta": { "type": "row", "settings": { "icon": "pasta", "title": "Паста", "subtitle": "Прясна паста · Ризото", "collection": "паста" } },
-        "r_salad": { "type": "row", "settings": { "icon": "salad", "title": "Салати", "subtitle": "Сезонни · Боул", "collection": "салати" } },
-        "r_main": { "type": "row", "settings": { "icon": "meat", "title": "Основни", "subtitle": "Риба · Стек", "collection": "основни" } },
-        "t_dessert": { "type": "tile", "settings": { "icon": "cake", "title": "Десерти", "collection": "десерти" } },
-        "t_drinks": { "type": "tile", "settings": { "icon": "cup", "title": "Напитки", "collection": "напитки" } },
-        "t_bar": { "type": "tile", "settings": { "icon": "wine", "title": "Вино & бар", "collection": "алкохолни-напитки" } }
+        "r_sushi": {
+          "type": "row",
+          "settings": {
+            "icon": "fish",
+            "title": "Суши",
+            "subtitle": "Урамаки · Хосомаки · Сашими",
+            "collection": "урамаки"
+          }
+        },
+        "r_asian": {
+          "type": "row",
+          "settings": {
+            "icon": "asian",
+            "title": "Азиатска",
+            "subtitle": "Уок · Оден · Момо",
+            "collection": "азиатски-предложения"
+          }
+        },
+        "r_burger": {
+          "type": "row",
+          "settings": {
+            "icon": "burger",
+            "title": "Бургери",
+            "subtitle": "Класик · Крафт",
+            "collection": "бургери"
+          }
+        },
+        "r_pasta": {
+          "type": "row",
+          "settings": {
+            "icon": "pasta",
+            "title": "Паста",
+            "subtitle": "Прясна паста · Ризото",
+            "collection": "паста"
+          }
+        },
+        "r_salad": {
+          "type": "row",
+          "settings": {
+            "icon": "salad",
+            "title": "Салати",
+            "subtitle": "Сезонни · Боул",
+            "collection": "салати"
+          }
+        },
+        "r_main": {
+          "type": "row",
+          "settings": {
+            "icon": "meat",
+            "title": "Основни",
+            "subtitle": "Риба · Стек",
+            "collection": "основни"
+          }
+        },
+        "t_dessert": {
+          "type": "tile",
+          "settings": {
+            "icon": "cake",
+            "title": "Десерти",
+            "collection": "десерти"
+          }
+        },
+        "t_drinks": {
+          "type": "tile",
+          "settings": {
+            "icon": "cup",
+            "title": "Напитки",
+            "collection": "напитки"
+          }
+        },
+        "t_bar": {
+          "type": "tile",
+          "settings": {
+            "icon": "wine",
+            "title": "Вино & бар",
+            "collection": "алкохолни-напитки"
+          }
+        }
       },
-      "block_order": ["r_sushi", "r_asian", "r_burger", "r_pasta", "r_salad", "r_main", "t_dessert", "t_drinks", "t_bar"],
+      "block_order": [
+        "r_sushi",
+        "r_asian",
+        "r_burger",
+        "r_pasta",
+        "r_salad",
+        "r_main",
+        "t_dessert",
+        "t_drinks",
+        "t_bar"
+      ],
       "settings": {}
     },
     "offers": {
@@ -46,7 +125,7 @@
             "title": "Доставка до дома",
             "body": "Бързо, удобно и вкусно – директно до твоята врата.",
             "button_label": "Поръчай сега",
-            "button_link": ""
+            "button_link": "/pages/menu"
           }
         },
         "offers": {
@@ -57,11 +136,14 @@
             "title": "Специални предложения",
             "body": "Подбрани сетове и оферти, създадени специално за теб.",
             "button_label": "Виж офертите",
-            "button_link": ""
+            "button_link": "/collections/предложение-за-деня"
           }
         }
       },
-      "block_order": ["delivery", "offers"],
+      "block_order": [
+        "delivery",
+        "offers"
+      ],
       "settings": {}
     },
     "reservation": {
