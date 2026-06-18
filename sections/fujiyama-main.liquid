@@ -31,11 +31,13 @@
       {%- assign geo = card_geo[forloop.index0] | split: ',' -%}
       <a class="f-abs f-card" href="{{ block.settings.url | default: '/collections/all' }}"
          style="left: {{ geo[0] }}cqw; width: {{ geo[1] }}cqw;" {{ block.shopify_attributes }}>
-        <span class="f-card-title">{{ block.settings.title | escape }}</span>
-        <span class="f-card-desc">{{ block.settings.desc | escape }}</span>
-        <span class="f-arrow f-card-arrow" aria-hidden="true">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg>
-        </span>
+        <span class="f-card-bubble">
+            <span class="f-card-title">{{ block.settings.title | escape }}</span>
+            <span class="f-card-foot">
+              <span class="f-card-desc">{{ block.settings.desc | escape }}</span>
+              <span class="f-arrow f-card-arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg></span>
+            </span>
+          </span>
       </a>
     {%- endfor -%}
   </div>
@@ -58,11 +60,13 @@
         {%- for block in section.blocks limit: 5 -%}
           <a class="f-mob-card" href="{{ block.settings.url | default: '/collections/all' }}"
              style="background-image: url('{{ 'fujiyama-card-' | append: forloop.index | asset_url }}');">
+            <span class="f-card-bubble">
             <span class="f-card-title">{{ block.settings.title | escape }}</span>
-            <span class="f-card-desc">{{ block.settings.desc | escape }}</span>
-            <span class="f-arrow f-card-arrow" aria-hidden="true">
-              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg>
+            <span class="f-card-foot">
+              <span class="f-card-desc">{{ block.settings.desc | escape }}</span>
+              <span class="f-arrow f-card-arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg></span>
             </span>
+          </span>
           </a>
         {%- endfor -%}
       </div>
@@ -156,35 +160,33 @@
     transform: translateY(-0.34cqw);
     box-shadow: 0 1.2cqw 2.6cqw rgba(0, 0, 0, 0.45);
   }
-  .f-card-title {
+  /* content sits in a dark glass "bubble" pinned to the card bottom */
+  .f-card-bubble {
     position: absolute;
-    top: 76.3%;
-    left: 7%;
-    right: 4%;
-    font-size: 0.94cqw;
+    left: 0.8cqw;
+    right: 0.8cqw;
+    bottom: 0.8cqw;
+    padding: 1cqw 1.1cqw;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5cqw;
+    background: rgba(15, 12, 9, 0.8);
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(232, 225, 210, 0.14);
+    border-radius: 0.55cqw;
+  }
+  .f-card-title {
+    font-size: 0.98cqw;
     font-weight: 600;
-    letter-spacing: 0.08em;
-    white-space: nowrap;
-    overflow: hidden;
+    letter-spacing: 0.07em;
     text-transform: uppercase;
     color: var(--f-cream);
+    line-height: 1.2;
   }
-  .f-card-desc {
-    position: absolute;
-    top: 83.2%;
-    left: 7%;
-    right: 24%;
-    font-size: 0.96cqw;
-    line-height: 1.5;
-    color: rgba(232, 225, 210, 0.75);
-  }
-  .f-card-arrow {
-    position: absolute;
-    right: 6.5%;
-    bottom: 6%;
-    width: 19%;
-    aspect-ratio: 1;
-  }
+  .f-card-foot { display: flex; align-items: center; justify-content: space-between; gap: 0.8cqw; }
+  .f-card-desc { flex: 1 1 auto; font-size: 0.82cqw; line-height: 1.4; color: rgba(232, 225, 210, 0.72); }
+  .f-card-arrow { flex: 0 0 auto; width: 2.4cqw; height: 2.4cqw; aspect-ratio: 1; }
   .f-card:hover .f-card-arrow { background: var(--f-gold); border-color: var(--f-gold); color: var(--f-ink); }
 
   .f-main-mobile { display: none; }
@@ -238,9 +240,10 @@
       scroll-snap-align: center;
       text-align: left;
     }
-    .f-mob-card .f-card-title { position: absolute; top: 76.3%; left: 8%; right: 8%; font-size: 13px; }
-    .f-mob-card .f-card-desc { position: absolute; top: 83%; left: 8%; right: 26%; font-size: 11px; }
-    .f-mob-card .f-card-arrow { position: absolute; right: 7%; bottom: 5.5%; width: 36px; aspect-ratio: 1; }
+    .f-mob-card .f-card-bubble { left: 10px; right: 10px; bottom: 10px; padding: 13px 14px; gap: 7px; border-radius: 12px; }
+    .f-mob-card .f-card-title { font-size: 13px; }
+    .f-mob-card .f-card-desc { font-size: 11px; }
+    .f-mob-card .f-card-arrow { width: 34px; height: 34px; }
   }
 {% endstyle %}
 
