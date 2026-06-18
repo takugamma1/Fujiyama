@@ -53,15 +53,17 @@
 {% style %}
   .f-map-inner {
     position: relative;
+    max-width: 1090px;
+    margin: 0 auto;
+    padding: 0 24px;
     display: flex;
-    align-items: flex-start;
-    gap: 0;
-    padding-bottom: 0;
+    align-items: stretch;
+    gap: 22px;
   }
   .f-map-embed {
-    flex: 0 1 60.7%;
-    margin-top: 7px;
-    aspect-ratio: 71 / 39;
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 380px;
     overflow: hidden;
     border: 1px solid rgba(199, 161, 113, 0.18);
     background: #1b1a18;
@@ -76,14 +78,22 @@
   }
 
   .f-map-card {
-    flex: 0 1 33%;
-    margin-left: 0.5%;
+    position: relative;
+    flex: 0 0 332px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     border: 1px solid rgba(199, 161, 113, 0.65);
-    outline: 1px solid rgba(199, 161, 113, 0.35);
-    outline-offset: -8px;
-    padding: 26px 28px 22px;
+    padding: 32px 30px;
     text-align: center;
     background: rgba(10, 10, 10, 0.25);
+  }
+  .f-map-card::before {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    border: 1px solid rgba(199, 161, 113, 0.3);
+    pointer-events: none;
   }
   .f-pin { width: 20px; height: 20px; color: var(--f-gold); margin-bottom: 10px; }
   .f-map-city {
@@ -133,9 +143,9 @@
   .f-map-val p, .f-map-addr p { margin: 0; }
 
   @media (max-width: 849px) {
-    .f-map-inner { flex-direction: column; padding: 0 24px 56px; }
-    .f-map-embed { flex-basis: auto; width: 100%; margin: 0 0 26px; aspect-ratio: 16 / 11; }
-    .f-map-card { flex-basis: auto; width: 100%; margin: 0; }
+    .f-map-inner { flex-direction: column; align-items: stretch; padding: 0 24px 56px; }
+    .f-map-embed { flex-basis: auto; width: 100%; margin: 0 0 26px; min-height: 0; aspect-ratio: 16 / 11; }
+    .f-map-card { flex-basis: auto; width: 100%; }
   }
 {% endstyle %}
 
