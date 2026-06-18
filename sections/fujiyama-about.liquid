@@ -1,0 +1,224 @@
+{%- comment -%}
+  FUJIYAMA About (За нас) — ink hero, chef feature (vertical name label + portrait
+  + action photo + signature panel), a credentials bento, a photo gallery strip,
+  and a closing quote. Every photo is an image_picker; blank slots show a kanji
+  placeholder so the owner can drop images in via the editor.
+{%- endcomment -%}
+
+{%- liquid
+  assign ph = '和'
+-%}
+
+{%- comment -%} ============ HERO ============ {%- endcomment -%}
+<section class="f-section f-ab-hero">
+  <div class="f-ab-hero-board">
+    {%- if section.settings.hero_image != blank -%}
+      {{ section.settings.hero_image | image_url: width: 2000 | image_tag: alt: '', class: 'f-ab-hero-art', loading: 'eager', fetchpriority: 'high' }}
+    {%- else -%}
+      <img class="f-ab-hero-art" src="{{ 'fujiyama-about-hero.webp' | asset_url }}" alt="" width="1881" height="836" loading="eager" fetchpriority="high">
+    {%- endif -%}
+    <div class="f-ab-hero-top">
+      <h1 class="f-display f-ab-hero-title">{{ section.settings.title | escape }}</h1>
+      {%- if section.settings.tagline != blank -%}<p class="f-ab-hero-tag"><span>{{ section.settings.tagline | escape }}</span></p>{%- endif -%}
+    </div>
+  </div>
+</section>
+
+<section class="f-section f-ab">
+  <div class="f-ab-wrap">
+
+    {%- comment -%} ============ CHEF FEATURE ============ {%- endcomment -%}
+    <div class="f-ab-chef">
+      <div class="f-ab-vlabel">
+        <span class="f-ab-vname">{{ section.settings.chef_name | escape }}</span>
+        <span class="f-ab-vrole">{{ section.settings.chef_role | escape }}</span>
+      </div>
+
+      <div class="f-ab-portrait f-ab-frame">
+        {%- if section.settings.portrait_image != blank -%}
+          {{ section.settings.portrait_image | image_url: width: 1100 | image_tag: loading: 'lazy', widths: '500,800,1100', sizes: '(max-width:749px) 92vw, 540px', alt: section.settings.chef_name | escape }}
+        {%- else -%}<span class="f-ab-ph">{{ ph }}</span>{%- endif -%}
+      </div>
+
+      <div class="f-ab-action f-ab-frame">
+        {%- if section.settings.action_image != blank -%}
+          {{ section.settings.action_image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '440,700,900', sizes: '(max-width:749px) 92vw, 460px', alt: '' }}
+        {%- else -%}<span class="f-ab-ph">{{ ph }}</span>{%- endif -%}
+      </div>
+
+      <div class="f-ab-sign">
+        {%- if section.settings.signature_image != blank -%}
+          {{ section.settings.signature_image | image_url: width: 600 | image_tag: loading: 'lazy', class: 'f-ab-sign-img', alt: section.settings.chef_name | escape }}
+        {%- else -%}
+          <span class="f-ab-sign-script">{{ section.settings.chef_name | escape }}</span>
+        {%- endif -%}
+        <img class="f-ab-sign-mark" src="{{ 'fujiyama-badge.png' | asset_url }}" alt="" aria-hidden="true" width="40" height="46" loading="lazy">
+      </div>
+    </div>
+
+    {%- comment -%} ============ CREDENTIALS BENTO ============ {%- endcomment -%}
+    <div class="f-ab-bento">
+      <div class="f-ab-cell f-ab-stat">
+        <span class="f-ab-stat-num">{{ section.settings.years_number | escape }}</span>
+        <span class="f-ab-stat-label">{{ section.settings.years_label | escape }}</span>
+      </div>
+      <div class="f-ab-cell f-ab-frame f-ab-knife">
+        {%- if section.settings.knife_image != blank -%}{{ section.settings.knife_image | image_url: width: 700 | image_tag: loading: 'lazy', alt: '' }}{%- else -%}<span class="f-ab-ph">刀</span>{%- endif -%}
+      </div>
+      <div class="f-ab-cell f-ab-frame f-ab-comp">
+        {%- if section.settings.competition_image != blank -%}{{ section.settings.competition_image | image_url: width: 700 | image_tag: loading: 'lazy', alt: '' }}{%- else -%}<span class="f-ab-ph">{{ ph }}</span>{%- endif -%}
+      </div>
+      <div class="f-ab-cell f-ab-text">
+        <p class="f-ab-text-title">{{ section.settings.comp_title | escape }}</p>
+      </div>
+
+      <div class="f-ab-cell f-ab-frame f-ab-platter">
+        {%- if section.settings.platter_image != blank -%}{{ section.settings.platter_image | image_url: width: 800 | image_tag: loading: 'lazy', alt: '' }}{%- else -%}<span class="f-ab-ph">寿</span>{%- endif -%}
+      </div>
+      <div class="f-ab-cell f-ab-feature">
+        <span class="f-ab-feature-icon">{% render 'fujiyama-icon', name: section.settings.f1_icon %}</span>
+        <p class="f-ab-feature-title">{{ section.settings.f1_title | escape }}</p>
+        <p class="f-ab-feature-text">{{ section.settings.f1_text | escape }}</p>
+      </div>
+      <div class="f-ab-cell f-ab-feature">
+        <span class="f-ab-feature-icon">{% render 'fujiyama-icon', name: section.settings.f2_icon %}</span>
+        <p class="f-ab-feature-title">{{ section.settings.f2_title | escape }}</p>
+        <p class="f-ab-feature-text">{{ section.settings.f2_text | escape }}</p>
+      </div>
+    </div>
+
+    {%- comment -%} ============ GALLERY STRIP ============ {%- endcomment -%}
+    <div class="f-ab-gallery">
+      {%- for n in (1..5) -%}
+        {%- assign key = 'gallery_' | append: n -%}
+        {%- assign gimg = section.settings[key] -%}
+        <div class="f-ab-gcell f-ab-frame">
+          {%- if gimg != blank -%}{{ gimg | image_url: width: 600 | image_tag: loading: 'lazy', widths: '240,400,600', sizes: '(max-width:749px) 45vw, 200px', alt: '' }}{%- else -%}<span class="f-ab-ph">{{ ph }}</span>{%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+
+    {%- comment -%} ============ QUOTE ============ {%- endcomment -%}
+    {%- if section.settings.quote != blank -%}
+      <figure class="f-ab-quote">
+        <span class="f-ab-quote-mark" aria-hidden="true">&ldquo;</span>
+        <blockquote class="f-ab-quote-text">{{ section.settings.quote | escape }}</blockquote>
+        <figcaption class="f-ab-quote-by">
+          <span class="f-ab-quote-author">{{ section.settings.quote_author | escape }}</span>
+          {%- if section.settings.quote_role != blank -%}<span class="f-ab-quote-role">{{ section.settings.quote_role | escape }}</span>{%- endif -%}
+        </figcaption>
+      </figure>
+    {%- endif -%}
+  </div>
+</section>
+
+{% style %}
+  /* hero (shared ink-hero treatment) */
+  .f-ab-hero { overflow: hidden; padding: 0; }
+  .f-ab-hero-board { position: relative; }
+  .f-ab-hero-art { display: block; width: 100%; height: auto; }
+  .f-ab-hero-top { position: absolute; top: 11%; left: 0; right: 0; text-align: center; padding: 0 6%; }
+  .f-ab-hero-title { margin: 0; font-family: 'Italiana', var(--f-serif); font-weight: 400; color: #25241f; font-size: clamp(40px,7vw,104px); line-height: 1; letter-spacing: 0.08em; text-transform: uppercase; }
+  .f-ab-hero-tag { margin: clamp(8px,1.4vw,18px) 0 0; display: flex; align-items: center; justify-content: center; gap: clamp(10px,1.6vw,20px); color: var(--f-gold-dim); font-size: clamp(9px,1vw,13px); font-weight: 500; letter-spacing: 0.4em; text-indent: 0.4em; text-transform: uppercase; }
+  .f-ab-hero-tag span { position: relative; padding: 0 clamp(12px,1.6vw,24px); }
+  .f-ab-hero-tag span::before, .f-ab-hero-tag span::after { content: ''; position: absolute; top: 50%; width: clamp(24px,3.4vw,52px); height: 1px; background: var(--f-gold-dim); }
+  .f-ab-hero-tag span::before { right: 100%; } .f-ab-hero-tag span::after { left: 100%; }
+
+  .f-ab { padding: clamp(20px,3vw,40px) 4.7% clamp(48px,6vw,88px); }
+  .f-ab-wrap { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: clamp(14px,1.6vw,22px); }
+  .f-ab-frame { position: relative; overflow: hidden; border-radius: 12px; background: #15140f; border: 1px solid rgba(232,225,210,.08); }
+  .f-ab-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .f-ab-ph { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; min-height: 120px; font-family: 'Noto Serif JP', var(--f-serif); font-size: 2.4rem; color: rgba(199,161,113,.32); }
+
+  /* chef feature */
+  .f-ab-chef { display: grid; grid-template-columns: 36px minmax(0,1.06fr) minmax(0,1fr); grid-template-rows: auto auto; gap: clamp(12px,1.4vw,18px); }
+  .f-ab-vlabel { grid-column: 1; grid-row: 1 / span 2; display: flex; align-items: center; justify-content: center; gap: 16px; writing-mode: vertical-rl; transform: rotate(180deg); }
+  .f-ab-vname { font-family: var(--f-serif); font-size: clamp(15px,1.5vw,20px); letter-spacing: 0.22em; text-transform: uppercase; color: var(--f-gold); }
+  .f-ab-vrole { font-size: 10px; letter-spacing: 0.36em; text-transform: uppercase; color: var(--f-gold-dim); }
+  .f-ab-portrait { grid-column: 2; grid-row: 1 / span 2; aspect-ratio: 4 / 5; }
+  .f-ab-action { grid-column: 3; grid-row: 1; aspect-ratio: 16 / 11; }
+  .f-ab-sign { grid-column: 3; grid-row: 2; border-radius: 12px; background: #14130f url('fujiyama-texture.jpg'); background-size: 400px; border: 1px solid rgba(199,161,113,.2); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; min-height: 120px; padding: 22px; }
+  .f-ab-sign-img { max-width: 70%; height: auto; }
+  .f-ab-sign-script { font-family: 'Italiana', var(--f-serif); font-style: italic; font-size: clamp(24px,3vw,40px); color: var(--f-gold); }
+  .f-ab-sign-mark { width: 38px; height: auto; opacity: .85; }
+
+  /* credentials bento */
+  .f-ab-bento { display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(12px,1.4vw,18px); }
+  .f-ab-cell { min-height: clamp(128px,13vw,172px); }
+  .f-ab-stat { grid-column: span 3; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; border-radius: 12px; background: rgba(255,255,255,.02); border: 1px solid rgba(232,225,210,.08); }
+  .f-ab-stat-num { font-family: var(--f-serif); font-size: clamp(40px,5vw,68px); color: var(--f-gold); line-height: 1; }
+  .f-ab-stat-label { font-size: 11px; letter-spacing: 0.26em; text-transform: uppercase; color: var(--f-cream-dim); }
+  .f-ab-knife { grid-column: span 3; } .f-ab-comp { grid-column: span 3; }
+  .f-ab-text { grid-column: span 3; display: flex; align-items: center; justify-content: center; text-align: center; border-radius: 12px; background: rgba(255,255,255,.02); border: 1px solid rgba(232,225,210,.08); padding: 18px; }
+  .f-ab-text-title { margin: 0; font-family: var(--f-serif); font-size: clamp(15px,1.6vw,21px); letter-spacing: 0.14em; text-transform: uppercase; color: var(--f-cream); line-height: 1.3; }
+  .f-ab-platter { grid-column: span 4; }
+  .f-ab-feature { grid-column: span 4; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 10px; border-radius: 12px; background: rgba(255,255,255,.02); border: 1px solid rgba(232,225,210,.08); padding: 22px; }
+  .f-ab-feature-icon { color: var(--f-gold); display: inline-flex; } .f-ab-feature-icon svg { width: 30px; height: 30px; }
+  .f-ab-feature-title { margin: 0; font-family: var(--f-serif); font-size: clamp(16px,1.7vw,22px); letter-spacing: 0.18em; text-transform: uppercase; color: var(--f-cream); }
+  .f-ab-feature-text { margin: 0; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--f-cream-dim); }
+
+  /* gallery strip */
+  .f-ab-gallery { display: grid; grid-template-columns: repeat(5, 1fr); gap: clamp(10px,1.2vw,16px); }
+  .f-ab-gcell { aspect-ratio: 4 / 5; }
+
+  /* quote */
+  .f-ab-quote { margin: clamp(10px,1.4vw,20px) 0 0; text-align: center; position: relative; padding: clamp(26px,3vw,44px) 6%; border-radius: 14px; background: rgba(255,255,255,.02); border: 1px solid rgba(232,225,210,.08); }
+  .f-ab-quote-mark { font-family: var(--f-serif); font-size: clamp(48px,6vw,84px); line-height: .5; color: var(--f-gold); opacity: .5; display: block; height: .4em; }
+  .f-ab-quote-text { margin: 0 auto; max-width: 26em; font-family: var(--f-serif); font-style: italic; font-size: clamp(19px,2.4vw,32px); line-height: 1.4; color: var(--f-cream); }
+  .f-ab-quote-by { margin-top: 22px; }
+  .f-ab-quote-author { display: block; font-family: var(--f-serif); font-size: 15px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--f-gold); }
+  .f-ab-quote-role { display: block; margin-top: 5px; font-size: 10px; letter-spacing: 0.34em; text-transform: uppercase; color: var(--f-gold-dim); }
+
+  @media (max-width: 749px) {
+    .f-ab-chef { grid-template-columns: 1fr; }
+    .f-ab-vlabel { grid-column: 1; grid-row: auto; flex-direction: row; writing-mode: horizontal-tb; transform: none; justify-content: center; gap: 12px; order: -1; }
+    .f-ab-portrait, .f-ab-action, .f-ab-sign { grid-column: 1; grid-row: auto; }
+    .f-ab-portrait { aspect-ratio: 4 / 5; }
+    .f-ab-bento { grid-template-columns: repeat(2, 1fr); }
+    .f-ab-stat, .f-ab-knife, .f-ab-comp, .f-ab-text, .f-ab-platter, .f-ab-feature { grid-column: span 1; }
+    .f-ab-gallery { grid-template-columns: repeat(3, 1fr); }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Fujiyama за нас",
+  "settings": [
+    { "type": "image_picker", "id": "hero_image", "label": "Хедър изображение — по подразбиране вграденото" },
+    { "type": "text", "id": "title", "label": "Заглавие", "default": "За нас" },
+    { "type": "text", "id": "tagline", "label": "Слоган", "default": "BAR & DINNER" },
+    { "type": "header", "content": "Шеф готвач" },
+    { "type": "text", "id": "chef_name", "label": "Име", "default": "Красимир Дойчев" },
+    { "type": "text", "id": "chef_role", "label": "Роля", "default": "Шеф готвач" },
+    { "type": "image_picker", "id": "portrait_image", "label": "Портрет (голяма снимка)" },
+    { "type": "image_picker", "id": "action_image", "label": "Снимка в действие" },
+    { "type": "image_picker", "id": "signature_image", "label": "Подпис (по избор)" },
+    { "type": "header", "content": "Постижения" },
+    { "type": "text", "id": "years_number", "label": "Число (години)", "default": "15+" },
+    { "type": "text", "id": "years_label", "label": "Етикет", "default": "Години" },
+    { "type": "image_picker", "id": "knife_image", "label": "Снимка — нож" },
+    { "type": "image_picker", "id": "competition_image", "label": "Снимка — състезание" },
+    { "type": "text", "id": "comp_title", "label": "Текст", "default": "Международни състезания" },
+    { "type": "image_picker", "id": "platter_image", "label": "Снимка — плато суши" },
+    { "type": "select", "id": "f1_icon", "label": "Икона 1", "default": "fish",
+      "options": [ {"value":"fish","label":"Риба"}, {"value":"asian","label":"Купа"}, {"value":"salad","label":"Салата"}, {"value":"meat","label":"Месо"} ] },
+    { "type": "text", "id": "f1_title", "label": "Заглавие 1", "default": "SUSHI" },
+    { "type": "text", "id": "f1_text", "label": "Текст 1", "default": "Прецизност и баланс" },
+    { "type": "select", "id": "f2_icon", "label": "Икона 2", "default": "asian",
+      "options": [ {"value":"asian","label":"Купа"}, {"value":"fish","label":"Риба"}, {"value":"salad","label":"Салата"}, {"value":"meat","label":"Месо"} ] },
+    { "type": "text", "id": "f2_title", "label": "Заглавие 2", "default": "Японска кухня" },
+    { "type": "text", "id": "f2_text", "label": "Текст 2", "default": "Традиция и вдъхновение" },
+    { "type": "header", "content": "Галерия (5 снимки)" },
+    { "type": "image_picker", "id": "gallery_1", "label": "Снимка 1" },
+    { "type": "image_picker", "id": "gallery_2", "label": "Снимка 2" },
+    { "type": "image_picker", "id": "gallery_3", "label": "Снимка 3" },
+    { "type": "image_picker", "id": "gallery_4", "label": "Снимка 4" },
+    { "type": "image_picker", "id": "gallery_5", "label": "Снимка 5" },
+    { "type": "header", "content": "Цитат" },
+    { "type": "text", "id": "quote", "label": "Цитат", "default": "За мен храната е емоция, а всяко ястие разказва история." },
+    { "type": "text", "id": "quote_author", "label": "Автор", "default": "Красимир Дойчев" },
+    { "type": "text", "id": "quote_role", "label": "Роля", "default": "Шеф готвач" }
+  ],
+  "presets": [{ "name": "Fujiyama за нас" }]
+}
+{% endschema %}

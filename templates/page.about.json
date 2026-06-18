@@ -1,0 +1,26 @@
+{
+  "sections": {
+    "about": {
+      "type": "fujiyama-about",
+      "settings": {
+        "title": "За нас",
+        "tagline": "BAR & DINNER",
+        "chef_name": "Красимир Дойчев",
+        "chef_role": "Шеф готвач",
+        "years_number": "15+",
+        "years_label": "Години",
+        "comp_title": "Международни състезания",
+        "f1_icon": "fish",
+        "f1_title": "SUSHI",
+        "f1_text": "Прецизност и баланс",
+        "f2_icon": "asian",
+        "f2_title": "Японска кухня",
+        "f2_text": "Традиция и вдъхновение",
+        "quote": "За мен храната е емоция, а всяко ястие разказва история.",
+        "quote_author": "Красимир Дойчев",
+        "quote_role": "Шеф готвач"
+      }
+    }
+  },
+  "order": ["about"]
+}
