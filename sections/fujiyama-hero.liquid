@@ -26,11 +26,23 @@
 
 {% style %}
   .f-hero { overflow: hidden; }
-  .f-hero-board { aspect-ratio: 1170 / 741; }
+  .f-hero-board { position: relative; }
 
-  /* design abs y56-797 → board rel: 1cqw = 11.7 design px */
+  /* the image flows naturally (it defines the section height and sits at the
+     top — no fixed empty box) and its top+bottom feather into the section bg so
+     the picture's own background merges seamlessly with the theme + next section */
+  .f-hero-art {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: auto;
+    z-index: 2;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 4.5%, #000 82%, transparent 100%);
+            mask-image: linear-gradient(to bottom, transparent 0, #000 4.5%, #000 82%, transparent 100%);
+  }
   .f-hero-title {
-    top: 0.6cqw;
+    position: absolute;
+    top: 1cqw;
     left: 0;
     width: 100%;
     text-align: center;
@@ -45,13 +57,6 @@
     color: #ddd5c3;
     white-space: nowrap;
     z-index: 3;
-  }
-  .f-hero-art {
-    top: 17cqw; /* abs y255 − 56 = 199px */
-    left: 0;
-    width: 100%;
-    height: auto;
-    z-index: 2;
   }
 {% endstyle %}
 

@@ -18,14 +18,12 @@
       <img class="f-main-art" src="{{ 'fujiyama-main-art.webp' | asset_url }}" alt="" width="1170" height="1286" loading="lazy">
     {%- endif -%}
 
-    <p class="f-abs f-label f-chef-label"><span class="f-label-num">[2]</span>{{ section.settings.chef_label | escape }}</p>
     <h2 class="f-abs f-display f-chef-name">{{ section.settings.chef_name | remove: '<p>' | remove: '</p>' }}</h2>
     <p class="f-abs f-chef-role">{{ section.settings.chef_role | escape }}</p>
     <div class="f-abs f-chef-bio">{{ section.settings.chef_bio }}</div>
     <div class="f-abs f-chef-quote">{{ section.settings.chef_quote }}</div>
 
     <span class="f-anchor f-abs f-anchor-kolekcii" id="kolekcii"></span>
-    <p class="f-abs f-label f-coll-label"><span class="f-label-num">[3]</span>{{ section.settings.coll_label | escape }}</p>
     <h2 class="f-abs f-display f-coll-title">{{ section.settings.coll_title | escape }}</h2>
     <p class="f-abs f-coll-sub">{{ section.settings.coll_sub | escape }}</p>
 
@@ -45,7 +43,6 @@
   {%- comment -%} ============ MOBILE FLOW ============ {%- endcomment -%}
   <div class="f-main-mobile">
     <div class="f-mob-chef">
-      <p class="f-label"><span class="f-label-num">[2]</span>{{ section.settings.chef_label | escape }}</p>
       <h2 class="f-display f-mob-chef-name">{{ section.settings.chef_name | remove: '<p>' | remove: '</p>' }}</h2>
       <p class="f-mob-chef-role">{{ section.settings.chef_role | escape }}</p>
       <div class="f-mob-chef-bio">{{ section.settings.chef_bio }}</div>
@@ -55,7 +52,6 @@
     </div>
 
     <div class="f-mob-coll">
-      <p class="f-label"><span class="f-label-num">[3]</span>{{ section.settings.coll_label | escape }}</p>
       <h2 class="f-display f-mob-coll-title">{{ section.settings.coll_title | escape }}</h2>
       <p class="f-mob-coll-sub">{{ section.settings.coll_sub | escape }}</p>
       <div class="f-mob-cards">
