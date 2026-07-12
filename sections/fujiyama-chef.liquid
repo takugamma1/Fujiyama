@@ -1,0 +1,124 @@
+{%- comment -%}
+  FUJIYAMA chef story — Красимир Дойчев presentation.
+  Split out of fujiyama-main (design y797-1532, 1170x735 artboard crop):
+  baked chef photos + Mt Fuji ink art with live text in cqw units.
+  Mobile: restacked flow using the collage crop.
+{%- endcomment -%}
+
+<section class="f-section f-chefsec">
+  <span class="f-anchor" id="za-nas"></span>
+
+  {%- comment -%} ============ DESKTOP ARTBOARD ============ {%- endcomment -%}
+  <div class="f-board f-chefsec-board">
+    {%- if section.settings.art != blank -%}
+      {{ section.settings.art | image_url: width: 2340 | image_tag: alt: '', class: 'f-chefsec-art', loading: 'lazy' }}
+    {%- else -%}
+      <img class="f-chefsec-art" src="{{ 'fujiyama-chef-art.webp' | asset_url }}" alt="" width="1170" height="735" loading="lazy">
+    {%- endif -%}
+
+    <h2 class="f-abs f-display f-chef-name">{{ section.settings.chef_name | remove: '<p>' | remove: '</p>' }}</h2>
+    <p class="f-abs f-chef-role">{{ section.settings.chef_role | escape }}</p>
+    <div class="f-abs f-chef-bio">{{ section.settings.chef_bio }}</div>
+    <div class="f-abs f-chef-quote">{{ section.settings.chef_quote }}</div>
+  </div>
+
+  {%- comment -%} ============ MOBILE FLOW ============ {%- endcomment -%}
+  <div class="f-chefsec-mobile">
+    <div class="f-mob-chef">
+      <h2 class="f-display f-mob-chef-name">{{ section.settings.chef_name | remove: '<p>' | remove: '</p>' }}</h2>
+      <p class="f-mob-chef-role">{{ section.settings.chef_role | escape }}</p>
+      <div class="f-mob-chef-bio">{{ section.settings.chef_bio }}</div>
+      <img class="f-mob-collage" src="{{ 'fujiyama-collage.webp' | asset_url }}" loading="lazy"
+        alt="Шеф готвачът приготвя суши" width="640" height="693">
+      <div class="f-mob-chef-quote">{{ section.settings.chef_quote }}</div>
+    </div>
+  </div>
+</section>
+
+{% style %}
+  .f-chefsec .f-anchor { display: block; scroll-margin-top: 70px; }
+  .f-chefsec-board { aspect-ratio: 1170 / 735; }
+  .f-chefsec-art {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    /* feather both cut edges into the shared charcoal texture so the section
+       merges seamlessly with whatever sits above and below it */
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 10%, #000 96%, transparent 100%);
+            mask-image: linear-gradient(to bottom, transparent 0, #000 10%, #000 96%, transparent 100%);
+  }
+
+  /* chef — design abs y → rel cqw ((y-797)/11.7) */
+  .f-chef-name {
+    top: 0.1cqw;
+    left: 3.3cqw;
+    font-size: 5.6cqw;
+    line-height: 1.12;
+    letter-spacing: 0.012em;
+    text-transform: uppercase;
+  }
+  .f-chef-role {
+    top: 13.3cqw;
+    left: 3.42cqw;
+    font-size: 1.4cqw;
+    letter-spacing: 0.42em;
+    text-transform: uppercase;
+    color: var(--f-cream-dim);
+  }
+  .f-chef-bio {
+    top: 17.5cqw;
+    left: 3.42cqw;
+    width: 33cqw;
+    font-size: 1.31cqw;
+    line-height: 1.72;
+    color: var(--f-body);
+  }
+  .f-chef-quote {
+    top: 37.1cqw;
+    left: 3.42cqw;
+    width: 27cqw;
+    padding-left: 1.4cqw;
+    border-left: 2px solid #8a5a3e;
+    font-size: 1.31cqw;
+    line-height: 1.7;
+    color: #b6ab97;
+  }
+  .f-chef-bio p, .f-chef-quote p { margin: 0 0 1em; }
+  .f-chef-bio p:last-child, .f-chef-quote p:last-child { margin-bottom: 0; }
+
+  .f-chefsec-mobile { display: none; }
+
+  @media (max-width: 849px) {
+    .f-chefsec-board { display: none; }
+    .f-chefsec-mobile { display: block; padding: 56px 24px 8px; }
+    .f-mob-chef-name { font-size: 38px; text-transform: uppercase; }
+    .f-mob-chef-role {
+      font-size: 13px;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--f-cream-dim);
+      margin: 10px 0 22px;
+    }
+    .f-mob-chef-bio { font-size: 15px; line-height: 1.7; color: var(--f-body); }
+    .f-mob-collage { width: 100%; height: auto; margin: 26px 0; }
+    .f-mob-chef-quote {
+      border-left: 2px solid #8a5a3e;
+      padding-left: 16px;
+      font-size: 15px;
+      line-height: 1.7;
+      color: #b6ab97;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Fujiyama шеф готвач",
+  "settings": [
+    { "type": "image_picker", "id": "art", "label": "Фоново арт изображение (по подразбиране — вграденото)" },
+    { "type": "richtext", "id": "chef_name", "label": "Име", "default": "<p>Красимир<br>Дойчев</p>" },
+    { "type": "text", "id": "chef_role", "label": "Роля", "default": "Шеф готвач" },
+    { "type": "richtext", "id": "chef_bio", "label": "Биография", "default": "<p>Красимир Дойчев е шеф готвач с богат международен опит и страст към японската кухня. Професионалният му път преминава през водещи кулинарни академии и престижни ресторанти, където усъвършенства своето майсторство и развива уникален стил, съчетаващ традиции и иновации.</p>" },
+    { "type": "richtext", "id": "chef_quote", "label": "Цитат", "default": "<p>Във Fujiyama Красимир и екипът му създават не просто ястия, а истинско кулинарно преживяване – с внимание към детайла, най-висококачествени продукти и уважение към всеки гост.</p>" }
+  ],
+  "presets": [{ "name": "Fujiyama шеф готвач" }]
+}
+{% endschema %}
