@@ -19,7 +19,7 @@
     display: flex; align-items: center; justify-content: center;
     transition: opacity .5s ease, visibility .5s ease;
   }
-  .f-load.is-done { opacity: 0; visibility: hidden; }
+  .f-load.is-done { opacity: 0; visibility: hidden; pointer-events: none; }
   .f-load.is-hidden { display: none; }
   .f-load-inner { display: flex; flex-direction: column; align-items: center; gap: 22px; width: min(280px, 64vw); }
   .f-load-word {
@@ -68,12 +68,17 @@
       setTimeout(function () { el.classList.add('is-hidden'); }, 520);
     });
   }
-  // creep to ~92 while assets load, finish on window load
+  // creep to ~92 while assets load, finish on window load — but never wait on
+  // it for more than 2.5 s: a slow map iframe or a hanging image on a phone
+  // must not leave the overlay swallowing every tap on the page.
+  var revealed = false;
+  function revealOnce() { if (revealed) return; revealed = true; reveal(); }
   el.classList.remove('is-done', 'is-hidden');
   paint(0);
   if (!reduce) runTo(92);
-  if (document.readyState === 'complete') { reveal(); }
-  else { window.addEventListener('load', reveal, { once: true }); }
+  if (document.readyState === 'complete') { revealOnce(); }
+  else { window.addEventListener('load', revealOnce, { once: true }); }
+  setTimeout(revealOnce, 2500);
 
   // 2) navigations: show overlay + count up, then let the browser navigate
   var failsafe = null;

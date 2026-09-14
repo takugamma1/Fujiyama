@@ -10,8 +10,8 @@
   <aside class="f-cart-panel" role="dialog" aria-modal="true" aria-label="Количка" aria-hidden="true">
     <header class="f-cart-top">
       <h2 class="f-cart-title">Количка <span class="f-cart-count-inline" data-cart-count>0</span></h2>
-      <button type="button" class="f-cart-x" data-cart-close aria-label="Затвори">
-        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15"/></svg>
+      <button type="button" class="f-cart-x" data-cart-close aria-label="Затвори количката">
+        <svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15"/></svg>
       </button>
     </header>
 
@@ -72,8 +72,14 @@
   .f-cart-top { display: flex; align-items: center; justify-content: space-between; padding: 22px 24px; border-bottom: 1px solid rgba(232,225,210,.1); }
   .f-cart-title { font-family: var(--f-serif); font-size: 18px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--f-cream); margin: 0; }
   .f-cart-count-inline { color: var(--f-gold); font-family: var(--f-sans); font-size: 13px; }
-  .f-cart-x { background: none; border: 0; color: var(--f-cream-dim); cursor: pointer; padding: 4px; }
-  .f-cart-x:hover { color: var(--f-cream); }
+  .f-cart-x {
+    flex: 0 0 auto; width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center;
+    background: rgba(232,225,210,.06); border: 1px solid rgba(232,225,210,.28); border-radius: 50%;
+    color: var(--f-cream); cursor: pointer; padding: 0; margin-right: -6px; transition: border-color .2s, background .2s;
+  }
+  .f-cart-x svg { width: 20px; height: 20px; display: block; }
+  .f-cart-x:hover { border-color: var(--f-gold); color: var(--f-gold); background: rgba(199,161,113,.12); }
+  .f-cart-x:focus-visible { outline: 2px solid var(--f-gold); outline-offset: 2px; }
   .f-cart-body { flex: 1 1 auto; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 8px 20px 16px; }
   .f-cart-empty { color: var(--f-body); text-align: center; padding: 60px 0; font-size: 14px; }
   .f-cart-items { list-style: none; margin: 0; padding: 0; }
@@ -113,7 +119,9 @@
   /* Phones: full-width panel, bigger type */
   @media (max-width: 600px) {
     .f-cart-panel { width: 100vw; border-left: 0; }
-    .f-cart-top { padding: 18px 20px; }
+    .f-cart-top { padding: calc(14px + env(safe-area-inset-top)) 16px 14px 20px; }
+    .f-cart-x { width: 48px; height: 48px; margin-right: 0; }
+    .f-cart-x svg { width: 22px; height: 22px; }
     .f-cart-title { font-size: 20px; }
     .f-cart-count-inline { font-size: 15px; }
     .f-cart-empty { font-size: 16px; }
