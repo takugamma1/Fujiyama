@@ -18,10 +18,10 @@
     <div class="f-cart-body" data-cart-body>
       <p class="f-cart-empty" data-cart-empty>Количката е празна.</p>
       <ul class="f-cart-items" data-cart-items role="list"></ul>
+      {% render 'fujiyama-cart-fulfillment' %}
     </div>
 
     <footer class="f-cart-foot" data-cart-foot hidden>
-      {% render 'fujiyama-cart-fulfillment' %}
       <div class="f-cart-sub">
         <span>Междинна сума</span>
         <span data-cart-subtotal></span>
@@ -73,7 +73,7 @@
   .f-cart-count-inline { color: var(--f-gold); font-family: var(--f-sans); font-size: 13px; }
   .f-cart-x { background: none; border: 0; color: var(--f-cream-dim); cursor: pointer; padding: 4px; }
   .f-cart-x:hover { color: var(--f-cream); }
-  .f-cart-body { flex: 1 1 auto; overflow-y: auto; padding: 8px 24px; }
+  .f-cart-body { flex: 1 1 auto; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 8px 20px 16px; }
   .f-cart-empty { color: var(--f-body); text-align: center; padding: 60px 0; font-size: 14px; }
   .f-cart-items { list-style: none; margin: 0; padding: 0; }
   .f-cart-item { display: grid; grid-template-columns: 72px 1fr; gap: 14px; padding: 18px 0; border-bottom: 1px solid rgba(232,225,210,.08); }
@@ -92,7 +92,7 @@
   .f-cart-item-price { font-family: var(--f-serif); font-size: 15px; color: var(--f-cream); }
   .f-cart-item-remove { background: none; border: 0; color: var(--f-body); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; padding: 8px 0 0; }
   .f-cart-item-remove:hover { color: #d9a09a; }
-  .f-cart-foot { padding: 12px 24px calc(20px + env(safe-area-inset-bottom)); border-top: 1px solid rgba(232,225,210,.12); max-height: 62%; overflow-y: auto; flex: 0 0 auto; }
+  .f-cart-foot { padding: 16px 24px calc(16px + env(safe-area-inset-bottom)); border-top: 1px solid rgba(232,225,210,.12); flex: 0 0 auto; }
   .f-cart-foot[hidden] { display: none; }
   .f-cart-sub { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; }
   .f-cart-sub span:first-child { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--f-cream-dim); }
@@ -109,6 +109,24 @@
   .f-toast[hidden] { display: none; }
   .f-toast.is-show { opacity: 1; transform: translate(-50%, 0); }
   .f-toast b { color: var(--f-gold); }
+  /* Phones: full-width panel, bigger type */
+  @media (max-width: 600px) {
+    .f-cart-panel { width: 100vw; border-left: 0; }
+    .f-cart-top { padding: 18px 20px; }
+    .f-cart-title { font-size: 20px; }
+    .f-cart-count-inline { font-size: 15px; }
+    .f-cart-empty { font-size: 16px; }
+    .f-cart-item-title { font-size: 14.5px; }
+    .f-cart-item-variant, .f-cart-item-note { font-size: 13px; }
+    .f-cart-qty button { width: 34px; height: 34px; font-size: 18px; }
+    .f-cart-qty span { min-width: 28px; font-size: 15px; }
+    .f-cart-item-price { font-size: 17px; }
+    .f-cart-item-remove { font-size: 12px; padding-top: 10px; }
+    .f-cart-sub span:first-child { font-size: 12.5px; }
+    .f-cart-sub span:last-child { font-size: 24px; }
+    .f-cart-checkout { height: 54px; font-size: 13.5px; }
+    .f-toast { font-size: 15px; }
+  }
   @media (prefers-reduced-motion: reduce) {
     .f-cart-panel, .f-cart-scrim, .f-toast { transition: none; }
   }

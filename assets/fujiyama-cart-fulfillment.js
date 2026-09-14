@@ -168,6 +168,7 @@
   }
 
   function paint() {
+    root.hidden = !(cart && cart.item_count > 0);
     paintToggle(mode());
     paintBody();
     paintSticks();
@@ -246,11 +247,49 @@
     if (first) first.focus();
   }
 
+  var formCoords = null; // set by "Използвай моето местоположение" in the plain form
+
   function saveForm(form) {
     var address1 = form.address1.value.trim(), city = form.city.value.trim() || 'Пазарджик', zipv = form.zip.value.trim();
     if (address1.length < 4) { showError('[data-cf-error]', 'Въведете улица и номер.'); return; }
-    resolved = { formatted: address1 + ', ' + city, address1: address1, city: city, zip: zipv, lat: null, lng: null };
+    var coords = formCoords && formCoords.address1 === address1 ? formCoords : null;
+    resolved = { formatted: address1 + ', ' + city, address1: address1, city: city, zip: zipv, lat: coords ? coords.lat : null, lng: coords ? coords.lng : null };
     confirmAddress();
+  }
+
+  /* Plain form: fill the fields from the device location (OpenStreetMap reverse geocoding — no key needed). */
+  function geoFillForm(button) {
+    var form = button.closest('[data-cf-form]');
+    var status = form && form.querySelector('[data-cf-geo-status]');
+    var say = function (msg) { if (status) { status.textContent = msg; status.hidden = !msg; } };
+    if (!navigator.geolocation) { say('Браузърът не поддържа локация — въведете адреса ръчно.'); return; }
+    button.setAttribute('aria-busy', 'true');
+    say('Определяме местоположението…');
+    navigator.geolocation.getCurrentPosition(function (pos) {
+      var lat = +pos.coords.latitude.toFixed(6), lng = +pos.coords.longitude.toFixed(6);
+      fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=18&accept-language=bg&lat=' + lat + '&lon=' + lng, { headers: { 'Accept': 'application/json' } })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          var a = (data && data.address) || {};
+          var street = [a.road || a.pedestrian || a.residential || '', a.house_number || ''].filter(Boolean).join(' ');
+          if (!street && data && data.display_name) street = data.display_name.split(',').slice(0, 2).join(',').trim();
+          form.address1.value = street;
+          form.city.value = a.city || a.town || a.village || a.municipality || form.city.value || 'Пазарджик';
+          if (a.postcode) form.zip.value = a.postcode;
+          formCoords = { address1: street, lat: lat, lng: lng };
+          say(street ? 'Адресът е попълнен от местоположението ви — проверете номера и входа.' : 'Местоположението е записано — допълнете улицата и номера.');
+          if (!street) formCoords.address1 = '';
+          form.address1.focus();
+        })
+        .catch(function () {
+          formCoords = { address1: '', lat: lat, lng: lng };
+          say('Местоположението е записано (' + lat + ', ' + lng + ') — въведете адреса ръчно.');
+        })
+        .then(function () { button.removeAttribute('aria-busy'); });
+    }, function (err) {
+      button.removeAttribute('aria-busy');
+      say(err && err.code === 1 ? 'Достъпът до местоположението е отказан — разрешете го в браузъра или въведете адреса ръчно.' : 'Местоположението не може да се определи — въведете адреса ръчно.');
+    }, { enableHighAccuracy: true, timeout: 12000, maximumAge: 60000 });
   }
 
   /* ── Google Maps pin-drop ──────────────────────────── */
@@ -405,6 +444,8 @@
     if (modeBtn) { e.preventDefault(); setMode(modeBtn.dataset.cfMode); return; }
     if (e.target.closest('[data-cf-open-address]')) { e.preventDefault(); openAddress(); return; }
     if (e.target.closest('[data-cf-form-cancel]')) { e.preventDefault(); paintBody(); return; }
+    var geo = e.target.closest('[data-cf-form-geo]');
+    if (geo) { e.preventDefault(); geoFillForm(geo); return; }
     if (e.target.closest('[data-cf-map-close]')) { var d = dialog(); if (d && d.open) d.close(); return; }
     if (e.target.closest('[data-cf-confirm]')) { confirmAddress(); return; }
     if (e.target.closest('[data-cf-locate]')) { locateMe(); return; }
