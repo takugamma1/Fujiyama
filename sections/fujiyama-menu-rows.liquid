@@ -9,6 +9,8 @@
     <ul class="f-mr-rows" role="list">
       {%- for block in section.blocks -%}
         {%- if block.type != 'row' -%}{%- continue -%}{%- endif -%}
+        {%- comment -%} rows that point at an empty collection (and have no custom link) are hidden {%- endcomment -%}
+        {%- if block.settings.link == blank and block.settings.collection != blank and block.settings.collection.products_count == 0 -%}{%- continue -%}{%- endif -%}
         {%- liquid
           assign url = block.settings.link | default: block.settings.collection.url | default: '#'
           assign rtitle = block.settings.title | default: block.settings.collection.title
@@ -44,11 +46,16 @@
     </ul>
 
     {%- assign tile_count = 0 -%}
-    {%- for block in section.blocks -%}{%- if block.type == 'tile' -%}{%- assign tile_count = tile_count | plus: 1 -%}{%- endif -%}{%- endfor -%}
+    {%- for block in section.blocks -%}
+      {%- if block.type != 'tile' -%}{%- continue -%}{%- endif -%}
+      {%- if block.settings.link == blank and block.settings.collection != blank and block.settings.collection.products_count == 0 -%}{%- continue -%}{%- endif -%}
+      {%- assign tile_count = tile_count | plus: 1 -%}
+    {%- endfor -%}
     {%- if tile_count > 0 -%}
       <div class="f-mr-tiles">
         {%- for block in section.blocks -%}
           {%- if block.type != 'tile' -%}{%- continue -%}{%- endif -%}
+          {%- if block.settings.link == blank and block.settings.collection != blank and block.settings.collection.products_count == 0 -%}{%- continue -%}{%- endif -%}
           {%- assign turl = block.settings.link | default: block.settings.collection.url | default: '#' -%}
           {%- assign ttitle = block.settings.title | default: block.settings.collection.title -%}
           <a class="f-mr-tile" href="{{ turl }}" {{ block.shopify_attributes }}>

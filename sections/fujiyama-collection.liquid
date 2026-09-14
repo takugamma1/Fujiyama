@@ -46,7 +46,19 @@
     <div class="f-cg-groups-track">
       {%- for title in g_titles -%}
         {%- assign gi = forloop.index0 -%}
-        {%- assign first_sub = g_subs[gi] | split: ' ' | first -%}
+        {%- comment -%} skip groups with no sellable products; link the circle to the first sub that has some {%- endcomment -%}
+        {%- assign group_total = 0 -%}
+        {%- assign first_sub = blank -%}
+        {%- assign this_subs = g_subs[gi] | split: ' ' -%}
+        {%- for h in this_subs -%}
+          {%- assign hc = collections[h] -%}
+          {%- if hc != blank and hc.products_count > 0 -%}
+            {%- assign group_total = group_total | plus: hc.products_count -%}
+            {%- if first_sub == blank -%}{%- assign first_sub = h -%}{%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {%- if group_total == 0 and gi != gidx -%}{%- continue -%}{%- endif -%}
+        {%- if first_sub == blank -%}{%- assign first_sub = this_subs | first -%}{%- endif -%}
         {%- assign gc = collections[first_sub] -%}
         {%- assign gimg = gc.image -%}
         {%- if gimg == blank -%}
@@ -131,7 +143,7 @@
           </script>
         </li>
       {%- else -%}
-        <li class="f-col-empty">В тази колекция още няма продукти.</li>
+        <li class="f-col-empty">В тази колекция още няма продукти.<br><a class="f-col-empty-link" href="/pages/menu">← Разгледай менюто</a></li>
       {%- endfor -%}
     </ul>
 
@@ -227,6 +239,8 @@
   .f-pc-add[disabled] { opacity: .35; cursor: not-allowed; }
   .f-pc-add.is-added { background: var(--f-gold); color: var(--f-ink); }
   .f-col-empty { grid-column: 1 / -1; color: var(--f-body); padding: 40px 0; text-align: center; }
+  .f-col-empty-link { display: inline-block; margin-top: 14px; color: var(--f-gold); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; text-decoration: none; border-bottom: 1px solid rgba(199,161,113,.5); padding-bottom: 2px; }
+  .f-col-empty-link:hover { border-bottom-color: var(--f-gold); }
   .f-col-pager { display: flex; gap: 8px; justify-content: center; margin-top: 36px; }
   .f-col-pager-link { min-width: 38px; height: 38px; padding: 0 10px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid rgba(232,225,210,.16); border-radius: 8px; font-size: 13px; color: var(--f-cream-dim); transition: border-color .2s, color .2s; }
   .f-col-pager-link:hover { border-color: rgba(199,161,113,.5); color: var(--f-cream); }

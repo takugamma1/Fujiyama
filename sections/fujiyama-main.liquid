@@ -136,41 +136,55 @@
 
   .f-main-mobile { display: none; }
 
-  @media (max-width: 849px) {
+  /* Below 1100px the cqw-scaled artboard becomes unreadable (9px titles at 850px),
+     so the card carousel takes over from tablets down. */
+  @media (max-width: 1099px) {
     .f-main-board { display: none; }
     .f-main-mobile { display: block; padding: 56px 24px 8px; }
     .f-mob-coll { text-align: center; }
-    .f-mob-coll-title { font-size: 30px; letter-spacing: 0.08em; text-transform: uppercase; }
+    .f-mob-coll-title { font-size: clamp(30px, 5vw, 40px); letter-spacing: 0.08em; text-transform: uppercase; }
     .f-mob-coll-sub {
-      font-size: 11px;
+      font-size: clamp(11px, 1.6vw, 13px);
       letter-spacing: 0.26em;
       text-transform: uppercase;
       color: #a8a08c;
       margin: 12px 0 26px;
     }
+    /* edge-to-edge scroller with the section's side padding as scroll padding */
     .f-mob-cards {
       display: flex;
       gap: 14px;
       overflow-x: auto;
       scroll-snap-type: x mandatory;
-      padding: 4px 2px 18px;
+      scroll-padding-inline: 24px;
+      margin: 0 -24px;
+      padding: 4px 24px 18px;
       -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
     }
+    .f-mob-cards::-webkit-scrollbar { display: none; }
     .f-mob-card {
       position: relative;
-      flex: 0 0 62vw;
-      max-width: 270px;
-      aspect-ratio: 203 / 434;
+      flex: 0 0 clamp(228px, 62vw, 320px);
+      aspect-ratio: 3 / 4;
       background-size: cover;
-      background-position: center;
-      border-radius: 8px;
-      scroll-snap-align: center;
+      /* the crops carry the artboard's texture band at the top — crop from the bottom */
+      background-position: center bottom;
+      border-radius: 12px;
+      scroll-snap-align: start;
       text-align: left;
+      overflow: hidden;
     }
-    .f-mob-card .f-card-bubble { left: 9px; right: 9px; bottom: 9px; padding: 17px 17px; gap: 9px; border-radius: 14px; }
-    .f-mob-card .f-card-title { font-size: 15px; }
-    .f-mob-card .f-card-desc { font-size: 12.5px; }
-    .f-mob-card .f-card-arrow { width: 42px; height: 42px; }
+    .f-mob-card .f-card-bubble { left: 10px; right: 10px; bottom: 10px; padding: 16px; gap: 8px; border-radius: 14px; }
+    .f-mob-card .f-card-title { font-size: 17px; }
+    .f-mob-card .f-card-desc { font-size: 14px; line-height: 1.4; }
+    .f-mob-card .f-card-arrow { width: 44px; height: 44px; }
+  }
+  @media (min-width: 600px) and (max-width: 1099px) {
+    .f-main-mobile { padding: 64px 32px 8px; }
+    .f-mob-cards { gap: 18px; margin: 0 -32px; padding: 4px 32px 18px; scroll-padding-inline: 32px; }
+    .f-mob-card .f-card-title { font-size: 18px; }
+    .f-mob-card .f-card-desc { font-size: 15px; }
   }
 {% endstyle %}
 
