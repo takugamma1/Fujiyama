@@ -76,10 +76,15 @@
   else { window.addEventListener('load', reveal, { once: true }); }
 
   // 2) navigations: show overlay + count up, then let the browser navigate
+  var failsafe = null;
   function show() {
     el.classList.remove('is-done', 'is-hidden');
     paint(0); running = true;
     runTo(96);
+    // If the navigation never happens (blocked link, JS handler, slow tap on iOS),
+    // never leave the overlay covering the page.
+    clearTimeout(failsafe);
+    failsafe = setTimeout(function () { el.classList.add('is-done', 'is-hidden'); }, 4000);
   }
   document.addEventListener('click', function (e) {
     if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;

@@ -55,7 +55,8 @@
 
 {% style %}
   .f-cartd[hidden] { display: none; }
-  #f-cartdrawer { position: fixed; inset: 0; z-index: 1000; }
+  /* above the quick-add popup (1050) so the cart is never hidden behind it on phones */
+  #f-cartdrawer { position: fixed; inset: 0; z-index: 1060; }
   .f-cart-scrim { position: absolute; inset: 0; background: rgba(0,0,0,0.55); opacity: 0; transition: opacity .35s ease; }
   #f-cartdrawer.is-open .f-cart-scrim { opacity: 1; }
   .f-cart-panel {

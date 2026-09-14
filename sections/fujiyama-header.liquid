@@ -62,10 +62,14 @@
       burger.classList.toggle('is-open', open);
     });
     nav.addEventListener('click', function (e) {
-      if (e.target.tagName === 'A') {
-        nav.setAttribute('hidden', '');
-        burger.setAttribute('aria-expanded', 'false');
-        burger.classList.remove('is-open');
+      if (e.target.closest('a')) {
+        // close after the click has fully dispatched, so hiding the link
+        // can never interfere with the browser's navigation on touch devices
+        setTimeout(function () {
+          nav.setAttribute('hidden', '');
+          burger.setAttribute('aria-expanded', 'false');
+          burger.classList.remove('is-open');
+        }, 0);
       }
     });
 
