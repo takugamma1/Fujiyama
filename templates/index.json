@@ -89,14 +89,14 @@
     "fujiyama_map": {
       "type": "fujiyama-map",
       "settings": {
-        "map_embed_url": "",
+        "map_embed_url": "https://maps.app.goo.gl/xiMfNZixxwQDoDYk9",
         "city": "Пазарджик",
         "country": "България",
-        "address": "<p>ул. Георги Бенковски 120<br>4400 Пазарджик, България</p>",
+        "address": "<p>ул. Георги Бенковски 120<br/>4400 Пазарджик, България</p>",
         "phone": "089 680 6938",
         "email": "fujiyamapazardjik@abv.bg",
         "hours_label": "Работно време",
-        "hours": "<p>Понеделник – Събота<br>12:00 – 23:00</p>",
+        "hours": "<p>Понеделник – Събота<br/>12:00 – 23:00</p>",
         "closed_label": "Почивен ден",
         "closed": "Неделя вечер"
       }
