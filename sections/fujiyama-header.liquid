@@ -24,6 +24,17 @@
       {%- endif -%}
     </a>
 
+    {%- if section.settings.show_cart -%}
+      {%- comment -%} phone-only cart icon: the desktop navs are hidden on small screens {%- endcomment -%}
+      <a href="{{ routes.cart_url }}" class="f-cart f-cart--mobile" aria-label="Количка">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22" aria-hidden="true">
+          <path d="M6 7h12l-1.2 11.2a1.5 1.5 0 0 1-1.5 1.3H8.7a1.5 1.5 0 0 1-1.5-1.3L6 7z"/>
+          <path d="M9 9V6a3 3 0 0 1 6 0v3"/>
+        </svg>
+        {%- if cart.item_count > 0 -%}<span class="f-cart-count">{{ cart.item_count }}</span>{%- endif -%}
+      </a>
+    {%- endif -%}
+
     <nav class="f-nav f-nav-right" aria-label="Допълнителна навигация">
       <a href="{{ section.settings.link_4_url }}">{{ section.settings.link_4_label }}</a>
       <a href="{{ section.settings.link_5_url }}">{{ section.settings.link_5_label }}</a>
@@ -158,10 +169,13 @@
   }
   .f-burger { display: none; }
   .f-mobile-nav { display: none; }
+  .f-cart--mobile { display: none; }
 
   @media (max-width: 849px) {
     .f-nav { display: none; }
     .f-header-inner { grid-template-columns: 48px 1fr 48px; }
+    .f-cart--mobile { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; justify-self: end; }
+    .f-cart--mobile .f-cart-count { top: 4px; right: 2px; font-size: 10px; }
     .f-emblem { padding: 4px 0 0; }
     .f-burger {
       display: flex;

@@ -157,15 +157,14 @@
 
   function setCount(n) {
     countEls.forEach(function (el) { el.textContent = n; });
-    // header bubble
-    var headerCart = document.querySelector('a.f-cart');
-    if (headerCart) {
+    // header bubbles (desktop nav icon + phone icon)
+    document.querySelectorAll('a.f-cart').forEach(function (headerCart) {
       var b = headerCart.querySelector('.f-cart-count');
       if (n > 0) {
         if (!b) { b = document.createElement('span'); b.className = 'f-cart-count'; headerCart.appendChild(b); }
         b.textContent = n;
       } else if (b) { b.remove(); }
-    }
+    });
   }
 
   function showToast(html) {
