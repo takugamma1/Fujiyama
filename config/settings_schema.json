@@ -2284,5 +2284,44 @@
         "default": "equal-width-buttons"
       }
     ]
+  },
+  {
+    "name": "Fujiyama — Доставка / Вземане",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Блокът „Начин на получаване“ в количката: Доставка / Вземане от място, адрес за доставка и брой клечки. Адресът и изборът се записват като атрибути на поръчката."
+      },
+      {
+        "type": "text",
+        "id": "cf_pickup_address",
+        "label": "Адрес на ресторанта (показва се при вземане от място)",
+        "default": "ул. Георги Бенковски 120, Пазарджик"
+      },
+      {
+        "type": "text",
+        "id": "cf_maps_key",
+        "label": "Google Maps API ключ",
+        "info": "Ако е празен, клиентът въвежда адреса в обикновена форма. С ключ — избира точния адрес с пин на картата (Maps JavaScript API + Geocoding API, ограничен до fujiyamma.com)."
+      },
+      {
+        "type": "text",
+        "id": "cf_center_lat",
+        "label": "Център на картата — географска ширина",
+        "default": "42.2059"
+      },
+      {
+        "type": "text",
+        "id": "cf_center_lng",
+        "label": "Център на картата — географска дължина",
+        "default": "24.3296"
+      },
+      {
+        "type": "text",
+        "id": "cf_storefront_token",
+        "label": "Storefront API токен (по избор)",
+        "info": "Ако е зададен, изборът Доставка/Вземане и адресът се пренасят автоматично в checkout. Създава се от Headless/Storefront API app."
+      }
+    ]
   }
 ]

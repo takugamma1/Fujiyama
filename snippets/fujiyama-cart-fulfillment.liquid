@@ -1,0 +1,185 @@
+{%- comment -%}
+  FUJIYAMA cart fulfillment — ported from the sushibarmango "cart-fulfillment"
+  block, adapted to the self-contained AJAX drawer (no section morphing):
+    - Доставка / Вземане от място
+    - Delivery address: Google Maps pin-drop when a Maps key is set in theme
+      settings, otherwise a plain address form. Saved as cart attributes so they
+      land on the order (Адрес за доставка / Пощенски код / Координати).
+    - Клечки / прибори count (cart attribute „Клечки“, required for delivery).
+    - „Към касата“ stays locked until address + sticks are set for delivery.
+  State of record = cart.attributes (read from /cart.js on every drawer refresh).
+  The markup here is a skeleton; assets/fujiyama-cart-fulfillment.js paints it.
+{%- endcomment -%}
+
+<div
+  class="f-cf"
+  data-cf
+  data-maps-key="{{ settings.cf_maps_key | strip }}"
+  data-storefront-token="{{ settings.cf_storefront_token | strip }}"
+  data-center-lat="{{ settings.cf_center_lat | default: '42.2059' }}"
+  data-center-lng="{{ settings.cf_center_lng | default: '24.3296' }}"
+  data-pickup-address="{{ settings.cf_pickup_address | default: 'ул. Георги Бенковски 120, Пазарджик' | escape }}"
+>
+  <p class="f-cf-label">Начин на получаване</p>
+
+  <div class="f-cf-toggle" role="radiogroup" aria-label="Начин на получаване">
+    <button type="button" class="f-cf-option is-active" data-cf-mode="Доставка" role="radio" aria-checked="true">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5.5" cy="17.5" r="2.5"/><circle cx="18.5" cy="17.5" r="2.5"/><path d="M8 17.5h7M5.5 17.5 8 9h4l3.5 8.5M12 9V6h3"/></svg>
+      <span>Доставка</span>
+    </button>
+    <button type="button" class="f-cf-option" data-cf-mode="Вземане от място" role="radio" aria-checked="false">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg>
+      <span>Вземане от място</span>
+    </button>
+  </div>
+
+  <div class="f-cf-body" data-cf-body></div>
+  <p class="f-cf-error" data-cf-error hidden></p>
+
+  <div class="f-cf-sticks" data-cf-sticks>
+    <p class="f-cf-label">Клечки / прибори (брой) <span class="f-cf-req" data-cf-sticks-req title="Задължително при доставка">*</span></p>
+    <div class="f-cf-sticks-row" role="group" aria-label="Брой клечки">
+      {%- for n in (1..4) -%}
+        <button type="button" class="f-cf-stick" data-sticks-value="{{ n }}" aria-pressed="false">{{ n }}</button>
+      {%- endfor -%}
+      <input class="f-cf-stick-custom" type="number" min="1" max="99" step="1" inputmode="numeric" placeholder="друго" data-sticks-custom aria-label="Друг брой клечки">
+    </div>
+    <p class="f-cf-hint" data-cf-sticks-hint>Изберете брой — задължително при доставка.</p>
+    <p class="f-cf-error" data-cf-sticks-error hidden></p>
+  </div>
+</div>
+
+<template id="f-cf-tpl-pickup">
+  <p class="f-cf-note f-cf-note--ok">✓ Ще приготвим поръчката за вземане от ресторанта.</p>
+  <p class="f-cf-hint">📍 <span data-cf-pickup-address></span></p>
+</template>
+
+<template id="f-cf-tpl-address">
+  <div class="f-cf-address">
+    <span class="f-cf-address-icon" aria-hidden="true">📍</span>
+    <span class="f-cf-address-text" data-cf-address-text></span>
+    <button type="button" class="f-cf-change" data-cf-open-address>Промени</button>
+  </div>
+</template>
+
+<template id="f-cf-tpl-noaddress">
+  <button type="button" class="f-cf-pick" data-cf-open-address>
+    <span aria-hidden="true">📍</span><span data-cf-pick-label>Посочи адрес на картата</span>
+  </button>
+  <p class="f-cf-hint">Посочете точния адрес — така доставката пристига без грешки.</p>
+  <p class="f-cf-hint f-cf-hint--warn">⚠ Бутонът „Към касата“ се отключва след като посочите адрес.</p>
+</template>
+
+{%- comment -%} Plain address form — used when no Google Maps key is configured. {%- endcomment -%}
+<template id="f-cf-tpl-form">
+  <form class="f-cf-form" data-cf-form novalidate>
+    <label class="f-cf-field"><span>Адрес (улица, номер, вход, етаж)</span><input type="text" name="address1" autocomplete="street-address" required></label>
+    <div class="f-cf-form-row">
+      <label class="f-cf-field"><span>Град</span><input type="text" name="city" value="Пазарджик" autocomplete="address-level2" required></label>
+      <label class="f-cf-field"><span>Пощенски код</span><input type="text" name="zip" value="4400" inputmode="numeric" autocomplete="postal-code" required></label>
+    </div>
+    <div class="f-cf-form-actions">
+      <button type="button" class="f-cf-change" data-cf-form-cancel>Отказ</button>
+      <button type="submit" class="f-btn-gold f-cf-save">Запази адреса</button>
+    </div>
+  </form>
+</template>
+
+<dialog id="f-cf-map" class="f-cf-map" aria-labelledby="f-cf-map-title">
+  <div class="f-cf-map-inner">
+    <div class="f-cf-map-head">
+      <h3 id="f-cf-map-title" class="f-cf-map-title">Посочете адрес за доставка</h3>
+      <button type="button" class="f-cf-map-x" data-cf-map-close aria-label="Затвори">✕</button>
+    </div>
+    <div class="f-cf-map-search-wrap">
+      <input id="f-cf-map-search" class="f-cf-map-search" type="text" placeholder="Търсене на адрес (ул., номер, град)…" autocomplete="off">
+      <ul class="f-cf-map-suggestions" data-cf-suggestions hidden></ul>
+    </div>
+    <div id="f-cf-map-canvas" class="f-cf-map-canvas"><div class="f-cf-map-loading">Зареждане на картата…</div></div>
+    <p class="f-cf-hint">Преместете <strong>пина</strong> точно върху вашия вход.</p>
+    <div class="f-cf-map-resolved" data-cf-resolved hidden><span data-cf-resolved-text></span></div>
+    <div class="f-cf-map-actions">
+      <button type="button" class="f-cf-map-locate" data-cf-locate>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="8"/></svg>
+        <span>Моето местоположение</span>
+      </button>
+      <button type="button" class="f-btn-gold f-cf-map-confirm" data-cf-confirm disabled>Потвърди адреса</button>
+    </div>
+  </div>
+</dialog>
+
+{% style %}
+  .f-cf { padding: 16px 0 4px; border-bottom: 1px solid rgba(232,225,210,.12); margin-bottom: 16px; }
+  .f-cf-label { margin: 0 0 8px; font-size: 10.5px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--f-cream-dim); }
+  .f-cf-req { color: var(--f-gold); }
+  .f-cf-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .f-cf-option {
+    display: inline-flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 4px 7px;
+    min-height: 44px; padding: 8px 6px; border: 1px solid rgba(232,225,210,.2); border-radius: 10px;
+    background: transparent; color: var(--f-cream); font-family: var(--f-sans); font-size: 12px; font-weight: 500; line-height: 1.2;
+    text-align: center; cursor: pointer; transition: border-color .25s, background .25s, color .25s;
+  }
+  .f-cf-option svg { flex-shrink: 0; }
+  .f-cf-option.is-active { border-color: var(--f-gold); background: rgba(199,161,113,.12); color: var(--f-gold); box-shadow: inset 0 0 0 1px var(--f-gold); }
+  .f-cf[aria-busy='true'] .f-cf-toggle, .f-cf[aria-busy='true'] [data-cf-body], .f-cf[aria-busy='true'] [data-cf-sticks] { opacity: .55; pointer-events: none; }
+  @media (max-width: 400px) { .f-cf-option svg { display: none; } }
+  .f-cf-body { margin-top: 10px; }
+  .f-cf-note { margin: 0; font-size: 12.5px; line-height: 1.45; color: var(--f-cream); }
+  .f-cf-note--ok { color: #9fcf9f; }
+  .f-cf-hint { margin: 7px 0 0; font-size: 11.5px; line-height: 1.4; color: var(--f-body); }
+  .f-cf-hint--warn { color: #e2b77c; }
+  .f-cf-error { margin: 8px 0 0; font-size: 11.5px; color: #d9a09a; }
+  .f-cf-error[hidden] { display: none; }
+  .f-cf-pick { width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; border: 1px dashed var(--f-gold-dim); border-radius: 10px; background: transparent; color: var(--f-cream); font-family: var(--f-sans); font-size: 12.5px; cursor: pointer; }
+  .f-cf-pick:hover { border-color: var(--f-gold); color: var(--f-gold); }
+  .f-cf-address { display: flex; align-items: flex-start; gap: 8px; padding: 10px 12px; border: 1px dashed rgba(199,161,113,.5); border-radius: 10px; font-size: 12.5px; line-height: 1.4; color: var(--f-cream); }
+  .f-cf-address-text { flex: 1; }
+  .f-cf-change { background: none; border: 0; padding: 0; color: var(--f-gold); font-size: 11.5px; font-weight: 600; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+  .f-cf-form { display: grid; gap: 10px; padding: 12px; border: 1px dashed rgba(199,161,113,.5); border-radius: 10px; }
+  .f-cf-form-row { display: grid; grid-template-columns: 1.4fr 1fr; gap: 10px; }
+  .f-cf-field { display: grid; gap: 4px; font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--f-cream-dim); }
+  .f-cf-field input { height: 40px; padding: 0 10px; border: 1px solid rgba(232,225,210,.2); border-radius: 8px; background: rgba(0,0,0,.25); color: var(--f-cream); font: 14px var(--f-sans); }
+  .f-cf-field input:focus { outline: 2px solid var(--f-gold); outline-offset: -1px; }
+  .f-cf-form-actions { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .f-cf-save { height: 40px; padding: 0 18px; border-radius: 4px; font-size: 12px; }
+  .f-cf-sticks { margin-top: 14px; padding-top: 12px; border-top: 1px dashed rgba(232,225,210,.14); }
+  .f-cf-sticks-row { display: flex; align-items: stretch; gap: 6px; }
+  .f-cf-stick, .f-cf-stick-custom { height: 40px; border: 1px solid rgba(232,225,210,.2); border-radius: 8px; background: transparent; color: var(--f-cream); font-family: var(--f-sans); font-size: 14px; transition: border-color .25s, background .25s, color .25s; }
+  .f-cf-stick { flex: 1 1 0; cursor: pointer; }
+  .f-cf-stick:hover { border-color: var(--f-gold-dim); }
+  .f-cf-stick.is-active, .f-cf-stick-custom.is-active { border-color: var(--f-gold); background: rgba(199,161,113,.14); color: var(--f-gold); }
+  .f-cf-stick-custom { flex: 1.4 1 0; min-width: 4rem; padding: 0 8px; text-align: center; -moz-appearance: textfield; }
+  .f-cf-stick-custom::-webkit-outer-spin-button, .f-cf-stick-custom::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .f-cf-stick-custom::placeholder { color: var(--f-body); }
+  .f-cart-checkout.is-blocked { opacity: .45; filter: grayscale(.4); cursor: not-allowed; }
+
+  dialog.f-cf-map { border: 1px solid rgba(199,161,113,.35); border-radius: 14px; padding: 0; width: min(560px, calc(100vw - 2rem)); background: #1b1a18 url('fujiyama-texture.jpg') repeat; background-size: 400px 400px; color: var(--f-cream); z-index: 1200; }
+  dialog.f-cf-map::backdrop { background: rgb(0 0 0 / .65); }
+  .f-cf-map-inner { padding: 18px 18px 16px; }
+  .f-cf-map-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .f-cf-map-title { margin: 0; font-family: var(--f-serif); font-size: 17px; font-weight: 500; letter-spacing: .04em; }
+  .f-cf-map-x { background: none; border: 0; color: var(--f-cream-dim); font-size: 16px; padding: 6px; cursor: pointer; }
+  .f-cf-map-x:hover { color: var(--f-cream); }
+  .f-cf-map-search-wrap { position: relative; margin-bottom: 10px; }
+  .f-cf-map-search { width: 100%; height: 42px; padding: 0 12px; border: 1px solid rgba(232,225,210,.2); border-radius: 10px; background: rgba(0,0,0,.3); color: var(--f-cream); font: 14px var(--f-sans); }
+  .f-cf-map-suggestions { position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 5; margin: 0; padding: 4px; list-style: none; background: #14130f; border: 1px solid rgba(199,161,113,.35); border-radius: 10px; box-shadow: 0 12px 30px rgb(0 0 0 / .5); max-height: 210px; overflow: auto; }
+  .f-cf-map-suggestions[hidden] { display: none; }
+  .f-cf-map-suggestion { display: block; width: 100%; text-align: left; background: none; border: 0; border-radius: 7px; padding: 8px 10px; color: var(--f-cream); font: 12.5px/1.35 var(--f-sans); cursor: pointer; }
+  .f-cf-map-suggestion:hover { background: rgba(199,161,113,.14); color: var(--f-gold); }
+  .f-cf-map-canvas { width: 100%; height: min(46vh, 340px); border-radius: 12px; overflow: hidden; background: #14130f; position: relative; }
+  .f-cf-map-loading { position: absolute; inset: 0; display: grid; place-items: center; font-size: 12.5px; color: var(--f-body); }
+  .f-cf-map-resolved { margin-top: 10px; padding: 9px 12px; border-radius: 10px; background: rgba(199,161,113,.1); border: 1px solid rgba(199,161,113,.35); font-size: 12.5px; line-height: 1.4; }
+  .f-cf-map-resolved[hidden] { display: none; }
+  .f-cf-map-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
+  .f-cf-map-locate { display: inline-flex; align-items: center; gap: 6px; background: none; border: 0; color: var(--f-cream-dim); font: 12px var(--f-sans); cursor: pointer; }
+  .f-cf-map-locate:hover { color: var(--f-cream); }
+  .f-cf-map-confirm { height: 44px; padding: 0 22px; border-radius: 4px; }
+  .f-cf-map-confirm:disabled { opacity: .45; cursor: not-allowed; }
+  @media (max-width: 600px) {
+    dialog.f-cf-map { width: calc(100vw - 1rem); margin: auto; }
+    .f-cf-map-canvas { height: 44vh; }
+    .f-cf-map-actions { flex-direction: column-reverse; align-items: stretch; }
+    .f-cf-map-confirm { width: 100%; }
+    .f-cf-map-locate { justify-content: center; }
+  }
+{% endstyle %}

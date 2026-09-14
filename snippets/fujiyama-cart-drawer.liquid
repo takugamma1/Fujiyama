@@ -21,6 +21,7 @@
     </div>
 
     <footer class="f-cart-foot" data-cart-foot hidden>
+      {% render 'fujiyama-cart-fulfillment' %}
       <div class="f-cart-sub">
         <span>Междинна сума</span>
         <span data-cart-subtotal></span>
@@ -91,7 +92,7 @@
   .f-cart-item-price { font-family: var(--f-serif); font-size: 15px; color: var(--f-cream); }
   .f-cart-item-remove { background: none; border: 0; color: var(--f-body); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; padding: 8px 0 0; }
   .f-cart-item-remove:hover { color: #d9a09a; }
-  .f-cart-foot { padding: 20px 24px calc(20px + env(safe-area-inset-bottom)); border-top: 1px solid rgba(232,225,210,.12); }
+  .f-cart-foot { padding: 12px 24px calc(20px + env(safe-area-inset-bottom)); border-top: 1px solid rgba(232,225,210,.12); max-height: 62%; overflow-y: auto; flex: 0 0 auto; }
   .f-cart-foot[hidden] { display: none; }
   .f-cart-sub { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; }
   .f-cart-sub span:first-child { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--f-cream-dim); }
@@ -161,6 +162,9 @@
   }
 
   function render(cart) {
+    // Expose cart state to other modules (fulfillment block) and notify them.
+    if (window.FujiCart) window.FujiCart.cart = cart;
+    document.dispatchEvent(new CustomEvent('fuji:cart', { detail: cart }));
     setCount(cart.item_count);
     itemsEl.innerHTML = '';
     if (!cart.items || !cart.items.length) {
@@ -261,7 +265,7 @@
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && drawer.classList.contains('is-open')) close(); });
 
   // Public API so other UI (e.g. the quick-add popup) can reuse the drawer.
-  window.FujiCart = { refresh: refresh, open: open, close: close, showToast: showToast, money: money };
+  window.FujiCart = { refresh: refresh, open: open, close: close, showToast: showToast, money: money, cart: null };
 
   // keep header bubble correct on load
   refresh();
