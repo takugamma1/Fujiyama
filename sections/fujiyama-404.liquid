@@ -1,0 +1,117 @@
+{%- comment -%}
+  FUJIYAMA 404 — a quiet "lost" page on the shared charcoal texture:
+  faint kanji 迷 (lost) behind a large Playfair "404", gold dash tagline,
+  short explanation, two actions (home / menu) and a search field.
+  Fluid type via clamp(); actions stack on phones.
+{%- endcomment -%}
+
+<section class="f-section f-404">
+  <div class="f-404-wrap">
+    <span class="f-404-kanji" aria-hidden="true">{{ section.settings.kanji | default: '迷' }}</span>
+
+    <p class="f-404-code" aria-hidden="true">404</p>
+    <p class="f-404-tag"><span>{{ section.settings.tagline | escape }}</span></p>
+    <h1 class="f-display f-404-title">{{ section.settings.title | escape }}</h1>
+    {%- if section.settings.text != blank -%}
+      <p class="f-404-text">{{ section.settings.text | escape }}</p>
+    {%- endif -%}
+
+    <div class="f-404-actions">
+      <a class="f-btn-gold f-404-btn" href="{{ section.settings.primary_link | default: '/' }}">{{ section.settings.primary_label | escape }}</a>
+      {%- if section.settings.secondary_label != blank -%}
+        <a class="f-404-btn f-404-btn--ghost" href="{{ section.settings.secondary_link | default: '/pages/menu' }}">{{ section.settings.secondary_label | escape }}</a>
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.show_search -%}
+      <form class="f-404-search" action="{{ routes.search_url }}" method="get" role="search">
+        <input type="hidden" name="type" value="product">
+        <label class="f-404-search-label" for="f-404-q">{{ section.settings.search_label | escape }}</label>
+        <div class="f-404-search-row">
+          <input id="f-404-q" class="f-404-input" type="search" name="q" placeholder="{{ section.settings.search_placeholder | escape }}" autocomplete="off">
+          <button type="submit" class="f-404-search-btn" aria-label="Търси">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="m14 14 4 4"/></svg>
+          </button>
+        </div>
+      </form>
+    {%- endif -%}
+  </div>
+</section>
+
+{% style %}
+  .f-404 { position: relative; overflow: hidden; padding: clamp(72px, 12vw, 140px) 24px clamp(80px, 12vw, 150px); }
+  .f-404-wrap {
+    position: relative; max-width: 720px; margin: 0 auto; text-align: center;
+    display: flex; flex-direction: column; align-items: center; gap: 18px;
+  }
+  .f-404-kanji {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -54%);
+    font-family: 'Noto Serif JP', var(--f-serif); font-weight: 300; line-height: 1;
+    font-size: clamp(220px, 46vw, 520px); color: rgba(232, 225, 210, 0.045);
+    pointer-events: none; user-select: none; white-space: nowrap;
+  }
+  .f-404-code {
+    margin: 0; font-family: var(--f-serif); font-weight: 500; line-height: 0.9; letter-spacing: 0.06em;
+    font-size: clamp(88px, 16vw, 168px); color: var(--f-cream);
+  }
+  .f-404-tag { margin: 0; display: flex; align-items: center; gap: 14px; font-family: var(--f-sans); font-size: clamp(11px, 1.3vw, 12.5px); letter-spacing: 0.3em; text-transform: uppercase; color: var(--f-gold); }
+  .f-404-tag::before, .f-404-tag::after { content: ''; width: 38px; height: 1px; background: var(--f-gold); opacity: .8; }
+  .f-404-title { margin: 6px 0 0; font-size: clamp(28px, 5vw, 46px); font-weight: 400; line-height: 1.12; color: var(--f-cream); text-wrap: balance; }
+  .f-404-text { margin: 0; max-width: 46ch; font-family: var(--f-sans); font-size: clamp(15px, 1.7vw, 17px); line-height: 1.6; color: var(--f-body); text-wrap: pretty; }
+  .f-404-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 12px; }
+  .f-404-btn { min-width: 220px; height: 52px; padding: 0 28px; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+  .f-404-btn--ghost {
+    font-family: var(--f-sans); font-size: 12px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--f-cream); border: 1px solid rgba(232, 225, 210, 0.35); background: transparent; transition: border-color .25s, color .25s;
+  }
+  .f-404-btn--ghost:hover { border-color: var(--f-gold); color: var(--f-gold); }
+  .f-404-search { width: 100%; max-width: 440px; margin-top: 26px; display: grid; gap: 10px; }
+  .f-404-search-label { font-family: var(--f-sans); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--f-cream-dim); }
+  .f-404-search-row { display: flex; }
+  .f-404 .f-404-input {
+    -webkit-appearance: none; appearance: none; flex: 1 1 auto; min-width: 0; height: 50px; padding: 0 16px;
+    border: 1px solid rgba(232, 225, 210, 0.22); border-right: 0; border-radius: 4px 0 0 4px;
+    background-color: rgba(0, 0, 0, 0.28); color: var(--f-cream); font: 400 16px var(--f-sans); box-shadow: none;
+  }
+  .f-404 .f-404-input::placeholder { color: var(--f-body); opacity: 1; }
+  .f-404 .f-404-input:focus { outline: 2px solid var(--f-gold); outline-offset: -1px; }
+  .f-404-search-btn { width: 54px; height: 50px; border: 1px solid rgba(232, 225, 210, 0.22); border-radius: 0 4px 4px 0; background: rgba(0, 0, 0, 0.28); color: var(--f-cream); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+  .f-404-search-btn svg { width: 20px; height: 20px; }
+  .f-404-search-btn:hover { color: var(--f-gold); border-color: var(--f-gold); }
+  .f-404-search-btn:focus-visible { outline: 2px solid var(--f-gold); outline-offset: -1px; }
+
+  @media (max-width: 600px) {
+    .f-404 { padding: 64px 20px 80px; }
+    .f-404-wrap { gap: 14px; }
+    .f-404-tag::before, .f-404-tag::after { width: 24px; }
+    .f-404-actions { flex-direction: column; width: 100%; }
+    .f-404-btn { width: 100%; min-width: 0; height: 54px; }
+    .f-404-text { font-size: 16px; }
+    .f-404-search { margin-top: 18px; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .f-404-btn { transition: background .25s ease, transform .25s ease, border-color .25s, color .25s; }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Fujiyama 404",
+  "settings": [
+    { "type": "text", "id": "kanji", "label": "Декоративен йероглиф", "default": "迷", "info": "迷 = „изгубен“. Оставете празно, за да го скриете." },
+    { "type": "text", "id": "tagline", "label": "Надпис над заглавието", "default": "Страницата не е намерена" },
+    { "type": "text", "id": "title", "label": "Заглавие", "default": "Тази страница се е изгубила по пътя" },
+    { "type": "text", "id": "text", "label": "Текст", "default": "Възможно е връзката да е грешна или страницата да е премахната. Менюто, резервациите и контактите са на една стъпка." },
+    { "type": "header", "content": "Бутони" },
+    { "type": "text", "id": "primary_label", "label": "Основен бутон", "default": "Към началото" },
+    { "type": "text", "id": "primary_link", "label": "Линк на основния бутон", "default": "/" },
+    { "type": "text", "id": "secondary_label", "label": "Втори бутон", "default": "Разгледай менюто" },
+    { "type": "text", "id": "secondary_link", "label": "Линк на втория бутон", "default": "/pages/menu" },
+    { "type": "header", "content": "Търсене" },
+    { "type": "checkbox", "id": "show_search", "label": "Покажи търсене", "default": true },
+    { "type": "text", "id": "search_label", "label": "Етикет", "default": "Или потърси ястие" },
+    { "type": "text", "id": "search_placeholder", "label": "Placeholder", "default": "напр. урамаки, поке боул…" }
+  ],
+  "presets": [{ "name": "Fujiyama 404" }]
+}
+{% endschema %}
