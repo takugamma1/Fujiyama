@@ -22,69 +22,79 @@
     "menu_rows": {
       "type": "fujiyama-menu-rows",
       "blocks": {
-        "r_sushi": {
+        "row_1": {
           "type": "row",
           "settings": {
             "icon": "fish",
             "title": "Суши",
-            "subtitle": "Урамаки · Хосомаки · Сашими",
-            "collection": "урамаки"
+            "collection": "хосомаки",
+            "subtitle": "Хосомаки · Урамаки · Футомаки · Нигири · Сетове · Поке"
           }
         },
-        "r_asian": {
+        "row_2": {
           "type": "row",
           "settings": {
-            "icon": "asian",
-            "title": "Азиатска",
-            "subtitle": "Уок · Оден · Момо",
-            "collection": "азиатски-предложения"
+            "icon": "pasta",
+            "title": "Ризото",
+            "collection": "ризото",
+            "subtitle": "Пиле · Телешко · Зеленчуци"
           }
         },
-        "r_burger": {
-          "type": "row",
-          "settings": {
-            "icon": "burger",
-            "title": "Бургери",
-            "subtitle": "Класик · Крафт",
-            "collection": "бургери"
-          }
-        },
-        "r_pasta": {
+        "row_3": {
           "type": "row",
           "settings": {
             "icon": "pasta",
             "title": "Паста",
-            "subtitle": "Прясна паста · Ризото",
-            "collection": "паста"
+            "collection": "паста",
+            "subtitle": "Талиатели · Спагети"
           }
         },
-        "r_salad": {
+        "row_4": {
           "type": "row",
           "settings": {
-            "icon": "salad",
-            "title": "Салати",
-            "subtitle": "Сезонни · Боул",
-            "collection": "салати"
+            "icon": "meat",
+            "title": "Скара",
+            "collection": "скара",
+            "subtitle": "Кюфтета · Плескавица · Наденица"
           }
         },
-        "r_main": {
+        "row_5": {
+          "type": "row",
+          "settings": {
+            "icon": "burger",
+            "title": "Бургери",
+            "collection": "бургери",
+            "subtitle": "Телешки · Пилешки · Фиш"
+          }
+        },
+        "row_6": {
           "type": "row",
           "settings": {
             "icon": "meat",
             "title": "Основни",
-            "subtitle": "Риба · Стек",
-            "collection": "основни"
+            "collection": "основни",
+            "subtitle": "Пиле · Телешко · Свинско"
           }
         },
-        "t_dessert": {
-          "type": "tile",
+        "row_7": {
+          "type": "row",
           "settings": {
-            "icon": "cake",
-            "title": "Десерти",
-            "collection": "десерти"
+            "icon": "salad",
+            "title": "Предястия",
+            "collection": "предястия",
+            "subtitle": "Хапки · Темпура · Картофи"
           }
         },
-        "t_drinks": {
+        "row_8": {
+          "type": "row",
+          "settings": {
+            "icon": "asian",
+            "title": "Удон",
+            "collection": "удон",
+            "subtitle": "Нудли с пиле · телешко · морски дарове"
+          }
+        },
+        "tile_9": {
           "type": "tile",
           "settings": {
             "icon": "cup",
@@ -92,25 +102,35 @@
             "collection": "напитки"
           }
         },
-        "t_bar": {
+        "tile_10": {
           "type": "tile",
           "settings": {
             "icon": "wine",
-            "title": "Вино & бар",
+            "title": "Алкохолни напитки",
             "collection": "алкохолни-напитки"
+          }
+        },
+        "tile_11": {
+          "type": "tile",
+          "settings": {
+            "icon": "salad",
+            "title": "Обедно меню",
+            "collection": "обедно-меню"
           }
         }
       },
       "block_order": [
-        "r_sushi",
-        "r_asian",
-        "r_burger",
-        "r_pasta",
-        "r_salad",
-        "r_main",
-        "t_dessert",
-        "t_drinks",
-        "t_bar"
+        "row_1",
+        "row_2",
+        "row_3",
+        "row_4",
+        "row_5",
+        "row_6",
+        "row_7",
+        "row_8",
+        "tile_9",
+        "tile_10",
+        "tile_11"
       ],
       "settings": {}
     },

@@ -2,6 +2,8 @@
   FUJIYAMA collection page — group-aware.
   Collections are flat in Shopify, so groups are defined in the editable config
   block below (group key | title | icon | space-separated sub-collection handles).
+  Groups mirror the Barsy POS categories (МЕНЮ > …); groups with no sellable
+  products are hidden automatically.
   The page shows: a round-image carousel of the MAIN groups (name inside, over a
   gradient), the current group title, the group's sub-collections as bubbles, and
   the active sub-collection's product grid with the gold "+" add-to-cart.
@@ -10,9 +12,9 @@
 {%- endcomment -%}
 
 {%- liquid
-  assign g_titles = 'Суши,Азиатска,Бургери,Паста,Салати,Основни,Десерти,Напитки,Вино & бар' | split: ','
-  assign g_icons  = 'fish,asian,burger,pasta,salad,meat,cake,cup,wine' | split: ','
-  assign g_subs_joined = 'урамаки хосомаки футомаки нигири сашими сетове суши-бургер суши-хотдог поке-суши||азиатски-предложения||бургери||паста ризото||салати обедни-салати||основни риба||десерти||напитки||алкохолни-напитки'
+  assign g_titles = 'Суши,Ризото,Паста,Скара,Бургери,Основни,Предястия,Удон,Напитки,Обедно меню' | split: ','
+  assign g_icons  = 'fish,pasta,pasta,meat,burger,meat,salad,asian,cup,salad' | split: ','
+  assign g_subs_joined = 'хосомаки урамаки футомаки нигири сашими сетове поке-суши суши-бургер футомаки-темпура||ризото||паста||скара||бургери||основни||предястия||удон||напитки алкохолни-напитки||обедно-меню'
   assign g_subs = g_subs_joined | split: '||'
 
   assign cur = collection.handle
