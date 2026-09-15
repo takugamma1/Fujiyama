@@ -18,7 +18,140 @@
         "show_promo": false,
         "promo_kanji": "",
         "promo_tagline": ""
-      }
+      },
+      "blocks": {
+        "group_1": {
+          "type": "group",
+          "settings": {
+            "title": "Суши",
+            "icon": "fish",
+            "collections": [
+              "хосомаки",
+              "урамаки",
+              "футомаки",
+              "нигири",
+              "сашими",
+              "сетове",
+              "поке-суши",
+              "суши-бургер",
+              "футомаки-темпура"
+            ],
+            "hide_empty": true
+          }
+        },
+        "group_2": {
+          "type": "group",
+          "settings": {
+            "title": "Ризото",
+            "icon": "pasta",
+            "collections": [
+              "ризото"
+            ],
+            "hide_empty": true
+          }
+        },
+        "group_3": {
+          "type": "group",
+          "settings": {
+            "title": "Паста",
+            "icon": "pasta",
+            "collections": [
+              "паста"
+            ],
+            "hide_empty": true
+          }
+        },
+        "group_4": {
+          "type": "group",
+          "settings": {
+            "title": "Скара",
+            "icon": "meat",
+            "collections": [
+              "скара"
+            ],
+            "hide_empty": true
+          }
+        },
+        "group_5": {
+          "type": "group",
+          "settings": {
+            "title": "Бургери",
+            "icon": "burger",
+            "collections": [
+              "бургери"
+            ],
+            "hide_empty": true
+          }
+        },
+        "group_6": {
+          "type": "group",
+          "settings": {
+            "title": "Основни",
+            "icon": "meat",
+            "collections": [
+              "основни"
+            ],
+            "hide_empty": true
+          }
+        },
+        "group_7": {
+          "type": "group",
+          "settings": {
+            "title": "Предястия",
+            "icon": "salad",
+            "collections": [
+              "предястия"
+            ],
+            "hide_empty": true
+          }
+        },
+        "group_8": {
+          "type": "group",
+          "settings": {
+            "title": "Удон",
+            "icon": "asian",
+            "collections": [
+              "удон"
+            ],
+            "hide_empty": true
+          }
+        },
+        "group_9": {
+          "type": "group",
+          "settings": {
+            "title": "Напитки",
+            "icon": "cup",
+            "collections": [
+              "напитки",
+              "алкохолни-напитки"
+            ],
+            "hide_empty": true
+          }
+        },
+        "group_10": {
+          "type": "group",
+          "settings": {
+            "title": "Обедно меню",
+            "icon": "salad",
+            "collections": [
+              "обедно-меню"
+            ],
+            "hide_empty": true
+          }
+        }
+      },
+      "block_order": [
+        "group_1",
+        "group_2",
+        "group_3",
+        "group_4",
+        "group_5",
+        "group_6",
+        "group_7",
+        "group_8",
+        "group_9",
+        "group_10"
+      ]
     }
   },
   "order": [

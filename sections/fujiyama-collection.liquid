@@ -1,39 +1,33 @@
 {%- comment -%}
   FUJIYAMA collection page — group-aware.
-  Collections are flat in Shopify, so groups are defined in the editable config
-  block below (group key | title | icon | space-separated sub-collection handles).
-  Groups mirror the Barsy POS categories (МЕНЮ > …); groups with no sellable
-  products are hidden automatically.
-  The page shows: a round-image carousel of the MAIN groups (name inside, over a
-  gradient), the current group title, the group's sub-collections as bubbles, and
-  the active sub-collection's product grid with the gold "+" add-to-cart.
-
-  TO EDIT GROUPS: change the g_titles / g_icons / g_subs lists (keep them aligned).
+  Collections are flat in Shopify, so the round "bubbles" (main groups) are
+  BLOCKS of this section, editable in the theme editor: each block has a title,
+  a fallback icon, an optional photo and a list of sub-collections. Drag blocks
+  to reorder the bubbles; the sub-collection bubbles follow the order picked in
+  the block. Groups with no sellable products are hidden automatically.
+  The page shows: the round carousel of groups, the current group title, the
+  group's sub-collections as bubbles, and the active sub-collection's grid.
 {%- endcomment -%}
 
 {%- liquid
-  assign g_titles = 'Суши,Ризото,Паста,Скара,Бургери,Основни,Предястия,Удон,Напитки,Обедно меню' | split: ','
-  assign g_icons  = 'fish,pasta,pasta,meat,burger,meat,salad,asian,cup,salad' | split: ','
-  assign g_subs_joined = 'хосомаки урамаки футомаки нигири сашими сетове поке-суши суши-бургер футомаки-темпура||ризото||паста||скара||бургери||основни||предястия||удон||напитки алкохолни-напитки||обедно-меню'
-  assign g_subs = g_subs_joined | split: '||'
-
   assign cur = collection.handle
-  assign gidx = -1
-  for s in g_subs
-    assign padded = ' ' | append: s | append: ' '
-    assign needle = ' ' | append: cur | append: ' '
-    if padded contains needle
-      assign gidx = forloop.index0
+  assign active_block = blank
+  for block in section.blocks
+    for c in block.settings.collections
+      if c.handle == cur
+        assign active_block = block
+        break
+      endif
+    endfor
+    if active_block != blank
       break
     endif
   endfor
 
-  if gidx == -1
+  if active_block == blank
     assign group_title = collection.title
-    assign group_subs_list = cur | split: ' '
   else
-    assign group_title = g_titles[gidx]
-    assign group_subs_list = g_subs[gidx] | split: ' '
+    assign group_title = active_block.settings.title | default: collection.title
   endif
 -%}
 
@@ -46,32 +40,32 @@
   {%- comment -%} ===== round carousel of main groups ===== {%- endcomment -%}
   <nav class="f-cg-groups" aria-label="Категории">
     <div class="f-cg-groups-track">
-      {%- for title in g_titles -%}
-        {%- assign gi = forloop.index0 -%}
+      {%- for block in section.blocks -%}
+        {%- assign is_active = false -%}
+        {%- if block.id == active_block.id -%}{%- assign is_active = true -%}{%- endif -%}
         {%- comment -%} skip groups with no sellable products; link the circle to the first sub that has some {%- endcomment -%}
         {%- assign group_total = 0 -%}
-        {%- assign first_sub = blank -%}
-        {%- assign this_subs = g_subs[gi] | split: ' ' -%}
-        {%- for h in this_subs -%}
-          {%- assign hc = collections[h] -%}
-          {%- if hc != blank and hc.products_count > 0 -%}
+        {%- assign gc = blank -%}
+        {%- for hc in block.settings.collections -%}
+          {%- if hc.products_count > 0 -%}
             {%- assign group_total = group_total | plus: hc.products_count -%}
-            {%- if first_sub == blank -%}{%- assign first_sub = h -%}{%- endif -%}
+            {%- if gc == blank -%}{%- assign gc = hc -%}{%- endif -%}
           {%- endif -%}
         {%- endfor -%}
-        {%- if group_total == 0 and gi != gidx -%}{%- continue -%}{%- endif -%}
-        {%- if first_sub == blank -%}{%- assign first_sub = this_subs | first -%}{%- endif -%}
-        {%- assign gc = collections[first_sub] -%}
-        {%- assign gimg = gc.image -%}
+        {%- if group_total == 0 and is_active == false and block.settings.hide_empty -%}{%- continue -%}{%- endif -%}
+        {%- if gc == blank -%}{%- assign gc = block.settings.collections | first -%}{%- endif -%}
+        {%- assign gimg = block.settings.image -%}
+        {%- if gimg == blank -%}{%- assign gimg = gc.image -%}{%- endif -%}
         {%- if gimg == blank -%}
           {%- for p in gc.products limit: 5 -%}{%- if p.featured_image -%}{%- assign gimg = p.featured_image -%}{%- break -%}{%- endif -%}{%- endfor -%}
         {%- endif -%}
-        <a class="f-cg-group{% if gi == gidx %} is-active{% endif %}" href="{{ gc.url | default: '#' }}"{% if gi == gidx %} aria-current="page"{% endif %}>
+        {%- assign title = block.settings.title | default: gc.title -%}
+        <a class="f-cg-group{% if is_active %} is-active{% endif %}" href="{{ gc.url | default: '#' }}"{% if is_active %} aria-current="page"{% endif %} {{ block.shopify_attributes }}>
           <span class="f-cg-circle">
             {%- if gimg != blank -%}
               {{ gimg | image_url: width: 240 | image_tag: loading: 'lazy', widths: '120,200,240', alt: title | escape }}
             {%- else -%}
-              <span class="f-cg-circle-ph">{% render 'fujiyama-icon', name: g_icons[gi] %}</span>
+              <span class="f-cg-circle-ph">{% render 'fujiyama-icon', name: block.settings.icon %}</span>
             {%- endif -%}
             <span class="f-cg-circle-name">{{ title }}</span>
           </span>
@@ -88,13 +82,12 @@
   </header>
 
   {%- comment -%} ===== sub-collection bubbles (this group only) ===== {%- endcomment -%}
-  {%- if group_subs_list.size > 1 -%}
+  {%- if active_block != blank and active_block.settings.collections.size > 1 -%}
     <nav class="f-cg-subs" aria-label="Подкатегории">
       <div class="f-cg-subs-track">
-        {%- for h in group_subs_list -%}
-          {%- assign sc = collections[h] -%}
-          {%- if sc == blank or sc.products_count == 0 -%}{%- continue -%}{%- endif -%}
-          <a class="f-cg-sub{% if h == cur %} is-active{% endif %}" href="{{ sc.url }}"{% if h == cur %} aria-current="page"{% endif %}>{{ sc.title }}</a>
+        {%- for sc in active_block.settings.collections -%}
+          {%- if sc.products_count == 0 -%}{%- continue -%}{%- endif -%}
+          <a class="f-cg-sub{% if sc.handle == cur %} is-active{% endif %}" href="{{ sc.url }}"{% if sc.handle == cur %} aria-current="page"{% endif %}>{{ sc.title }}</a>
         {%- endfor -%}
       </div>
     </nav>
@@ -258,10 +251,105 @@
 {
   "name": "Fujiyama колекция",
   "settings": [
-    { "type": "text", "id": "back_label", "label": "Текст за връщане", "default": "Назад към менюто" },
-    { "type": "text", "id": "back_url", "label": "Линк за връщане", "default": "/pages/menu" },
-    { "type": "paragraph", "content": "Групите се редактират в кода на секцията (g_titles / g_icons / g_subs)." }
+    {
+      "type": "text",
+      "id": "back_label",
+      "label": "Текст за връщане",
+      "default": "Назад към менюто"
+    },
+    {
+      "type": "text",
+      "id": "back_url",
+      "label": "Линк за връщане",
+      "default": "/pages/menu"
+    },
+    {
+      "type": "paragraph",
+      "content": "Кръглите категории (балончетата) са блокове: добавете, преименувайте или разместете ги от списъка вляво. Подкатегориите на всяка група се избират в самия блок."
+    }
   ],
-  "presets": [{ "name": "Fujiyama колекция" }]
+  "blocks": [
+    {
+      "type": "group",
+      "name": "Категория (балонче)",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Име",
+          "default": "Категория"
+        },
+        {
+          "type": "collection_list",
+          "id": "collections",
+          "label": "Подкатегории (колекции)",
+          "limit": 20,
+          "info": "Първата колекция със стока е линкът на балончето. Редът тук е редът на подкатегориите."
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Снимка (по избор)",
+          "info": "Ако няма, се взима снимката на колекцията или на първия продукт."
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Икона (когато няма снимка)",
+          "default": "fish",
+          "options": [
+            {
+              "value": "fish",
+              "label": "Риба / суши"
+            },
+            {
+              "value": "asian",
+              "label": "Азиатска"
+            },
+            {
+              "value": "burger",
+              "label": "Бургер"
+            },
+            {
+              "value": "pasta",
+              "label": "Паста"
+            },
+            {
+              "value": "salad",
+              "label": "Салата"
+            },
+            {
+              "value": "meat",
+              "label": "Месо"
+            },
+            {
+              "value": "cake",
+              "label": "Десерт"
+            },
+            {
+              "value": "cup",
+              "label": "Чаша"
+            },
+            {
+              "value": "wine",
+              "label": "Вино"
+            }
+          ]
+        },
+        {
+          "type": "checkbox",
+          "id": "hide_empty",
+          "label": "Скрий, ако няма продукти",
+          "default": true
+        }
+      ]
+    }
+  ],
+  "max_blocks": 16,
+  "presets": [
+    {
+      "name": "Fujiyama колекция"
+    }
+  ]
 }
 {% endschema %}
