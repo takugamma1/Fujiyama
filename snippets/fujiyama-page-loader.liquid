@@ -50,23 +50,29 @@
   function paint(p) { p = Math.max(0, Math.min(100, Math.round(p))); numEl.textContent = p; barEl.style.width = p + '%'; }
 
   function runTo(target, done) {
-    cancelAnimationFrame(raf);
+    cancelStep();
     var cur = parseInt(numEl.textContent, 10) || 0;
     if (reduce) { paint(target); if (done) done(); return; }
     function step() {
       cur += Math.max(0.6, (target - cur) * 0.10);
       if (cur >= target - 0.5) { paint(target); if (done) done(); return; }
-      paint(cur); raf = requestAnimationFrame(step);
+      paint(cur);
+      // rAF is paused in background tabs — fall back to a timer so the counter
+      // (and the reveal that depends on it) can never stall.
+      raf = document.hidden ? setTimeout(step, 16) : requestAnimationFrame(step);
     }
     step();
   }
+  function cancelStep() { cancelAnimationFrame(raf); clearTimeout(raf); }
 
   // 1) initial load: animate toward 100 and reveal page
+  function hide() {
+    el.classList.add('is-done');
+    setTimeout(function () { el.classList.add('is-hidden'); }, 520);
+  }
   function reveal() {
-    runTo(100, function () {
-      el.classList.add('is-done');
-      setTimeout(function () { el.classList.add('is-hidden'); }, 520);
-    });
+    runTo(100, hide);
+    setTimeout(hide, 900); // hard guard: hide even if the counter animation stalls
   }
   // creep to ~92 while assets load, finish on window load — but never wait on
   // it for more than 2.5 s: a slow map iframe or a hanging image on a phone
@@ -111,6 +117,6 @@
   window.addEventListener('pageshow', function (e) {
     if (e.persisted) { el.classList.add('is-done', 'is-hidden'); }
   });
-  window.addEventListener('pagehide', function () { cancelAnimationFrame(raf); });
+  window.addEventListener('pagehide', function () { cancelStep(); });
 })();
 </script>
