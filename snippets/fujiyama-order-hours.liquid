@@ -1,0 +1,182 @@
+{%- comment -%}
+  FUJIYAMA order hours — blocks „Към касата“ outside working hours.
+  Sofia time (Europe/Sofia). Orders are accepted from the opening time
+  (weekdays / Sunday set in theme settings) until the closing time; outside
+  that window the checkout button opens a popup with the opening hours.
+  Times are re-evaluated on every click, so the guard follows the clock.
+  Client-side only: it stops the storefront buttons, not a hand-typed /checkout URL.
+{%- endcomment -%}
+
+<div
+  id="f-hours"
+  data-hours
+  data-enabled="{% if settings.cf_hours_enabled %}1{% else %}0{% endif %}"
+  data-open="{{ settings.cf_hours_open | default: '10:00' | strip }}"
+  data-open-sunday="{{ settings.cf_hours_open_sunday | default: '16:00' | strip }}"
+  data-close="{{ settings.cf_hours_close | default: '23:00' | strip }}"
+  hidden
+></div>
+
+<dialog class="f-hours-dialog" id="f-hours-dialog" aria-labelledby="f-hours-title">
+  <div class="f-hours-inner">
+    <button type="button" class="f-hours-x" data-hours-close aria-label="Затвори">✕</button>
+    <div class="f-hours-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+    </div>
+    <h2 class="f-hours-title" id="f-hours-title">В момента не приемаме поръчки</h2>
+    <p class="f-hours-text" data-hours-text></p>
+    <p class="f-hours-schedule" data-hours-schedule></p>
+    <button type="button" class="f-btn-gold f-hours-ok" data-hours-close>Разбрах</button>
+  </div>
+</dialog>
+
+{% style %}
+  dialog.f-hours-dialog {
+    border: 1px solid rgba(199,161,113,.35); border-radius: 14px; padding: 0;
+    width: min(440px, calc(100vw - 2rem));
+    background: #1b1a18 url('fujiyama-texture.jpg') repeat; background-size: 400px 400px;
+    color: var(--f-cream); z-index: 1200; margin: auto;
+    box-shadow: 0 24px 60px rgba(0,0,0,.55);
+  }
+  dialog.f-hours-dialog::backdrop { background: rgb(0 0 0 / .65); }
+  .f-hours-inner { position: relative; padding: 34px 28px 26px; text-align: center; }
+  .f-hours-x { position: absolute; top: 10px; right: 10px; background: none; border: 0; color: var(--f-cream-dim); font-size: 16px; padding: 8px; cursor: pointer; }
+  .f-hours-x:hover { color: var(--f-cream); }
+  .f-hours-icon { display: inline-flex; width: 60px; height: 60px; align-items: center; justify-content: center; border-radius: 50%; border: 1px solid rgba(199,161,113,.5); color: var(--f-gold); margin-bottom: 16px; }
+  .f-hours-title { margin: 0 0 12px; font-family: var(--f-serif); font-size: 21px; font-weight: 500; letter-spacing: .04em; line-height: 1.3; }
+  .f-hours-text { margin: 0 0 10px; font-family: var(--f-sans); font-size: 15px; line-height: 1.55; color: var(--f-cream); }
+  .f-hours-text b { color: var(--f-gold); font-weight: 600; }
+  .f-hours-schedule { margin: 0 0 22px; font-family: var(--f-sans); font-size: 13px; line-height: 1.5; color: var(--f-body); }
+  .f-hours-ok { width: 100%; height: 48px; border-radius: 4px; }
+
+  /* note above „Към касата“ in the drawer */
+  .f-cart-hours-note { margin: 0 0 12px; padding: 10px 12px; border: 1px solid rgba(199,161,113,.4); border-radius: 8px; background: rgba(199,161,113,.08); color: var(--f-cream); font-family: var(--f-sans); font-size: 12.5px; line-height: 1.45; text-align: center; }
+  .f-cart-hours-note[hidden] { display: none; }
+  .f-cart-hours-note b { color: var(--f-gold); }
+  .f-cart-checkout.is-closed { opacity: .55; }
+
+  @media (max-width: 600px) {
+    .f-hours-inner { padding: 30px 20px 22px; }
+    .f-hours-title { font-size: 20px; }
+    .f-hours-text { font-size: 16px; }
+    .f-hours-schedule { font-size: 14px; }
+    .f-cart-hours-note { font-size: 14px; }
+  }
+{% endstyle %}
+
+<script>
+(function () {
+  'use strict';
+  var root = document.getElementById('f-hours');
+  if (!root || root.dataset.enabled !== '1') return;
+
+  var TZ = 'Europe/Sofia';
+  var DAYS = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+
+  function parseTime(s, fallback) {
+    var m = /^\s*(\d{1,2}):(\d{2})\s*$/.exec(s || '');
+    if (!m) return fallback;
+    var h = Number(m[1]), mi = Number(m[2]);
+    if (h > 24 || mi > 59) return fallback;
+    return h * 60 + mi;
+  }
+  var OPEN = parseTime(root.dataset.open, 10 * 60);
+  var OPEN_SUN = parseTime(root.dataset.openSunday, 16 * 60);
+  var CLOSE = parseTime(root.dataset.close, 23 * 60);
+
+  /* EU summer time: last Sunday of March 01:00 UTC → last Sunday of October 01:00 UTC */
+  function isEuSummer(d) {
+    var y = d.getUTCFullYear();
+    var lastSun = function (month) { var t = new Date(Date.UTC(y, month + 1, 0, 1)); return new Date(t.getTime() - t.getUTCDay() * 864e5); };
+    return d >= lastSun(2) && d < lastSun(9);
+  }
+
+  /* { day: 0-6 (0 = Sunday), minutes: minutes since midnight } in Sofia time */
+  function sofiaNow() {
+    var d = new Date();
+    try {
+      var parts = new Intl.DateTimeFormat('en-US', { timeZone: TZ, hourCycle: 'h23', weekday: 'short', hour: 'numeric', minute: 'numeric' }).formatToParts(d);
+      var got = {};
+      parts.forEach(function (p) { got[p.type] = p.value; });
+      var day = DAYS[got.weekday], h = Number(got.hour) % 24, mi = Number(got.minute);
+      if (day !== undefined && !isNaN(h) && !isNaN(mi)) return { day: day, minutes: h * 60 + mi };
+    } catch (_) {}
+    var shifted = new Date(d.getTime() + (isEuSummer(d) ? 3 : 2) * 3600e3);
+    return { day: shifted.getUTCDay(), minutes: shifted.getUTCHours() * 60 + shifted.getUTCMinutes() };
+  }
+
+  function openingFor(day) { return day === 0 ? OPEN_SUN : OPEN; }
+  function fmt(min) { var h = Math.floor(min / 60), m = min % 60; return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m; }
+
+  function status() {
+    var now = sofiaNow();
+    var open = now.minutes >= openingFor(now.day) && now.minutes < CLOSE;
+    if (open) return { open: true };
+    var today = now.minutes < openingFor(now.day);
+    var nextDay = today ? now.day : (now.day + 1) % 7;
+    return { open: false, when: today ? 'днес' : 'утре', at: fmt(openingFor(nextDay)) };
+  }
+
+  function schedule() {
+    return 'Работно време за поръчки: понеделник – събота ' + fmt(OPEN) + ' – ' + fmt(CLOSE) + ' ч., неделя ' + fmt(OPEN_SUN) + ' – ' + fmt(CLOSE) + ' ч.';
+  }
+
+  var dialog = document.getElementById('f-hours-dialog');
+  function showPopup(st) {
+    if (!dialog) return;
+    var text = dialog.querySelector('[data-hours-text]');
+    var sch = dialog.querySelector('[data-hours-schedule]');
+    if (text) text.innerHTML = 'Онлайн поръчки се приемат до <b>' + fmt(CLOSE) + ' ч.</b> Отваряме отново <b>' + st.when + ' в ' + st.at + ' ч.</b>';
+    if (sch) sch.textContent = schedule();
+    if (typeof dialog.showModal === 'function') { if (!dialog.open) dialog.showModal(); }
+    else dialog.setAttribute('open', '');
+    var ok = dialog.querySelector('.f-hours-ok'); if (ok) ok.focus();
+  }
+  function hidePopup() {
+    if (!dialog) return;
+    if (typeof dialog.close === 'function' && dialog.open) dialog.close();
+    else dialog.removeAttribute('open');
+  }
+
+  /* note + dimmed button inside the cart drawer */
+  function paint() {
+    var st = status();
+    var btn = document.querySelector('.f-cart-checkout');
+    if (btn) btn.classList.toggle('is-closed', !st.open);
+    var note = document.querySelector('[data-hours-note]');
+    if (note) {
+      if (st.open) { note.hidden = true; }
+      else {
+        note.innerHTML = 'В момента не приемаме поръчки. Отваряме <b>' + st.when + ' в ' + st.at + ' ч.</b>';
+        note.hidden = false;
+      }
+    }
+    return st;
+  }
+
+  function isCheckoutTrigger(el) {
+    return el.closest('.f-cart-checkout, a[href*="/checkout"], button[name="checkout"], input[name="checkout"]');
+  }
+
+  /* capture phase: runs before the fulfillment module and before navigation */
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('[data-hours-close]')) { e.preventDefault(); hidePopup(); return; }
+    if (!isCheckoutTrigger(e.target)) return;
+    var st = status();
+    if (st.open) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    paint();
+    showPopup(st);
+  }, true);
+
+  if (dialog) dialog.addEventListener('click', function (e) { if (e.target === dialog) hidePopup(); });
+
+  document.addEventListener('fuji:cart', paint);
+  document.addEventListener('DOMContentLoaded', paint);
+  setInterval(paint, 60000);
+  paint();
+
+  window.FujiHours = { isOpen: function () { return status().open; }, status: status, show: function () { var st = status(); if (!st.open) showPopup(st); } };
+})();
+</script>
