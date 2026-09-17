@@ -234,7 +234,9 @@
   function open() {
     lastFocus = document.activeElement;
     drawer.hidden = false;
-    requestAnimationFrame(function () { drawer.classList.add('is-open'); });
+    // rAF is paused in background tabs — the timer guarantees the drawer still opens.
+    var show = function () { drawer.classList.add('is-open'); };
+    requestAnimationFrame(show); setTimeout(show, 60);
     panel.setAttribute('aria-hidden', 'false');
     document.documentElement.style.overflow = 'hidden';
     var x = drawer.querySelector('.f-cart-x'); if (x) x.focus();
