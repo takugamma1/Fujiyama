@@ -96,9 +96,9 @@
         "phone": "089 680 6938",
         "email": "fujiyamapazardjik@abv.bg",
         "hours_label": "Работно време",
-        "hours": "<p>Понеделник – Събота<br/>12:00 – 23:00</p>",
-        "closed_label": "Почивен ден",
-        "closed": "Неделя вечер"
+        "hours": "<p>Понеделник – Събота<br/>9:00 – 0:00</p>",
+        "closed_label": "НЕДЕЛЯ",
+        "closed": "16:00 - 0:00"
       }
     }
   },
