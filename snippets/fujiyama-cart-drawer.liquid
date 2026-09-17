@@ -5,7 +5,7 @@
   (.f-cart) opens it. Live count bubble + subtotal.
 {%- endcomment -%}
 
-<div class="f-cartd" id="f-cartdrawer" hidden>
+<div class="f-cartd" id="f-cartdrawer" hidden{% if settings.cf_packaging_enabled and settings.cf_packaging_variant != blank %} data-pkg-variant="{{ settings.cf_packaging_variant | strip | escape }}"{% endif %}>
   <div class="f-cart-scrim" data-cart-close></div>
   <aside class="f-cart-panel" role="dialog" aria-modal="true" aria-label="Количка" aria-hidden="true">
     <header class="f-cart-top">
@@ -104,6 +104,10 @@
   .f-cart-sub { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; }
   .f-cart-sub span:first-child { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--f-cream-dim); }
   .f-cart-sub span:last-child { font-family: var(--f-serif); font-size: 22px; color: var(--f-cream); }
+  .f-cart-item--fee .f-cart-item-img, .f-cart-item--fee .f-cart-item-remove { display: none; }
+  .f-cart-item--fee .f-cart-qty { visibility: hidden; }
+  .f-cart-item--fee { opacity: .85; }
+  .f-cart-item--fee [data-href] { pointer-events: none; text-decoration: none; }
   .f-cart-checkout { width: 100%; height: 50px; border-radius: 4px; }
 
   .f-toast {
@@ -187,11 +191,35 @@
     }, 2600);
   }
 
+  /* ── packaging fee ─────────────────────────────────────
+     One "Опаковка" line (0,25 €, Barsy article 1478) per ordered item. The line is
+     kept in step with the cart automatically and cannot be edited by the customer. */
+  var PKG = Number(drawer.dataset.pkgVariant || 0) || 0;
+  var pkgBusy = false, pkgFailed = false;
+  function isPkg(item) { return PKG && item.variant_id === PKG; }
+  function foodCount(cart) {
+    return (cart.items || []).reduce(function (n, i) { return n + (isPkg(i) ? 0 : i.quantity); }, 0);
+  }
+  function syncPackaging(cart) {
+    if (!PKG || pkgBusy || pkgFailed) return;
+    var line = (cart.items || []).filter(isPkg)[0];
+    var want = foodCount(cart), have = line ? line.quantity : 0;
+    if (want === have) return;
+    pkgBusy = true;
+    var req = line
+      ? fetch('/cart/change.js', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify({ id: line.key, quantity: want }) })
+      : fetch('/cart/add.js', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify({ items: [{ id: PKG, quantity: want }] }) });
+    req.then(function (r) { if (!r.ok) throw new Error('packaging ' + r.status); })
+      .catch(function () { pkgFailed = true; }) // never block ordering because of the fee line
+      .then(function () { pkgBusy = false; return refresh(); });
+  }
+
   function render(cart) {
     // Expose cart state to other modules (fulfillment block) and notify them.
     if (window.FujiCart) window.FujiCart.cart = cart;
     document.dispatchEvent(new CustomEvent('fuji:cart', { detail: cart }));
-    setCount(cart.item_count);
+    setCount(foodCount(cart));
+    syncPackaging(cart);
     itemsEl.innerHTML = '';
     if (!cart.items || !cart.items.length) {
       emptyEl.hidden = false; footEl.hidden = true; return;
@@ -216,6 +244,16 @@
       }
       node.querySelector('[data-qty]').textContent = item.quantity;
       node.querySelector('[data-line-price]').textContent = money(item.final_line_price, cart.currency);
+      if (isPkg(item)) {
+        // fee line: informational only — no photo, link, steppers or remove
+        var row = node.firstElementChild; if (row) row.classList.add('f-cart-item--fee');
+        node.querySelectorAll('[data-href]').forEach(function (a) { a.removeAttribute('href'); });
+        noteEl.textContent = item.quantity + ' × ' + money(item.final_price, cart.currency) + ' — по една за всеки артикул';
+        noteEl.hidden = false;
+        ['[data-qty-dec]', '[data-qty-inc]', '[data-remove]'].forEach(function (sel) { var el = node.querySelector(sel); if (el) el.hidden = true; });
+        itemsEl.appendChild(node);
+        return;
+      }
       var key = item.key;
       node.querySelector('[data-qty-dec]').addEventListener('click', function () { change(key, item.quantity - 1); });
       node.querySelector('[data-qty-inc]').addEventListener('click', function () { change(key, item.quantity + 1); });

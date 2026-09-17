@@ -2321,6 +2321,23 @@
         "id": "cf_storefront_token",
         "label": "Storefront API токен (по избор)",
         "info": "Ако е зададен, изборът Доставка/Вземане и адресът се пренасят автоматично в checkout. Създава се от Headless/Storefront API app."
+      },
+      {
+        "type": "header",
+        "content": "Такса опаковка"
+      },
+      {
+        "type": "checkbox",
+        "id": "cf_packaging_enabled",
+        "label": "Добавяй такса опаковка за всеки артикул",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "cf_packaging_variant",
+        "label": "ID на варианта „Опаковка“",
+        "default": "59388016558405",
+        "info": "Продуктът „Опаковка“ (0,25 €, Barsy 1478). Количката добавя по 1 бр. за всеки поръчан артикул. Цената се сменя в самия продукт / в Barsy."
       }
     ]
   }
