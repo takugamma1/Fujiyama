@@ -36,6 +36,16 @@
   <div class="f-cf-body" data-cf-body></div>
   <p class="f-cf-error" data-cf-error hidden></p>
 
+  {%- comment -%} phone — required for every order (delivery and pickup) {%- endcomment -%}
+  <div class="f-cf-phone" data-cf-phone>
+    <label class="f-cf-label" for="f-cf-phone-input">Телефон за връзка <span class="f-cf-req" title="Задължително">*</span></label>
+    <div class="f-cf-field">
+      <input id="f-cf-phone-input" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="напр. 0888 123 456" data-cf-phone-input aria-describedby="f-cf-phone-hint">
+    </div>
+    <p class="f-cf-hint" id="f-cf-phone-hint" data-cf-phone-hint>Задължително — обаждаме се само при нужда за поръчката.</p>
+    <p class="f-cf-error" data-cf-phone-error hidden></p>
+  </div>
+
   <div class="f-cf-sticks" data-cf-sticks>
     <p class="f-cf-label">Клечки / прибори (брой) <span class="f-cf-req" data-cf-sticks-req title="Задължително при доставка">*</span></p>
     <div class="f-cf-sticks-row" role="group" aria-label="Брой клечки">
@@ -160,6 +170,11 @@
   .f-cf-geo[aria-busy='true'] { opacity: .6; pointer-events: none; }
   .f-cf-form-actions { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
   .f-cf-save, .f-cf-map-confirm { height: 42px; padding: 0 18px; border-radius: 4px; font-size: 11px; letter-spacing: .1em; }
+  .f-cf-phone { margin-top: 14px; padding-top: 12px; border-top: 1px dashed rgba(232,225,210,.14); }
+  .f-cf-phone .f-cf-label { display: block; }
+  #f-cartdrawer .f-cf-phone .f-cf-field input { width: 100%; font-size: 16px; letter-spacing: .04em; }
+  #f-cartdrawer .f-cf-phone .f-cf-field input.is-invalid { border-color: #d9796b; }
+  .f-cf[aria-busy='true'] [data-cf-phone] { opacity: .55; pointer-events: none; }
   .f-cf-sticks { margin-top: 14px; padding-top: 12px; border-top: 1px dashed rgba(232,225,210,.14); }
   .f-cf-sticks-row { display: flex; align-items: stretch; flex-wrap: wrap; gap: 6px; }
   .f-cf-stick { flex: 1 1 44px; min-width: 44px; height: 42px; border: 1px solid rgba(232,225,210,.2); border-radius: 8px; background: transparent; color: var(--f-cream); font-family: var(--f-sans); font-size: 14px; cursor: pointer; transition: border-color .25s, background .25s, color .25s; }

@@ -292,6 +292,16 @@
 
   // Public API so other UI (e.g. the quick-add popup) can reuse the drawer.
   window.FujiCart = { refresh: refresh, open: open, close: close, showToast: showToast, money: money, cart: null };
+  // /cart redirects here with ?cart=open — show the drawer and tidy the URL.
+  try {
+    var qs = new URLSearchParams(window.location.search);
+    if (qs.get('cart') === 'open') {
+      qs.delete('cart');
+      var rest = qs.toString();
+      history.replaceState(null, '', window.location.pathname + (rest ? '?' + rest : '') + window.location.hash);
+      refresh().then(open, open);
+    }
+  } catch (_) {}
 
   // keep header bubble correct on load
   refresh();

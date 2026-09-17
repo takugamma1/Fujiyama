@@ -6,6 +6,8 @@
   lang="{{ request.locale.iso_code }}"
 >
   <head>
+    {%- comment -%} The order must go through the drawer (delivery / phone / chopsticks). The stock cart page has its own checkout button, so send it to the drawer instead. {%- endcomment -%}
+    {%- if template.name == 'cart' -%}<script>window.location.replace('{{ routes.root_url }}?cart=open');</script>{%- endif -%}
     {%- if settings.favicon != blank -%}
       <link
         rel="icon"

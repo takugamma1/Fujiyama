@@ -8,7 +8,8 @@
  * drawer dispatches, and paints the block itself.
  *
  * Cart attributes (they land on the order):
- *   Получаване · Адрес за доставка · Пощенски код · Координати · Клечки
+ *   Получаване · Адрес за доставка · Пощенски код · Координати · Клечки · Телефон
+ * The phone is REQUIRED for every order (pickup too); checkout stays locked without it.
  */
 (function () {
   'use strict';
@@ -17,6 +18,7 @@
   var MODE_DELIVERY = 'Доставка';
   var MODE_PICKUP = 'Вземане от място';
   var STICKS_ATTR = 'Клечки';
+  var PHONE_ATTR = 'Телефон';
 
   var root = document.querySelector('[data-cf]');
   if (!root) return;
@@ -41,6 +43,13 @@
   function address() { return attrs()['Адрес за доставка'] || ''; }
   function zip() { return attrs()['Пощенски код'] || ''; }
   function sticks() { return String(attrs()[STICKS_ATTR] || ''); }
+  function phone() { return String(attrs()[PHONE_ATTR] || ''); }
+  // Bulgarian mobile/landline or international: 9–13 digits after stripping spaces, dashes, brackets.
+  function normalizePhone(raw) {
+    var v = String(raw || '').trim().replace(/[\s\-().]/g, '');
+    if (!/^\+?\d{9,13}$/.test(v)) return '';
+    return v;
+  }
 
   function savedAddress() {
     try { return JSON.parse(localStorage.getItem(LS_KEY) || 'null'); } catch (e) { return null; }
@@ -151,11 +160,40 @@
     if (hint) hint.hidden = !(delivery && !value);
   }
 
+  function paintPhone() {
+    var input = root.querySelector('[data-cf-phone-input]');
+    if (!input) return;
+    if (document.activeElement !== input) input.value = phone();
+    var ok = !!normalizePhone(phone());
+    var hint = root.querySelector('[data-cf-phone-hint]');
+    if (hint) hint.hidden = ok;
+  }
+
   function blockedReason() {
-    if (mode() !== MODE_DELIVERY) return '';
-    if (!address()) return 'address';
-    if (!sticks()) return 'sticks';
+    if (mode() === MODE_DELIVERY && !address()) return 'address';
+    if (!normalizePhone(phone())) return 'phone';
+    if (mode() === MODE_DELIVERY && !sticks()) return 'sticks';
     return '';
+  }
+
+  /* Save the phone as a cart attribute. Resolves true when a valid number is stored. */
+  function savePhone(raw) {
+    var input = root.querySelector('[data-cf-phone-input]');
+    var v = normalizePhone(raw);
+    if (!v) {
+      if (input) input.classList.add('is-invalid');
+      showError('[data-cf-phone-error]', 'Въведете валиден телефон, напр. 0888 123 456.');
+      return Promise.resolve(false);
+    }
+    if (input) input.classList.remove('is-invalid');
+    showError('[data-cf-phone-error]', '');
+    if (v === phone()) return Promise.resolve(true);
+    var attributes = {};
+    attributes[PHONE_ATTR] = v;
+    return updateCart({ attributes: attributes }).then(function () { return true; }).catch(function () {
+      showError('[data-cf-phone-error]', 'Телефонът не се записа — опитайте отново.');
+      return false;
+    });
   }
 
   function paintCheckout() {
@@ -171,6 +209,7 @@
     root.hidden = !(cart && cart.item_count > 0);
     paintToggle(mode());
     paintBody();
+    paintPhone();
     paintSticks();
     paintCheckout();
   }
@@ -455,6 +494,19 @@
     var checkout = e.target.closest('.f-cart-checkout');
     if (checkout) {
       var reason = blockedReason();
+      if (reason === 'phone') {
+        // The number may be typed but not saved yet (no blur): save it, then go on.
+        e.preventDefault();
+        var phoneInput = root.querySelector('[data-cf-phone-input]');
+        savePhone(phoneInput ? phoneInput.value : '').then(function (ok) {
+          if (ok && !blockedReason()) { checkout.click(); return; }
+          if (!ok && phoneInput) {
+            if (phoneInput.scrollIntoView) phoneInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            phoneInput.focus({ preventScroll: true });
+          } else if (ok) { checkout.click(); }
+        });
+        return;
+      }
       if (reason) {
         e.preventDefault();
         if (reason === 'sticks') {
@@ -486,9 +538,11 @@
 
   document.addEventListener('change', function (e) {
     if (e.target && e.target.matches && e.target.matches('[data-sticks-custom]') && e.target.value !== '') setSticks(e.target.value);
+    if (e.target && e.target.matches && e.target.matches('[data-cf-phone-input]') && e.target.value !== '') savePhone(e.target.value);
   });
 
   document.addEventListener('keydown', function (e) {
+    if (e.target && e.target.matches && e.target.matches('[data-cf-phone-input]') && e.key === 'Enter') { e.preventDefault(); savePhone(e.target.value); }
     if (e.target && e.target.id === 'f-cf-map-search' && e.key === 'Enter') e.preventDefault();
   });
 
