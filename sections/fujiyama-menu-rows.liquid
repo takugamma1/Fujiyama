@@ -27,7 +27,7 @@
             endfor
           endif
         -%}
-        <li {{ block.shopify_attributes }}>
+        <li{% if block.settings.available_from != blank or block.settings.available_until != blank %} data-avail data-avail-from="{{ block.settings.available_from | strip | escape }}" data-avail-until="{{ block.settings.available_until | strip | escape }}"{% endif %} {{ block.shopify_attributes }}>
           <a class="f-mr-row" href="{{ url }}">
             <span class="f-mr-icon">{% render 'fujiyama-icon', name: block.settings.icon %}</span>
             <span class="f-mr-text">
@@ -58,7 +58,7 @@
           {%- if block.settings.link == blank and block.settings.collection != blank and block.settings.collection.products_count == 0 -%}{%- continue -%}{%- endif -%}
           {%- assign turl = block.settings.link | default: block.settings.collection.url | default: '#' -%}
           {%- assign ttitle = block.settings.title | default: block.settings.collection.title -%}
-          <a class="f-mr-tile" href="{{ turl }}" {{ block.shopify_attributes }}>
+          <a class="f-mr-tile" href="{{ turl }}"{% if block.settings.available_from != blank or block.settings.available_until != blank %} data-avail data-avail-from="{{ block.settings.available_from | strip | escape }}" data-avail-until="{{ block.settings.available_until | strip | escape }}"{% endif %} {{ block.shopify_attributes }}>
             <span class="f-mr-tile-icon">{% render 'fujiyama-icon', name: block.settings.icon %}</span>
             <span class="f-mr-tile-title">{{ ttitle | escape }}</span>
           </a>
@@ -138,41 +138,159 @@
       "type": "row",
       "name": "Категория (ред)",
       "settings": [
-        { "type": "select", "id": "icon", "label": "Икона", "default": "fish",
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Икона",
+          "default": "fish",
           "options": [
-            { "value": "fish", "label": "Риба / Суши" },
-            { "value": "asian", "label": "Купа / Азиатска" },
-            { "value": "burger", "label": "Бургер" },
-            { "value": "pasta", "label": "Паста" },
-            { "value": "salad", "label": "Салата" },
-            { "value": "meat", "label": "Месо / Основни" },
-            { "value": "cake", "label": "Десерт" },
-            { "value": "cup", "label": "Напитки" },
-            { "value": "wine", "label": "Вино / Бар" }
-          ] },
-        { "type": "text", "id": "title", "label": "Заглавие (празно = от колекцията)" },
-        { "type": "text", "id": "subtitle", "label": "Подкатегории", "default": "Подкатегория · Подкатегория" },
-        { "type": "collection", "id": "collection", "label": "Колекция (за линк и снимка)" },
-        { "type": "image_picker", "id": "image", "label": "Снимка (по избор — замества снимката от колекцията)" },
-        { "type": "text", "id": "link", "label": "Линк (по избор — замества колекцията)" }
+            {
+              "value": "fish",
+              "label": "Риба / Суши"
+            },
+            {
+              "value": "asian",
+              "label": "Купа / Азиатска"
+            },
+            {
+              "value": "burger",
+              "label": "Бургер"
+            },
+            {
+              "value": "pasta",
+              "label": "Паста"
+            },
+            {
+              "value": "salad",
+              "label": "Салата"
+            },
+            {
+              "value": "meat",
+              "label": "Месо / Основни"
+            },
+            {
+              "value": "cake",
+              "label": "Десерт"
+            },
+            {
+              "value": "cup",
+              "label": "Напитки"
+            },
+            {
+              "value": "wine",
+              "label": "Вино / Бар"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Заглавие (празно = от колекцията)"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Подкатегории",
+          "default": "Подкатегория · Подкатегория"
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Колекция (за линк и снимка)"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Снимка (по избор — замества снимката от колекцията)"
+        },
+        {
+          "type": "text",
+          "id": "link",
+          "label": "Линк (по избор — замества колекцията)"
+        },
+        {
+          "type": "header",
+          "content": "Часове (софийско време)"
+        },
+        {
+          "type": "text",
+          "id": "available_from",
+          "label": "Показвай от (ЧЧ:ММ)"
+        },
+        {
+          "type": "text",
+          "id": "available_until",
+          "label": "Показвай до (ЧЧ:ММ)",
+          "info": "Напр. 17:00. Празно = без ограничение."
+        }
       ]
     },
     {
       "type": "tile",
       "name": "Малка плочка",
       "settings": [
-        { "type": "select", "id": "icon", "label": "Икона", "default": "cake",
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Икона",
+          "default": "cake",
           "options": [
-            { "value": "cake", "label": "Десерт" },
-            { "value": "cup", "label": "Напитки" },
-            { "value": "wine", "label": "Вино / Бар" },
-            { "value": "fish", "label": "Риба / Суши" },
-            { "value": "asian", "label": "Купа / Азиатска" },
-            { "value": "salad", "label": "Салата" }
-          ] },
-        { "type": "text", "id": "title", "label": "Заглавие (празно = от колекцията)" },
-        { "type": "collection", "id": "collection", "label": "Колекция (за линк)" },
-        { "type": "text", "id": "link", "label": "Линк (по избор)" }
+            {
+              "value": "cake",
+              "label": "Десерт"
+            },
+            {
+              "value": "cup",
+              "label": "Напитки"
+            },
+            {
+              "value": "wine",
+              "label": "Вино / Бар"
+            },
+            {
+              "value": "fish",
+              "label": "Риба / Суши"
+            },
+            {
+              "value": "asian",
+              "label": "Купа / Азиатска"
+            },
+            {
+              "value": "salad",
+              "label": "Салата"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Заглавие (празно = от колекцията)"
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Колекция (за линк)"
+        },
+        {
+          "type": "text",
+          "id": "link",
+          "label": "Линк (по избор)"
+        },
+        {
+          "type": "header",
+          "content": "Часове (софийско време)"
+        },
+        {
+          "type": "text",
+          "id": "available_from",
+          "label": "Показвай от (ЧЧ:ММ)"
+        },
+        {
+          "type": "text",
+          "id": "available_until",
+          "label": "Показвай до (ЧЧ:ММ)",
+          "info": "Напр. 17:00. Празно = без ограничение."
+        }
       ]
     }
   ],
@@ -181,15 +299,75 @@
     {
       "name": "Fujiyama меню редове",
       "blocks": [
-        { "type": "row", "settings": { "icon": "fish", "title": "Суши", "subtitle": "Урамаки · Хосомаки · Сашими" } },
-        { "type": "row", "settings": { "icon": "asian", "title": "Азиатска", "subtitle": "Уок · Оден · Момо" } },
-        { "type": "row", "settings": { "icon": "burger", "title": "Бургери", "subtitle": "Класик · Крафт" } },
-        { "type": "row", "settings": { "icon": "pasta", "title": "Паста", "subtitle": "Прясна паста · Ризото" } },
-        { "type": "row", "settings": { "icon": "salad", "title": "Салати", "subtitle": "Сезонни · Боул" } },
-        { "type": "row", "settings": { "icon": "meat", "title": "Основни", "subtitle": "Риба · Стек" } },
-        { "type": "tile", "settings": { "icon": "cake", "title": "Десерти" } },
-        { "type": "tile", "settings": { "icon": "cup", "title": "Напитки" } },
-        { "type": "tile", "settings": { "icon": "wine", "title": "Вино & бар" } }
+        {
+          "type": "row",
+          "settings": {
+            "icon": "fish",
+            "title": "Суши",
+            "subtitle": "Урамаки · Хосомаки · Сашими"
+          }
+        },
+        {
+          "type": "row",
+          "settings": {
+            "icon": "asian",
+            "title": "Азиатска",
+            "subtitle": "Уок · Оден · Момо"
+          }
+        },
+        {
+          "type": "row",
+          "settings": {
+            "icon": "burger",
+            "title": "Бургери",
+            "subtitle": "Класик · Крафт"
+          }
+        },
+        {
+          "type": "row",
+          "settings": {
+            "icon": "pasta",
+            "title": "Паста",
+            "subtitle": "Прясна паста · Ризото"
+          }
+        },
+        {
+          "type": "row",
+          "settings": {
+            "icon": "salad",
+            "title": "Салати",
+            "subtitle": "Сезонни · Боул"
+          }
+        },
+        {
+          "type": "row",
+          "settings": {
+            "icon": "meat",
+            "title": "Основни",
+            "subtitle": "Риба · Стек"
+          }
+        },
+        {
+          "type": "tile",
+          "settings": {
+            "icon": "cake",
+            "title": "Десерти"
+          }
+        },
+        {
+          "type": "tile",
+          "settings": {
+            "icon": "cup",
+            "title": "Напитки"
+          }
+        },
+        {
+          "type": "tile",
+          "settings": {
+            "icon": "wine",
+            "title": "Вино & бар"
+          }
+        }
       ]
     }
   ]

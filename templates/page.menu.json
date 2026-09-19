@@ -136,7 +136,8 @@
             "icon": "salad",
             "title": "Обедно меню",
             "collection": "обедно-меню",
-            "link": ""
+            "link": "",
+            "available_until": "17:00"
           }
         }
       },

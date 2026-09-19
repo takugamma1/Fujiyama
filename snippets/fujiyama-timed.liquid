@@ -1,0 +1,56 @@
+{%- comment -%}
+  Time-limited menu items (Sofia time, Europe/Sofia).
+  Any element with data-avail + data-avail-from / data-avail-until ("HH:MM") is
+  shown only inside that window — used by the collection bubbles and the menu
+  page rows/tiles (e.g. "Обедно меню" until 17:00). A collection page whose group
+  is outside its window (section[data-avail-page]) hides its products and shows
+  the group's notice instead.
+  Done in the browser on purpose: storefront pages are cached, so a server-side
+  time check would go stale. Re-checked every minute, so things switch at the
+  exact time without a reload. In the theme editor everything stays visible.
+{%- endcomment -%}
+<script>
+(function () {
+  function sofiaMinutes() {
+    try {
+      var parts = new Intl.DateTimeFormat('en-US', { timeZone: 'Europe/Sofia', hourCycle: 'h23', hour: 'numeric', minute: 'numeric' }).formatToParts(new Date());
+      var h = 0, m = 0;
+      parts.forEach(function (p) { if (p.type === 'hour') h = Number(p.value); if (p.type === 'minute') m = Number(p.value); });
+      return (h % 24) * 60 + m;
+    } catch (e) { var d = new Date(); return d.getHours() * 60 + d.getMinutes(); }
+  }
+  function toMinutes(v) {
+    var m = /^\s*(\d{1,2})(?:[:.](\d{2}))?\s*$/.exec(v || '');
+    if (!m) return null;
+    var h = Number(m[1]), min = Number(m[2] || 0);
+    if (h > 24 || min > 59) return null;
+    return h * 60 + min;
+  }
+  function isOpen(el, now) {
+    var from = toMinutes(el.getAttribute('data-avail-from'));
+    var until = toMinutes(el.getAttribute('data-avail-until'));
+    if (from === null && until === null) return true;
+    if (from === null) from = 0;
+    if (until === null) until = 24 * 60;
+    return from <= until ? (now >= from && now < until) : (now >= from || now < until); // window may cross midnight
+  }
+  function apply() {
+    var editor = window.Shopify && window.Shopify.designMode;
+    var now = sofiaMinutes();
+    document.querySelectorAll('[data-avail]').forEach(function (el) {
+      el.style.display = (editor || isOpen(el, now)) ? '' : 'none';
+    });
+    document.querySelectorAll('[data-avail-page]').forEach(function (sec) {
+      var closed = !editor && !isOpen(sec, now);
+      sec.classList.toggle('is-closed', closed);
+      var note = sec.querySelector('[data-avail-closed]');
+      if (note) note.hidden = !closed;
+    });
+  }
+  apply();
+  document.addEventListener('DOMContentLoaded', apply);
+  document.addEventListener('shopify:section:load', apply);
+  setInterval(apply, 60000);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) apply(); });
+})();
+</script>
