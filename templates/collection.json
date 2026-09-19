@@ -53,6 +53,17 @@
             "hide_empty": true
           }
         },
+        "group_r4mGeG": {
+          "type": "group",
+          "settings": {
+            "title": "Салати",
+            "collections": [
+              "салати"
+            ],
+            "icon": "fish",
+            "hide_empty": true
+          }
+        },
         "group_6": {
           "type": "group",
           "settings": {
@@ -136,6 +147,7 @@
         "group_10",
         "group_1",
         "group_7",
+        "group_r4mGeG",
         "group_6",
         "group_5",
         "group_2",
