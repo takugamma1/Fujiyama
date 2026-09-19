@@ -22,13 +22,24 @@
     "menu_rows": {
       "type": "fujiyama-menu-rows",
       "blocks": {
+        "row_q7nyX6": {
+          "type": "row",
+          "settings": {
+            "icon": "asian",
+            "title": "",
+            "subtitle": "Подкатегория · Подкатегория",
+            "collection": "салати",
+            "link": ""
+          }
+        },
         "row_1": {
           "type": "row",
           "settings": {
             "icon": "fish",
             "title": "Суши",
+            "subtitle": "Хосомаки · Урамаки · Футомаки · Нигири · Сетове · Поке",
             "collection": "хосомаки",
-            "subtitle": "Хосомаки · Урамаки · Футомаки · Нигири · Сетове · Поке"
+            "link": ""
           }
         },
         "row_2": {
@@ -36,8 +47,9 @@
           "settings": {
             "icon": "pasta",
             "title": "Ризото",
+            "subtitle": "Пиле · Телешко · Зеленчуци",
             "collection": "ризото",
-            "subtitle": "Пиле · Телешко · Зеленчуци"
+            "link": ""
           }
         },
         "row_3": {
@@ -45,8 +57,9 @@
           "settings": {
             "icon": "pasta",
             "title": "Паста",
+            "subtitle": "Талиатели · Спагети",
             "collection": "паста",
-            "subtitle": "Талиатели · Спагети"
+            "link": ""
           }
         },
         "row_4": {
@@ -54,8 +67,9 @@
           "settings": {
             "icon": "meat",
             "title": "Скара",
+            "subtitle": "Кюфтета · Плескавица · Наденица",
             "collection": "скара",
-            "subtitle": "Кюфтета · Плескавица · Наденица"
+            "link": ""
           }
         },
         "row_5": {
@@ -63,8 +77,9 @@
           "settings": {
             "icon": "burger",
             "title": "Бургери",
+            "subtitle": "Телешки · Пилешки · Фиш",
             "collection": "бургери",
-            "subtitle": "Телешки · Пилешки · Фиш"
+            "link": ""
           }
         },
         "row_6": {
@@ -72,8 +87,9 @@
           "settings": {
             "icon": "meat",
             "title": "Основни",
+            "subtitle": "Пиле · Телешко · Свинско",
             "collection": "основни",
-            "subtitle": "Пиле · Телешко · Свинско"
+            "link": ""
           }
         },
         "row_7": {
@@ -81,8 +97,9 @@
           "settings": {
             "icon": "salad",
             "title": "Предястия",
+            "subtitle": "Хапки · Темпура · Картофи",
             "collection": "предястия",
-            "subtitle": "Хапки · Темпура · Картофи"
+            "link": ""
           }
         },
         "row_8": {
@@ -90,8 +107,9 @@
           "settings": {
             "icon": "asian",
             "title": "Удон",
+            "subtitle": "Нудли с пиле · телешко · морски дарове",
             "collection": "удон",
-            "subtitle": "Нудли с пиле · телешко · морски дарове"
+            "link": ""
           }
         },
         "tile_9": {
@@ -99,7 +117,8 @@
           "settings": {
             "icon": "cup",
             "title": "Напитки",
-            "collection": "напитки"
+            "collection": "напитки",
+            "link": ""
           }
         },
         "tile_10": {
@@ -107,7 +126,8 @@
           "settings": {
             "icon": "wine",
             "title": "Алкохолни напитки",
-            "collection": "алкохолни-напитки"
+            "collection": "алкохолни-напитки",
+            "link": ""
           }
         },
         "tile_11": {
@@ -115,11 +135,13 @@
           "settings": {
             "icon": "salad",
             "title": "Обедно меню",
-            "collection": "обедно-меню"
+            "collection": "обедно-меню",
+            "link": ""
           }
         }
       },
       "block_order": [
+        "row_q7nyX6",
         "row_1",
         "row_2",
         "row_3",
