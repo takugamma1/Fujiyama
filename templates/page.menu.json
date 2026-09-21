@@ -22,18 +22,6 @@
     "menu_rows": {
       "type": "fujiyama-menu-rows",
       "blocks": {
-        "row_FWG6Et": {
-          "type": "row",
-          "settings": {
-            "icon": "fish",
-            "title": "",
-            "subtitle": "Подкатегория · Подкатегория",
-            "collection": "риба",
-            "link": "",
-            "available_from": "",
-            "available_until": ""
-          }
-        },
         "row_q7nyX6": {
           "type": "row",
           "settings": {
@@ -142,6 +130,18 @@
             "available_until": ""
           }
         },
+        "row_FWG6Et": {
+          "type": "row",
+          "settings": {
+            "icon": "fish",
+            "title": "",
+            "subtitle": "Подкатегория · Подкатегория",
+            "collection": "риба",
+            "link": "",
+            "available_from": "",
+            "available_until": ""
+          }
+        },
         "tile_9": {
           "type": "tile",
           "settings": {
@@ -177,7 +177,6 @@
         }
       },
       "block_order": [
-        "row_FWG6Et",
         "row_q7nyX6",
         "row_1",
         "row_2",
@@ -187,6 +186,7 @@
         "row_6",
         "row_7",
         "row_8",
+        "row_FWG6Et",
         "tile_9",
         "tile_10",
         "tile_11"
