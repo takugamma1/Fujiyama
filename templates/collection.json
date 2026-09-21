@@ -12,6 +12,20 @@
     "fujiyama_collection": {
       "type": "fujiyama-collection",
       "blocks": {
+        "group_W3eJWr": {
+          "type": "group",
+          "settings": {
+            "title": "Категория",
+            "collections": [
+              "риба"
+            ],
+            "icon": "fish",
+            "hide_empty": true,
+            "available_from": "",
+            "available_until": "",
+            "closed_text": "Тази категория не се предлага в момента."
+          }
+        },
         "group_10": {
           "type": "group",
           "settings": {
@@ -21,6 +35,7 @@
             ],
             "icon": "salad",
             "hide_empty": true,
+            "available_from": "",
             "available_until": "17:00",
             "closed_text": "Обедното меню се предлага всеки ден до 17:00. Разгледайте останалото меню — очакваме ви!"
           }
@@ -41,7 +56,10 @@
               "футомаки-темпура"
             ],
             "icon": "fish",
-            "hide_empty": true
+            "hide_empty": true,
+            "available_from": "",
+            "available_until": "",
+            "closed_text": "Тази категория не се предлага в момента."
           }
         },
         "group_7": {
@@ -52,7 +70,10 @@
               "предястия"
             ],
             "icon": "salad",
-            "hide_empty": true
+            "hide_empty": true,
+            "available_from": "",
+            "available_until": "",
+            "closed_text": "Тази категория не се предлага в момента."
           }
         },
         "group_r4mGeG": {
@@ -63,7 +84,10 @@
               "салати"
             ],
             "icon": "fish",
-            "hide_empty": true
+            "hide_empty": true,
+            "available_from": "",
+            "available_until": "",
+            "closed_text": "Тази категория не се предлага в момента."
           }
         },
         "group_6": {
@@ -74,7 +98,10 @@
               "основни"
             ],
             "icon": "meat",
-            "hide_empty": true
+            "hide_empty": true,
+            "available_from": "",
+            "available_until": "",
+            "closed_text": "Тази категория не се предлага в момента."
           }
         },
         "group_5": {
@@ -85,7 +112,10 @@
               "бургери"
             ],
             "icon": "burger",
-            "hide_empty": true
+            "hide_empty": true,
+            "available_from": "",
+            "available_until": "",
+            "closed_text": "Тази категория не се предлага в момента."
           }
         },
         "group_2": {
@@ -96,7 +126,10 @@
               "ризото"
             ],
             "icon": "pasta",
-            "hide_empty": true
+            "hide_empty": true,
+            "available_from": "",
+            "available_until": "",
+            "closed_text": "Тази категория не се предлага в момента."
           }
         },
         "group_3": {
@@ -107,7 +140,10 @@
               "паста"
             ],
             "icon": "pasta",
-            "hide_empty": true
+            "hide_empty": true,
+            "available_from": "",
+            "available_until": "",
+            "closed_text": "Тази категория не се предлага в момента."
           }
         },
         "group_4": {
@@ -118,7 +154,10 @@
               "скара"
             ],
             "icon": "meat",
-            "hide_empty": true
+            "hide_empty": true,
+            "available_from": "",
+            "available_until": "",
+            "closed_text": "Тази категория не се предлага в момента."
           }
         },
         "group_8": {
@@ -129,7 +168,10 @@
               "удон"
             ],
             "icon": "asian",
-            "hide_empty": true
+            "hide_empty": true,
+            "available_from": "",
+            "available_until": "",
+            "closed_text": "Тази категория не се предлага в момента."
           }
         },
         "group_9": {
@@ -141,11 +183,15 @@
               "алкохолни-напитки"
             ],
             "icon": "cup",
-            "hide_empty": true
+            "hide_empty": true,
+            "available_from": "",
+            "available_until": "",
+            "closed_text": "Тази категория не се предлага в момента."
           }
         }
       },
       "block_order": [
+        "group_W3eJWr",
         "group_10",
         "group_1",
         "group_7",
