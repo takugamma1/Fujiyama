@@ -22,6 +22,18 @@
     "menu_rows": {
       "type": "fujiyama-menu-rows",
       "blocks": {
+        "row_FWG6Et": {
+          "type": "row",
+          "settings": {
+            "icon": "fish",
+            "title": "",
+            "subtitle": "Подкатегория · Подкатегория",
+            "collection": "риба",
+            "link": "",
+            "available_from": "",
+            "available_until": ""
+          }
+        },
         "row_q7nyX6": {
           "type": "row",
           "settings": {
@@ -29,7 +41,9 @@
             "title": "",
             "subtitle": "Подкатегория · Подкатегория",
             "collection": "салати",
-            "link": ""
+            "link": "",
+            "available_from": "",
+            "available_until": ""
           }
         },
         "row_1": {
@@ -39,7 +53,9 @@
             "title": "Суши",
             "subtitle": "Хосомаки · Урамаки · Футомаки · Нигири · Сетове · Поке",
             "collection": "хосомаки",
-            "link": ""
+            "link": "",
+            "available_from": "",
+            "available_until": ""
           }
         },
         "row_2": {
@@ -49,7 +65,9 @@
             "title": "Ризото",
             "subtitle": "Пиле · Телешко · Зеленчуци",
             "collection": "ризото",
-            "link": ""
+            "link": "",
+            "available_from": "",
+            "available_until": ""
           }
         },
         "row_3": {
@@ -59,7 +77,9 @@
             "title": "Паста",
             "subtitle": "Талиатели · Спагети",
             "collection": "паста",
-            "link": ""
+            "link": "",
+            "available_from": "",
+            "available_until": ""
           }
         },
         "row_4": {
@@ -69,7 +89,9 @@
             "title": "Скара",
             "subtitle": "Кюфтета · Плескавица · Наденица",
             "collection": "скара",
-            "link": ""
+            "link": "",
+            "available_from": "",
+            "available_until": ""
           }
         },
         "row_5": {
@@ -79,7 +101,9 @@
             "title": "Бургери",
             "subtitle": "Телешки · Пилешки · Фиш",
             "collection": "бургери",
-            "link": ""
+            "link": "",
+            "available_from": "",
+            "available_until": ""
           }
         },
         "row_6": {
@@ -89,7 +113,9 @@
             "title": "Основни",
             "subtitle": "Пиле · Телешко · Свинско",
             "collection": "основни",
-            "link": ""
+            "link": "",
+            "available_from": "",
+            "available_until": ""
           }
         },
         "row_7": {
@@ -99,7 +125,9 @@
             "title": "Предястия",
             "subtitle": "Хапки · Темпура · Картофи",
             "collection": "предястия",
-            "link": ""
+            "link": "",
+            "available_from": "",
+            "available_until": ""
           }
         },
         "row_8": {
@@ -109,7 +137,9 @@
             "title": "Удон",
             "subtitle": "Нудли с пиле · телешко · морски дарове",
             "collection": "удон",
-            "link": ""
+            "link": "",
+            "available_from": "",
+            "available_until": ""
           }
         },
         "tile_9": {
@@ -118,7 +148,9 @@
             "icon": "cup",
             "title": "Напитки",
             "collection": "напитки",
-            "link": ""
+            "link": "",
+            "available_from": "",
+            "available_until": ""
           }
         },
         "tile_10": {
@@ -127,7 +159,9 @@
             "icon": "wine",
             "title": "Алкохолни напитки",
             "collection": "алкохолни-напитки",
-            "link": ""
+            "link": "",
+            "available_from": "",
+            "available_until": ""
           }
         },
         "tile_11": {
@@ -137,11 +171,13 @@
             "title": "Обедно меню",
             "collection": "обедно-меню",
             "link": "",
+            "available_from": "",
             "available_until": "17:00"
           }
         }
       },
       "block_order": [
+        "row_FWG6Et",
         "row_q7nyX6",
         "row_1",
         "row_2",
