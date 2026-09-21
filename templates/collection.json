@@ -12,34 +12,6 @@
     "fujiyama_collection": {
       "type": "fujiyama-collection",
       "blocks": {
-        "group_NpVLQi": {
-          "type": "group",
-          "settings": {
-            "title": "Категория",
-            "collections": [
-              "риба"
-            ],
-            "icon": "fish",
-            "hide_empty": true,
-            "available_from": "",
-            "available_until": "",
-            "closed_text": "Тази категория не се предлага в момента."
-          }
-        },
-        "group_W3eJWr": {
-          "type": "group",
-          "settings": {
-            "title": "Категория",
-            "collections": [
-              "риба"
-            ],
-            "icon": "fish",
-            "hide_empty": true,
-            "available_from": "",
-            "available_until": "",
-            "closed_text": "Тази категория не се предлага в момента."
-          }
-        },
         "group_10": {
           "type": "group",
           "settings": {
@@ -205,8 +177,6 @@
         }
       },
       "block_order": [
-        "group_NpVLQi",
-        "group_W3eJWr",
         "group_10",
         "group_1",
         "group_7",
