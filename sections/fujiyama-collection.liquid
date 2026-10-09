@@ -108,6 +108,8 @@
           {%- if product.compare_at_price > product.price -%}
             {%- assign f_off = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price -%}
             <span class="f-pc-badge">−{{ f_off }}%</span>
+          {%- elsif product.tags contains 'Промоции' -%}
+            <span class="f-pc-badge">ПРОМО</span>
           {%- endif -%}
           <button type="button" class="f-pc-media" data-quick tabindex="-1" aria-hidden="true">
             {%- if product.featured_image -%}
