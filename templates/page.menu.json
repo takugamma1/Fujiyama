@@ -183,6 +183,15 @@
             "title": "Промоции",
             "collection": "промоции"
           }
+        },
+        "tile_desserts": {
+          "type": "tile",
+          "settings": {
+            "style": "normal",
+            "icon": "cake",
+            "title": "Десерти",
+            "collection": "десерти"
+          }
         }
       },
       "block_order": [
@@ -197,6 +206,7 @@
         "row_7",
         "row_8",
         "row_FWG6Et",
+        "tile_desserts",
         "tile_9",
         "tile_10",
         "tile_11"

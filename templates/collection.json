@@ -187,6 +187,18 @@
             "style": "sale",
             "closed_text": "В момента няма активни промоции."
           }
+        },
+        "group_desserts": {
+          "type": "group",
+          "settings": {
+            "title": "Десерти",
+            "icon": "cake",
+            "collections": [
+              "десерти"
+            ],
+            "hide_empty": true,
+            "style": "normal"
+          }
         }
       },
       "block_order": [
@@ -201,7 +213,8 @@
         "group_3",
         "group_4",
         "group_8",
-        "group_9"
+        "group_9",
+        "group_desserts"
       ],
       "settings": {
         "back_label": "Назад към колекции",
