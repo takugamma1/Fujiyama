@@ -174,9 +174,19 @@
             "available_from": "",
             "available_until": "17:00"
           }
+        },
+        "tile_sale": {
+          "type": "tile",
+          "settings": {
+            "style": "sale",
+            "icon": "cake",
+            "title": "Промоции",
+            "collection": "промоции"
+          }
         }
       },
       "block_order": [
+        "tile_sale",
         "row_q7nyX6",
         "row_1",
         "row_2",

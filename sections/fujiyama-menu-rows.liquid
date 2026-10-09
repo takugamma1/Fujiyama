@@ -28,10 +28,10 @@
           endif
         -%}
         <li{% if block.settings.available_from != blank or block.settings.available_until != blank %} data-avail data-avail-from="{{ block.settings.available_from | strip | escape }}" data-avail-until="{{ block.settings.available_until | strip | escape }}"{% endif %} {{ block.shopify_attributes }}>
-          <a class="f-mr-row" href="{{ url }}">
+          <a class="f-mr-row{% if block.settings.style == 'sale' %} f-mr-row--sale{% endif %}" href="{{ url }}">
             <span class="f-mr-icon">{% render 'fujiyama-icon', name: block.settings.icon %}</span>
             <span class="f-mr-text">
-              <span class="f-mr-title">{{ rtitle | escape }}</span>
+              <span class="f-mr-title">{{ rtitle | escape }}{% if block.settings.style == 'sale' %} <span class="f-mr-sale-pill">ПРОМО</span>{% endif %}</span>
               {%- if block.settings.subtitle != blank -%}<span class="f-mr-sub">{{ block.settings.subtitle | escape }}</span>{%- endif -%}
             </span>
             {%- if rimg != blank -%}
@@ -58,9 +58,10 @@
           {%- if block.settings.link == blank and block.settings.collection != blank and block.settings.collection.products_count == 0 -%}{%- continue -%}{%- endif -%}
           {%- assign turl = block.settings.link | default: block.settings.collection.url | default: '#' -%}
           {%- assign ttitle = block.settings.title | default: block.settings.collection.title -%}
-          <a class="f-mr-tile" href="{{ turl }}"{% if block.settings.available_from != blank or block.settings.available_until != blank %} data-avail data-avail-from="{{ block.settings.available_from | strip | escape }}" data-avail-until="{{ block.settings.available_until | strip | escape }}"{% endif %} {{ block.shopify_attributes }}>
+          <a class="f-mr-tile{% if block.settings.style == 'sale' %} f-mr-tile--sale{% endif %}" href="{{ turl }}"{% if block.settings.available_from != blank or block.settings.available_until != blank %} data-avail data-avail-from="{{ block.settings.available_from | strip | escape }}" data-avail-until="{{ block.settings.available_until | strip | escape }}"{% endif %} {{ block.shopify_attributes }}>
             <span class="f-mr-tile-icon">{% render 'fujiyama-icon', name: block.settings.icon %}</span>
             <span class="f-mr-tile-title">{{ ttitle | escape }}</span>
+            {%- if block.settings.style == 'sale' -%}<span class="f-mr-tile-sale">ПРОМО · НАМАЛЕНИ ЦЕНИ</span>{%- endif -%}
           </a>
         {%- endfor -%}
       </div>
@@ -106,6 +107,16 @@
 
   /* compact tiles */
   .f-mr-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(12px,1.4vw,18px); margin-top: clamp(12px,1.4vw,18px); }
+  /* sale row / tile */
+  .f-mr-row--sale { border-color: #c8322b; background: linear-gradient(90deg, rgba(200,50,43,.22), rgba(200,50,43,.06)); }
+  .f-mr-row--sale:hover { border-color: #ff6b61; }
+  .f-mr-row--sale .f-mr-icon { color: #ff7d72; }
+  .f-mr-sale-pill { display: inline-block; vertical-align: middle; margin-left: 10px; padding: 3px 9px; border-radius: 999px; background: #c8322b; color: #fff; font: 800 11px/1.3 var(--f-sans); letter-spacing: .14em; }
+  .f-mr-tile--sale { border-color: #c8322b; background: #c8322b; gap: 6px; }
+  .f-mr-tile--sale:hover { border-color: #ff6b61; background: #d63a32; }
+  .f-mr-tile--sale .f-mr-tile-icon { color: #fff; }
+  .f-mr-tile--sale .f-mr-tile-title { color: #fff; font-weight: 800; }
+  .f-mr-tile-sale { font-size: 9px; letter-spacing: .18em; color: rgba(255,255,255,.85); text-transform: uppercase; }
   .f-mr-tile {
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
     min-height: clamp(96px,9vw,118px);
@@ -138,6 +149,22 @@
       "type": "row",
       "name": "Категория (ред)",
       "settings": [
+        {
+          "type": "select",
+          "id": "style",
+          "label": "Стил",
+          "default": "normal",
+          "options": [
+            {
+              "value": "normal",
+              "label": "Обикновен"
+            },
+            {
+              "value": "sale",
+              "label": "Промоция (червен)"
+            }
+          ]
+        },
         {
           "type": "select",
           "id": "icon",
@@ -229,6 +256,22 @@
       "type": "tile",
       "name": "Малка плочка",
       "settings": [
+        {
+          "type": "select",
+          "id": "style",
+          "label": "Стил",
+          "default": "normal",
+          "options": [
+            {
+              "value": "normal",
+              "label": "Обикновен"
+            },
+            {
+              "value": "sale",
+              "label": "Промоция (червен)"
+            }
+          ]
+        },
         {
           "type": "select",
           "id": "icon",

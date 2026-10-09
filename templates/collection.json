@@ -174,9 +174,23 @@
             "available_until": "",
             "closed_text": "Тази категория не се предлага в момента."
           }
+        },
+        "group_sale": {
+          "type": "group",
+          "settings": {
+            "title": "Промоции",
+            "icon": "cake",
+            "collections": [
+              "промоции"
+            ],
+            "hide_empty": true,
+            "style": "sale",
+            "closed_text": "В момента няма активни промоции."
+          }
         }
       },
       "block_order": [
+        "group_sale",
         "group_10",
         "group_1",
         "group_7",

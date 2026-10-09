@@ -66,6 +66,7 @@
   .f-qa-content { padding: clamp(22px,2.6vw,34px); overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
   .f-qa-title { margin: 0; font-size: clamp(20px,2.4vw,28px); letter-spacing: .03em; text-transform: uppercase; color: var(--f-cream); line-height: 1.15; }
   .f-qa-price { font-family: var(--f-serif); font-size: 22px; color: var(--f-gold); }
+  .f-qa-was { font-size: 15px; color: var(--f-cream-dim); margin-right: 6px; }
   .f-qa-desc { font-size: 13px; line-height: 1.65; color: var(--f-body); max-height: 168px; overflow-y: auto; }
   .f-qa-desc[hidden] { display: none; }
   .f-qa-desc p { margin: 0 0 .6em; }
@@ -147,7 +148,7 @@
     var v = matchVariant();
     state.variant = v;
     if (v) {
-      priceEl.textContent = v.price_formatted;
+      priceEl.innerHTML = (v.compare_at_formatted ? '<s class="f-qa-was">' + v.compare_at_formatted + '</s> ' : '') + v.price_formatted;
       if (v.image) { imgEl.src = v.image; imgEl.hidden = false; phEl.hidden = true; }
     }
     var avail = !!(v && v.available);
@@ -198,7 +199,7 @@
     else { imgEl.removeAttribute('src'); imgEl.hidden = true; phEl.hidden = false; }
     renderOpts();
     updateVariant();
-    if (!state.variant) priceEl.textContent = (data.price_varies ? 'от ' : '') + data.price_formatted;
+    if (!state.variant) priceEl.innerHTML = (data.compare_at_formatted ? '<s class="f-qa-was">' + data.compare_at_formatted + '</s> ' : '') + (data.price_varies ? 'от ' : '') + data.price_formatted;
     open();
   }
   function open() {
