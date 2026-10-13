@@ -345,5 +345,22 @@
       "success_moderated": "Коментарът е публикуван, в очакване на модериране",
       "success": "Коментарът е публикуван"
     }
+  },
+  "shopify": {
+    "checkout": {
+      "general": {
+        "continue_to_shipping_method": "Продължи към доставката",
+        "back_to_shipping_method": "Обратно към доставката",
+        "choose_shipping_method": "Изберете начин на получаване"
+      },
+      "delivery_options": {
+        "ship": "Доставка",
+        "ship_to_address": "Доставка до адрес",
+        "pick_up": "Вземи от място",
+        "pickup": "Вземи от място",
+        "pickup_store": "Вземи от място",
+        "pick_up_from_store": "Вземи от място"
+      }
+    }
   }
 }
